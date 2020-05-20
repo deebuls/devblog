@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://deebuls.github.io/devblog/markdown/2020/01/14/test-markdown-post.html</loc>
-<lastmod>2020-01-14T00:00:00-06:00</lastmod>
+<loc>https://deebuls.github.io/devblog/probability/python/2020/03/20/likelihood-lets-start.html</loc>
+<lastmod>2020-03-20T00:00:00-05:00</lastmod>
 </url>
 <url>
-<loc>https://deebuls.github.io/devblog/jupyter/2020/02/20/test.html</loc>
-<lastmod>2020-02-20T00:00:00-06:00</lastmod>
-</url>
-<url>
-<loc>https://deebuls.github.io/devblog/probability/python/plotting/matplotlib/2020/05/18/_05_19_Plot_Inverse_Gamma_Distribution.html</loc>
-<lastmod>2020-05-18T00:00:00-05:00</lastmod>
+<loc>https://deebuls.github.io/devblog/probability/python/plotting/matplotlib/2020/05/19/_05_19_Plot_Inverse_Gamma_Distribution.html</loc>
+<lastmod>2020-05-19T00:00:00-05:00</lastmod>
 </url>
 <url>
 <loc>https://deebuls.github.io/devblog/about/</loc>
