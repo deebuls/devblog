@@ -39,7 +39,9 @@ ROS software packages of b-it-bots for different robots.
 
 
 ![]({{ site.baseurl }}/images/about/robocup_montreal.JPG)
-This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
 
 
-[^1]:a blogging platform that natively supports Jupyter notebooks in addition to other formats.
+This website is powered by [fastpages](https://github.com/fastai/fastpages).
+Logo and favicon was designed by [Darius Dan](Icons made by <a href="http://www.dariusdan.com/" title="Darius Dan">Darius Dan</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>) 
+
+
