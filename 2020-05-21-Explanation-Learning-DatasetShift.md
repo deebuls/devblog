@@ -3,6 +3,7 @@ toc: true
 layout: post
 description: A explanation of dataset shifts in learning problems
 categories: [dataset]
+image: images/domain_shift.png
 title: Dataset shift
 ---
 
@@ -10,7 +11,7 @@ title: Dataset shift
 
 Dataset shift is still an unsolved problems when it comes to deploying learning models "in the wild".
 
-There are 2 different categoris of dataset shift
+There are 2 different categories of dataset shift
 * Co-variate shift
 * label shift
 
@@ -36,13 +37,13 @@ $$ s(x|y) = t(x|y) $$
 conditional input distirbution is invariant to dataset shift
 
 
+
 |  | Covariate Shift | Label Shift |
 |-|-|-|
-| input distribution | $ s(x) \neq t(x) $ | $ ? $ |
-| output distribution | $ ? $ \vert $ s(y) \neq t(y) $ |
-| conditional output distribution | $ {s(y\vertx) = t(y\vertx)} $ | $ ? $ | 
-| conditional input Distribution | $ ? $ | $ {s(x\verty) = t(x\verty)} $ |
-
+| input distribution | $s(x) \neq t(x)$ | $?$ |
+| output distribution | $?$ | $s(y) \neq t(y)$ |
+| conditional output distribution | $s(y\vert x) = t(y \vert x)$ | $?$ | 
+| conditional input Distribution | $?$ | ${s(x \vert y) = t(x \vert y)}$ |
 
 ## Examples 
 ToDo
