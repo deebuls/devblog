@@ -183,13 +183,6 @@ window.onload = wrap_img;
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/master/_notebooks/2020-05-27-uncertainty-regression.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Regression">Regression<a class="anchor-link" href="#Regression"> </a></h2><p>In machine learning problems we take input data $x$ and use it to predict the output data $y$. If the predicted data is continuous or discrete. When the output data $y$ is continuous then the problem is called <strong>regression</strong> while if its is discrete then the problem is called <strong>classification</strong> .</p>
 <p>Deep neural networks have prooved to be a good tool for solving regression tasks. Currently there are new improvements in making the regression task robust by not only predicting the output data $y$ but also the corresponding uncertainty.</p>
 <p>In this blog we will look into 2 methods of representing uncertatinty from literature.</p>
@@ -649,6 +642,28 @@ tensor(0.1492, grad_fn=&lt;MeanBackward0&gt;)
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions"> </a></h2><ul>
+<li><p>Loss functions of maximum likelihood and evidence have been implemented from formulas from the paper.
+<div class="flash flash-warn">
+    <svg class="octicon octicon-zap" viewBox="0 0 10 16" version="1.1" width="10" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10 7H6l3-7-9 9h4l-3 7 9-9z"></path></svg>
+    <strong>Important: </strong>Leasons Learned 
+</div>&gt; how to treat loss function when one of the output variable is always positive. (log and exponential to rescue)</p>
+<blockquote><p>The difference between optimize and loss function and do you sum and add constant ones or do you add constant in all equation and sum.</p>
+</blockquote>
+</li>
+<li><p>The trianing is working on some runs not all.</p>
+</li>
+<li>The model learns the function easily but learning the uncertainty in unkonw region takes longer number of iterations. Needs to be further investigated.</li>
+</ul>
+<blockquote><p>Note ToDo :Test functions for the loss function written&gt; Note ToDo :What is stopping condition? when to stop learning?&gt; Note ToDo :Replace the regularizer in regularizer in likelihood loss with actual regularizer.&gt; Warning Why is uncertatiny different for both the models. Evidential model seems to be very confident in the known region, which seems to be fishy
+Warning The loss function doesnt give same results all the time, so needs to be further investigated</p>
+</blockquote>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="References">References<a class="anchor-link" href="#References"> </a></h2><p>[1] Kendall, Alex, and Yarin Gal. “What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision?” ArXiv:1703.04977 [Cs], October 5, 2017. <a href="http://arxiv.org/abs/1703.04977">http://arxiv.org/abs/1703.04977</a>.</p>
