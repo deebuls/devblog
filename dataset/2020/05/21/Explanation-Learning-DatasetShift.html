@@ -12,10 +12,11 @@
 <link rel="canonical" href="https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html" />
 <meta property="og:url" content="https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html" />
 <meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:image" content="https://deebuls.github.io/devblog/images/domain_shift.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-05-21T00:00:00-05:00" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html"},"description":"A explanation of dataset shifts in learning problems","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html","headline":"Dataset shift","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html"},"description":"A explanation of dataset shifts in learning problems","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html","headline":"Dataset shift","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","image":"https://deebuls.github.io/devblog/images/domain_shift.png","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/devblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -33,10 +34,11 @@
 <link rel="canonical" href="https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html" />
 <meta property="og:url" content="https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html" />
 <meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:image" content="https://deebuls.github.io/devblog/images/domain_shift.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-05-21T00:00:00-05:00" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html"},"description":"A explanation of dataset shifts in learning problems","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html","headline":"Dataset shift","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html"},"description":"A explanation of dataset shifts in learning problems","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html","headline":"Dataset shift","dateModified":"2020-05-21T00:00:00-05:00","datePublished":"2020-05-21T00:00:00-05:00","image":"https://deebuls.github.io/devblog/images/domain_shift.png","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
@@ -155,7 +157,7 @@ window.onload = wrap_img;
 
 <p>Dataset shift is still an unsolved problems when it comes to deploying learning models “in the wild”.</p>
 
-<p>There are 2 different categoris of dataset shift</p>
+<p>There are 2 different categories of dataset shift</p>
 <ul>
   <li>Co-variate shift</li>
   <li>label shift</li>
@@ -195,23 +197,23 @@ conditional input distirbution is invariant to dataset shift</p>
   <tbody>
     <tr>
       <td>input distribution</td>
-      <td>$ s(x) \neq t(x) $</td>
-      <td>$ ? $</td>
+      <td>$s(x) \neq t(x)$</td>
+      <td>$?$</td>
     </tr>
     <tr>
       <td>output distribution</td>
-      <td>$ ? $ \vert $ s(y) \neq t(y) $</td>
-      <td> </td>
+      <td>$?$</td>
+      <td>$s(y) \neq t(y)$</td>
     </tr>
     <tr>
       <td>conditional output distribution</td>
-      <td>$ {s(y\vertx) = t(y\vertx)} $</td>
-      <td>$ ? $</td>
+      <td>$s(y\vert x) = t(y \vert x)$</td>
+      <td>$?$</td>
     </tr>
     <tr>
       <td>conditional input Distribution</td>
-      <td>$ ? $</td>
-      <td>$ {s(x\verty) = t(x\verty)} $</td>
+      <td>$?$</td>
+      <td>${s(x \vert y) = t(x \vert y)}$</td>
     </tr>
   </tbody>
 </table>
