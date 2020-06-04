@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Regression Uncertainty Robustness | Deebul Nair</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Regression Uncertainty Robustness" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Learning about learnings" />
+<meta property="og:description" content="Learning about learnings" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html" />
+<meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:image" content="https://deebuls.github.io/devblog/images/nig_regression.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-05T00:00:00-05:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html"},"description":"Learning about learnings","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html","headline":"Regression Uncertainty Robustness","dateModified":"2020-05-05T00:00:00-05:00","datePublished":"2020-05-05T00:00:00-05:00","image":"https://deebuls.github.io/devblog/images/nig_regression.png","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/devblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-167307341-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/devblog/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Regression Uncertainty Robustness | Deebul Nair</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Regression Uncertainty Robustness" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Learning about learnings" />
+<meta property="og:description" content="Learning about learnings" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html" />
+<meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:image" content="https://deebuls.github.io/devblog/images/nig_regression.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-05T00:00:00-05:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html"},"description":"Learning about learnings","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html","headline":"Regression Uncertainty Robustness","dateModified":"2020-05-05T00:00:00-05:00","datePublished":"2020-05-05T00:00:00-05:00","image":"https://deebuls.github.io/devblog/images/nig_regression.png","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-167307341-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/devblog/">Deebul Nair</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/devblog/about/">About Me</a><a class="page-link" href="/devblog/search/">Search</a><a class="page-link" href="/devblog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Regression Uncertainty Robustness</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-05T00:00:00-05:00" itemprop="datePublished">
+        May 5, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/devblog/categories/#probability">probability</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/devblog/categories/#regression">regression</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/devblog/categories/#uncertainty">uncertainty</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/devblog/categories/#robustness">robustness</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/deebuls/devblog/tree/master/_notebooks/2020-05-05-uncertainty-regression-robustness.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/devblog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/deebuls/devblog/master?filepath=_notebooks%2F2020-05-05-uncertainty-regression-robustness.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/devblog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/deebuls/devblog/blob/master/_notebooks/2020-05-05-uncertainty-regression-robustness.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/devblog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-05-05-uncertainty-regression-robustness.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Robustness">Robustness<a class="anchor-link" href="#Robustness"> </a></h2><p>Robustness</p>
+<h3 id="Robustness-during-training-vs-testing">Robustness during training vs testing<a class="anchor-link" href="#Robustness-during-training-vs-testing"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span><span class="n">y</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$x$&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$y$&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Text(0, 0.5, &#39;$y$&#39;)</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+" />
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Mean-Square-Loss-robustness-analysis">Mean Square Loss robustness analysis<a class="anchor-link" href="#Mean-Square-Loss-robustness-analysis"> </a></h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>  <span class="c1"># this is for regression mean squared loss</span>
+<span class="c1"># Fit a linear regression using mean squared error.</span>
+<span class="n">regression</span> <span class="o">=</span> <span class="n">Net</span><span class="p">(</span><span class="n">n_feature</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_hidden</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_output</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>     <span class="c1"># RegressionModel() </span>
+<span class="n">params</span> <span class="o">=</span> <span class="n">regression</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">lr</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Analysis">Analysis<a class="anchor-link" href="#Analysis"> </a></h3><p><img src="https://github.com/deebuls/devblog/blob/master/_notebooks/images/mse_reg.gif?raw=true" alt="" /></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="deebuls/devblog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/devblog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/devblog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/devblog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Learning about learnings</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deebuls" title="deebuls"><svg class="svg-icon grey"><use xlink:href="/devblog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/deebuls" title="deebuls"><svg class="svg-icon grey"><use xlink:href="/devblog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
