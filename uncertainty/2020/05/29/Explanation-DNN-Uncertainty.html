@@ -3,17 +3,19 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Deebul Nair | Learning about learnings</title>
+<title>Different types of uncertainty in DNN systems? | Deebul Nair</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Deebul Nair" />
+<meta property="og:title" content="Different types of uncertainty in DNN systems?" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Learning about learnings" />
-<meta property="og:description" content="Learning about learnings" />
-<link rel="canonical" href="https://deebuls.github.io/devblog/" />
-<meta property="og:url" content="https://deebuls.github.io/devblog/" />
+<meta name="description" content="A explanation of different uncertainties in DNN" />
+<meta property="og:description" content="A explanation of different uncertainties in DNN" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" />
 <meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-29T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"Learning about learnings","@type":"WebSite","url":"https://deebuls.github.io/devblog/","name":"Deebul Nair","headline":"Deebul Nair","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html"},"description":"A explanation of different uncertainties in DNN","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html","headline":"Different types of uncertainty in DNN systems?","dateModified":"2020-05-29T00:00:00-05:00","datePublished":"2020-05-29T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/devblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -22,17 +24,19 @@
 <script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-167307341-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
 
 <link rel="shortcut icon" type="image/x-icon" href="/devblog/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Deebul Nair | Learning about learnings</title>
+<title>Different types of uncertainty in DNN systems? | Deebul Nair</title>
 <meta name="generator" content="Jekyll v4.0.0" />
-<meta property="og:title" content="Deebul Nair" />
+<meta property="og:title" content="Different types of uncertainty in DNN systems?" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Learning about learnings" />
-<meta property="og:description" content="Learning about learnings" />
-<link rel="canonical" href="https://deebuls.github.io/devblog/" />
-<meta property="og:url" content="https://deebuls.github.io/devblog/" />
+<meta name="description" content="A explanation of different uncertainties in DNN" />
+<meta property="og:description" content="A explanation of different uncertainties in DNN" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" />
 <meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-29T00:00:00-05:00" />
 <script type="application/ld+json">
-{"description":"Learning about learnings","@type":"WebSite","url":"https://deebuls.github.io/devblog/","name":"Deebul Nair","headline":"Deebul Nair","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html"},"description":"A explanation of different uncertainties in DNN","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html","headline":"Different types of uncertainty in DNN systems?","dateModified":"2020-05-29T00:00:00-05:00","datePublished":"2020-05-29T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
@@ -106,94 +110,53 @@ window.onload = wrap_img;
 </header>
 <main class="page-content" aria-label="Content">
       <div class="wrapper">
-        <div class="home"><h1 id="posts">Posts</h1>
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
-<meta name="google-site-verification" content="dVDHO7dcz82T6vu3V2g8MbyZweBxMo4dmTlbTxO7JGs" />
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Different types of uncertainty in DNN systems?</h1><p class="page-description">A explanation of different uncertainties in DNN</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-29T00:00:00-05:00" itemprop="datePublished">
+        May 29, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/devblog/categories/#uncertainty">uncertainty</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#what-are-the-uncertainties-in-dnn">What are the uncertainties in DNN?</a></li>
+</ul><h1 id="what-are-the-uncertainties-in-dnn">
+<a class="anchor" href="#what-are-the-uncertainties-in-dnn" aria-hidden="true"><span class="octicon octicon-link"></span></a>What are the uncertainties in DNN?</h1>
+
+<p>This question is easily answered if you have read a little bit of DNN literature. The most popular answer is</p>
+<ul>
+  <li>Aleatoric uncertainty</li>
+  <li>Epistemic uncertainty</li>
+</ul>
+
+<p>An additional statement is always added to these different types of uncertainty which will claim that</p>
+<ul>
+  <li>Aleatoric uncertatinty is model uncertainty</li>
+  <li>Epistemic uncertatinty is data uncertainty</li>
+</ul>
+
+<p>But what actually are these values and what do they explain ? Lets do a brief overview of different literature to answer these questions.</p>
 
 
-
-
-  
-
-  <!-- Hide posts if front matter flag hide:true -->
-  
-  
-
-  <!-- Sort posts by rank, then date -->
-  
-  
-  
-
- 
-  
-
-   <!-- Assemble final sorted posts array -->
-  
-  <ul class="post-list"><li><div class="Box box-shadow-medium rounded-1 col-12"><div class="col-8 d-table-cell p-3">
-        <h3>
-          <a class="post-link" href="/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html">
-            Different types of uncertainty in DNN systems?
-          </a>
-        </h3>
-        <p class="post-meta-description">A explanation of different uncertainties in DNN</p>
-          <p class="post-meta">May 29, 2020</p>
-      </div>
-  </div></li><li><div class="Box box-shadow-medium rounded-1 col-12"><div class="col-4 d-table-cell p-3 v-align-middle">
-        <img class="image-preview " src="/devblog/images/nig_regression.png" />
-      </div><div class="col-8 d-table-cell p-3">
-        <h3>
-          <a class="post-link" href="/devblog/probability/regression/uncertainty/2020/05/27/uncertainty-regression.html">
-            Regression Uncertainty
-          </a>
-        </h3>
-        <p class="post-meta-description">Learning uncertainty for regression using higher order distribution</p>
-          <p class="post-meta">May 27, 2020</p>
-      </div>
-  </div></li><li><div class="Box box-shadow-medium rounded-1 col-12"><div class="col-4 d-table-cell p-3 v-align-middle">
-        <img class="image-preview " src="/devblog/images/domain_shift.png" />
-      </div><div class="col-8 d-table-cell p-3">
-        <h3>
-          <a class="post-link" href="/devblog/dataset/2020/05/21/Explanation-Learning-DatasetShift.html">
-            Dataset shift
-          </a>
-        </h3>
-        <p class="post-meta-description">A explanation of dataset shifts in learning problems</p>
-          <p class="post-meta">May 21, 2020</p>
-      </div>
-  </div></li><li><div class="Box box-shadow-medium rounded-1 col-12"><div class="col-4 d-table-cell p-3 v-align-middle">
-        <img class="image-preview " src="/devblog/images/NIG_plot.png" />
-      </div><div class="col-8 d-table-cell p-3">
-        <h3>
-          <a class="post-link" href="/devblog/probability/python/plotting/matplotlib/2020/05/19/probability-normalinversegamma.html">
-            Plotting Normal Inverse Gamma Distirbution
-          </a>
-        </h3>
-        <p class="post-meta-description">Python plot Normal Inverse Gamma Distirbution</p>
-          <p class="post-meta">May 19, 2020</p>
-      </div>
-  </div></li><li><div class="Box box-shadow-medium rounded-1 col-12"><div class="col-4 d-table-cell p-3 v-align-middle">
-        <img class="image-preview " src="/devblog/images/nig_regression.png" />
-      </div><div class="col-8 d-table-cell p-3">
-        <h3>
-          <a class="post-link" href="/devblog/probability/regression/uncertainty/robustness/2020/05/05/uncertainty-regression-robustness.html">
-            Regression Uncertainty Robustness
-          </a>
-        </h3>
-        <p class="post-meta-description"></p>
-          <p class="post-meta">May 5, 2020</p>
-      </div>
-  </div></li><li><div class="Box box-shadow-medium rounded-1 col-12"><div class="col-8 d-table-cell p-3">
-        <h3>
-          <a class="post-link" href="/devblog/probability/python/2020/03/20/probability-likelihood.html">
-            Likelihood
-          </a>
-        </h3>
-        <p class="post-meta-description">To understand Likelihood of distributions</p>
-          <p class="post-meta">Mar 20, 2020</p>
-      </div>
-  </div></li></ul>
-
-    </div>
+  </div><a class="u-url" href="/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" hidden></a>
+</article>
       </div>
     </main><footer class="site-footer h-card">
   <data class="u-url" href="/devblog/"></data>
