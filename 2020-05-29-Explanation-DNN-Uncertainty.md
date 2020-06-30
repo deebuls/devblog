@@ -23,9 +23,15 @@ But what actually are these values and what do they explain ? Lets do a brief ov
 # Alternative definitions
 >> "Aleatory uncertainty is also referred to in the literature as variability, irreducible uncertainty, inherent uncertainty, and stochastic uncertainty. Epistemic uncertainty is also termed reducible uncertainty, subjective uncertainty, and state-of-knowledge uncertainty." [2]
 
+>> "Aleatory uncertainties are described as arising from inherent variabilities or randomness in systems, whereas epistemic uncertainties are due to imperfect knowledge." [1] 
+
+# Important points
+1. Epistemic sources of uncertatinty is reducible but aleatory uncertainty is not reducible[1]
+
 
 ## References
 [1] Probability is Perfect, but we Can’t Elicitit Perfectly Anthony O’Hagan & Jeremy E. Oakley http://www.yaroslavvb.com/papers/epistemic.pdf
 
 [2] Challenge problems: uncertainty in system response given uncertain parameters
 Author links open overlay panelWilliam L.Oberkam https://www.sciencedirect.com/science/article/pii/S0951832004000493
+
