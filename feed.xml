@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2020-06-30T10:02:55-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Different types of uncertainty in DNN systems?</title><link href="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" rel="alternate" type="text/html" title="Different types of uncertainty in DNN systems?" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html">&lt;h1 id=&quot;what-are-the-uncertainties-in-dnn&quot;&gt;What are the uncertainties in DNN?&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2020-06-30T10:35:38-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Different types of uncertainty in DNN systems?</title><link href="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" rel="alternate" type="text/html" title="Different types of uncertainty in DNN systems?" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html">&lt;h1 id=&quot;what-are-the-uncertainties-in-dnn&quot;&gt;What are the uncertainties in DNN?&lt;/h1&gt;
 
 &lt;p&gt;This question is easily answered if you have read a little bit of DNN literature. The most popular answer is&lt;/p&gt;
 &lt;ul&gt;
@@ -20,6 +20,17 @@
     &lt;p&gt;“Aleatory uncertainty is also referred to in the literature as variability, irreducible uncertainty, inherent uncertainty, and stochastic uncertainty. Epistemic uncertainty is also termed reducible uncertainty, subjective uncertainty, and state-of-knowledge uncertainty.” [2]&lt;/p&gt;
   &lt;/blockquote&gt;
 &lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;blockquote&gt;
+    &lt;p&gt;“Aleatory uncertainties are described as arising from inherent variabilities or randomness in systems, whereas epistemic uncertainties are due to imperfect knowledge.” [1]&lt;/p&gt;
+  &lt;/blockquote&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;important-points&quot;&gt;Important points&lt;/h1&gt;
+&lt;ol&gt;
+  &lt;li&gt;Epistemic sources of uncertatinty is reducible but aleatory uncertainty is not reducible[1]&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
 &lt;p&gt;[1] Probability is Perfect, but we Can’t Elicitit Perfectly Anthony O’Hagan &amp;amp; Jeremy E. Oakley http://www.yaroslavvb.com/papers/epistemic.pdf&lt;/p&gt;
