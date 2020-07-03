@@ -1,0 +1,28 @@
+---
+toc: true
+layout: post
+description: Reliability of DNN
+categories: [Reliability]
+image: 
+title: Reliability in DNN systems(WIP)
+---
+
+# What is Reliability?
+Of Sub-system(DNN) and  System(using DNN)
+
+According to [2] reliability is :
+- Failure prevention
+- Failure identificaiton
+- Reliability monitoring
+
+# Is it different from classical reliability?
+
+
+
+
+
+
+# References
+
+[1] Kapur, Kailash C., and Michael Pecht. "Reliability engineering." (2014).
+[2] Saria, Suchi, and Adarsh Subbaswamy. "Tutorial: safe and reliable machine learning." arXiv preprint arXiv:1904.07204 (2019).
