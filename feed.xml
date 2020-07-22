@@ -1,4 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2020-07-03T04:51:57-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Different types of uncertainty in DNN systems?</title><link href="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" rel="alternate" type="text/html" title="Different types of uncertainty in DNN systems?" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html">&lt;h1 id=&quot;what-are-the-uncertainties-in-dnn&quot;&gt;What are the uncertainties in DNN?&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2020-07-22T08:30:55-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">DNN Wiki</title><link href="https://deebuls.github.io/devblog/learning/2020/07/22/Learning-DNN.html" rel="alternate" type="text/html" title="DNN Wiki" /><published>2020-07-22T00:00:00-05:00</published><updated>2020-07-22T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/learning/2020/07/22/Learning-DNN</id><content type="html" xml:base="https://deebuls.github.io/devblog/learning/2020/07/22/Learning-DNN.html">&lt;h1 id=&quot;what-to-learn&quot;&gt;What to learn?&lt;/h1&gt;
+
+&lt;p&gt;I wanted to develop glossary/Wiki of DNN related topics and my explanation of them so that I can be sure that I know the topics.
+But for that I needed a list of relevant topics. DNN is an exponentially exploding field and with low signa to noise ratio.
+So it becomes really difficult in &lt;em&gt;fooling up&lt;/em&gt; with the new work without having a firm understanding of what is firm knowledge.
+This selection of topics should help any new commer to be sure that if I know what these topics are then you can claim that you 
+know a little about deep learning.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Deep Learning vs Other Machine Learning Approaches&lt;/li&gt;
+  &lt;li&gt;The Essential Math of Artificial Neurons&lt;/li&gt;
+  &lt;li&gt;The Essential Math of Neural Networks&lt;/li&gt;
+  &lt;li&gt;Activation Functions&lt;/li&gt;
+  &lt;li&gt;Cost/Loss Functions&lt;/li&gt;
+  &lt;li&gt;Stochastic Gradient Descent&lt;/li&gt;
+  &lt;li&gt;Backpropagation&lt;/li&gt;
+  &lt;li&gt;Mini-Batches&lt;/li&gt;
+  &lt;li&gt;Learning Rate&lt;/li&gt;
+  &lt;li&gt;Optimizers (e.g., Adam, Nadam)&lt;/li&gt;
+  &lt;li&gt;Glorot/He Weight Initialization&lt;/li&gt;
+  &lt;li&gt;Dense Layers&lt;/li&gt;
+  &lt;li&gt;Softmax Layers&lt;/li&gt;
+  &lt;li&gt;Dropout&lt;/li&gt;
+  &lt;li&gt;Data Augmentation&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;https://aiplus.odsc.com/courses/deep-learning-with-tensorflow-2-and-pytorch-1&lt;/li&gt;
+  &lt;li&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">What to learn?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://deebuls.github.io/devblog/images/wiki.png" /><media:content medium="image" url="https://deebuls.github.io/devblog/images/wiki.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Different types of uncertainty in DNN systems?</title><link href="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html" rel="alternate" type="text/html" title="Different types of uncertainty in DNN systems?" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2020/05/29/Explanation-DNN-Uncertainty.html">&lt;h1 id=&quot;what-are-the-uncertainties-in-dnn&quot;&gt;What are the uncertainties in DNN?&lt;/h1&gt;
 
 &lt;p&gt;This question is easily answered if you have read a little bit of DNN literature. The most popular answer is&lt;/p&gt;
 &lt;ul&gt;
