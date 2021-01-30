@@ -88,17 +88,6 @@
         
     
   
-    
-        ,"post8": {
-            "title": "One-vs-All Classifier",
-            "content": ". The paper . Padhy, S. et al. (2020) ‘Revisiting One-vs-All Classifiers for Predictive Uncertainty and Out-of-Distribution Detection in Neural Networks’, arXiv:2007.05134 [cs, stat]. Available at: http://arxiv.org/abs/2007.05134 (Accessed: 26 January 2021). . Abstract . Problem . Out-of-Distribution - finding on which samples the classifier should not predict | OOD using uncertainty estimate | uncertainty estimate - correctly estimate the confidence (uncertainty) in the prediction | . How . Using oves-vs-all classifier | distance-based logit representation to encode uncertainty | . Introduction . Capturing epistemic uncertainty is more important, as it captures model&#39;s lack of knowledge about data . | Three different paradigms to measure uncertainty . in-distribution calibration of models measured on an i.i.d. test set, | robustness under dataset shift, and | anomaly/out-of-distribution (OOD) detection, which measures the ability of models to assign low confidence predictions on inputs far away from the training data. | | . Unique selling points . we first study the contribution of the loss function used during training to the quality of predictive uncertainty of models. | Specifically, we show why the parametrization of the probabilities underlying softmax cross-entropy loss are ill-suited for uncertainty estimation. | We then propose two simple replacements to the parametrization of the probability distribution: a one-vs-all normalization scheme that does not force all points in the input space to map to one of the classes, thereby naturally capturing the notion of “none of the above”, and | a distance-based logit representation to encode uncertainty as a function of distance to the training manifold. | | . Experiments . Under Dataset Shift . CIFAR 10 Corrupted different intensity | CIFAR 100 Corrupted | . | OOD . CIFAR 100 vs CIFAR10 | CIFAR100 vs SVHN | . | Comparison of learned class centers . | Reliability Diagrams . | Imagenet . | CLINC Intent Classification Dataset . |",
-            "url": "https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2020/01/01/one-vs-all-classifier-revisiting.html",
-            "relUrl": "/probability/regression/uncertainty/robustness/2020/01/01/one-vs-all-classifier-revisiting.html",
-            "date": " • Jan 1, 2020"
-        }
-        
-    
-  
 
   
   
