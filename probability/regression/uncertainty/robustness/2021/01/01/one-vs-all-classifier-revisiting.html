@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>One-vs-All Classifier | Deebul Nair</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="One-vs-All Classifier" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Learning about learnings" />
+<meta property="og:description" content="Learning about learnings" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html" />
+<meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-01T00:00:00-06:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html"},"description":"Learning about learnings","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html","headline":"One-vs-All Classifier","dateModified":"2021-01-01T00:00:00-06:00","datePublished":"2021-01-01T00:00:00-06:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/devblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-167307341-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/devblog/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>One-vs-All Classifier | Deebul Nair</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="One-vs-All Classifier" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Learning about learnings" />
+<meta property="og:description" content="Learning about learnings" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html" />
+<meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-01T00:00:00-06:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html"},"description":"Learning about learnings","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html","headline":"One-vs-All Classifier","dateModified":"2021-01-01T00:00:00-06:00","datePublished":"2021-01-01T00:00:00-06:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-167307341-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/devblog/">Deebul Nair</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/devblog/about/">About Me</a><a class="page-link" href="/devblog/search/">Search</a><a class="page-link" href="/devblog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">One-vs-All Classifier</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-01-01T00:00:00-06:00" itemprop="datePublished">
+        Jan 1, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/devblog/categories/#probability">probability</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/devblog/categories/#regression">regression</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/devblog/categories/#uncertainty">uncertainty</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/devblog/categories/#robustness">robustness</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/deebuls/devblog/tree/master/_notebooks/2021-01-01-one-vs-all-classifier-revisiting.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/devblog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/deebuls/devblog/master?filepath=_notebooks%2F2021-01-01-one-vs-all-classifier-revisiting.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/devblog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/deebuls/devblog/blob/master/_notebooks/2021-01-01-one-vs-all-classifier-revisiting.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/devblog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#The-paper">The paper </a></li>
+<li class="toc-entry toc-h2"><a href="#Abstract">Abstract </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Problem">Problem </a></li>
+<li class="toc-entry toc-h3"><a href="#How">How </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Introduction">Introduction </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Unique-selling-points">Unique selling points </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Experiments">Experiments </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Imagenet-">Imagenet  </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-01-01-one-vs-all-classifier-revisiting.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/master/_notebooks/2021-01-01-one-vs-all-classifier-revisiting.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-paper">
+<a class="anchor" href="#The-paper" aria-hidden="true"><span class="octicon octicon-link"></span></a>The paper<a class="anchor-link" href="#The-paper"> </a>
+</h2>
+<p>Padhy, S. et al. (2020) ‘Revisiting One-vs-All Classifiers for Predictive Uncertainty and Out-of-Distribution Detection in Neural Networks’, arXiv:2007.05134 [cs, stat]. Available at: <a href="http://arxiv.org/abs/2007.05134">http://arxiv.org/abs/2007.05134</a> (Accessed: 26 January 2021).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Abstract">
+<a class="anchor" href="#Abstract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract<a class="anchor-link" href="#Abstract"> </a>
+</h2>
+<h3 id="Problem">
+<a class="anchor" href="#Problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problem<a class="anchor-link" href="#Problem"> </a>
+</h3>
+<ul>
+<li>Out-of-Distribution - finding on which samples the classifier should not predict </li>
+<li>OOD using uncertainty estimate </li>
+<li>uncertainty estimate - correctly estimate the confidence (uncertainty) in the prediction</li>
+</ul>
+<h3 id="How">
+<a class="anchor" href="#How" aria-hidden="true"><span class="octicon octicon-link"></span></a>How<a class="anchor-link" href="#How"> </a>
+</h3>
+<ul>
+<li>Using oves-vs-all classifier</li>
+<li>distance-based logit representation to encode uncertainty</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h1>
+<ul>
+<li>
+<p>Capturing epistemic uncertainty is more important, as it captures model's lack of knowledge about data</p>
+</li>
+<li>
+<p>Three different paradigms to measure uncertainty</p>
+<ol>
+<li>in-distribution calibration of models measured on an i.i.d. test set, </li>
+<li>robustness under dataset shift, and </li>
+<li>anomaly/out-of-distribution (OOD) detection,
+which measures the ability of models to assign low confidence predictions on inputs far away from the training data.</li>
+</ol>
+</li>
+</ul>
+<h2 id="Unique-selling-points">
+<a class="anchor" href="#Unique-selling-points" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unique selling points<a class="anchor-link" href="#Unique-selling-points"> </a>
+</h2>
+<ul>
+<li>we first study the contribution of the loss function used during training to the quality of predictive uncertainty of models. </li>
+<li>Specifically, we show why the parametrization of the probabilities underlying softmax cross-entropy loss are ill-suited for uncertainty estimation. </li>
+<li>We then propose two simple replacements to the parametrization of
+the probability distribution: <ol>
+<li>a one-vs-all normalization
+scheme that does not force all points in the input space to
+map to one of the classes, thereby naturally capturing the
+notion of “none of the above”, and </li>
+<li>a distance-based logit representation to encode uncertainty as a function of distance to the training manifold.</li>
+</ol>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Experiments">
+<a class="anchor" href="#Experiments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experiments<a class="anchor-link" href="#Experiments"> </a>
+</h1>
+<ol>
+<li>
+<p>Under Dataset Shift</p>
+<ul>
+<li>CIFAR 10 Corrupted different intensity</li>
+<li>CIFAR 100 Corrupted</li>
+</ul>
+</li>
+<li>
+<p>OOD</p>
+<ul>
+<li>CIFAR 100  vs CIFAR10</li>
+<li>CIFAR100 vs SVHN</li>
+</ul>
+</li>
+<li>
+<p>Comparison of learned class centers</p>
+</li>
+<li>
+<p>Reliability Diagrams</p>
+</li>
+<li><h2 id="Imagenet-">
+<a class="anchor" href="#Imagenet-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Imagenet <a class="anchor-link" href="#Imagenet-"> </a>
+</h2></li>
+<li>
+<p>CLINC Intent Classification Dataset</p>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="deebuls/devblog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/devblog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/devblog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/devblog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Learning about learnings</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deebuls" title="deebuls"><svg class="svg-icon grey"><use xlink:href="/devblog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/deebuls" title="deebuls"><svg class="svg-icon grey"><use xlink:href="/devblog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
