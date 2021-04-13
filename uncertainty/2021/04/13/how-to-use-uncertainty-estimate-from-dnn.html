@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Using uncertainties in DNN application | Deebul Nair</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Using uncertainties in DNN application" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to use uncertainty estimates from deep neural networks" />
+<meta property="og:description" content="How to use uncertainty estimates from deep neural networks" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" />
+<meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-04-13T00:00:00-05:00" />
+<script type="application/ld+json">
+{"headline":"Using uncertainties in DNN application","description":"How to use uncertainty estimates from deep neural networks","datePublished":"2021-04-13T00:00:00-05:00","dateModified":"2021-04-13T00:00:00-05:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html"},"url":"https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/devblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-167307341-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/devblog/images/favicon.ico"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Using uncertainties in DNN application | Deebul Nair</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Using uncertainties in DNN application" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to use uncertainty estimates from deep neural networks" />
+<meta property="og:description" content="How to use uncertainty estimates from deep neural networks" />
+<link rel="canonical" href="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" />
+<meta property="og:url" content="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" />
+<meta property="og:site_name" content="Deebul Nair" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-04-13T00:00:00-05:00" />
+<script type="application/ld+json">
+{"headline":"Using uncertainties in DNN application","description":"How to use uncertainty estimates from deep neural networks","datePublished":"2021-04-13T00:00:00-05:00","dateModified":"2021-04-13T00:00:00-05:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html"},"url":"https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+<link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-167307341-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head><body><header class="site-header">
+
+  <div class="wrapper">
+<a class="site-title" rel="author" href="/devblog/">Deebul Nair</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger">
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewbox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger">
+<a class="page-link" href="/devblog/about/">About Me</a><a class="page-link" href="/devblog/search/">Search</a><a class="page-link" href="/devblog/categories/">Tags</a>
+</div>
+      </nav>
+</div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Using uncertainties in DNN application</h1>
+<p class="page-description">How to use uncertainty estimates from deep neural networks</p>
+<p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-04-13T00:00:00-05:00" itemprop="datePublished">
+        Apr 13, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i> 
+      
+        <a class="category-tags-link" href="/devblog/categories/#uncertainty">uncertainty</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1">
+<a href="#application-of-uncertainty-estimation-in-dnn">Application of Uncertainty Estimation in DNN</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#objective">Objective</a></li>
+<li class="toc-entry toc-h2">
+<a href="#paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics">Paper 1: Benchmarking uncertatinty estimation methods in Deep learning with Safety-Related Metrics</a>
+<ul>
+<li class="toc-entry toc-h3">
+<a href="#interpretation">Interpretation</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#pros">Pros</a></li>
+<li class="toc-entry toc-h4"><a href="#cons">Cons</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h2">
+<a href="#paper-2--fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring">Paper 2 : Fail-Safe Execution of Deep learning based Systems through Uncertatiny Monitoring</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#pros-1">Pros</a></li>
+<li class="toc-entry toc-h4"><a href="#cons-1">Cons</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2">
+<a href="#conclusion">Conclusion</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#this-is-not-enough">This is not enough</a></li>
+<li class="toc-entry toc-h3"><a href="#solutions">Solutions</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="application-of-uncertainty-estimation-in-dnn">
+<a class="anchor" href="#application-of-uncertainty-estimation-in-dnn" aria-hidden="true"><span class="octicon octicon-link"></span></a>Application of Uncertainty Estimation in DNN</h1>
+
+<h2 id="objective">
+<a class="anchor" href="#objective" aria-hidden="true"><span class="octicon octicon-link"></span></a>Objective</h2>
+<p>We would like to look into two papers which have developed methodologies to use the uncertatiny estimated by the deep neural network(DNN) in their system.
+The goal is to find the pros and cons of these methodologies</p>
+
+<h2 id="paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics">
+<a class="anchor" href="#paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paper 1: Benchmarking uncertatinty estimation methods in Deep learning with Safety-Related Metrics</h2>
+<p>In this paper they propose two new Safety-Related Metrics: Remaining Error Rate(RER) and Remaining Accuracy Rate(Rate). Here is definition as per the paper:</p>
+<blockquote>
+  <p>A system which relies on these estimates is expected to be in functional mode if the predictions are certain and in fall-back/mitigation mode 
+if the prediction is uncertain. However, the most critical result regarding safety are the predictions where the model is
+certain about its prediction but incorrect (CI). We call the ratio of the number of certain but
+incorrect samples to all samples the Remaining Error Rate (RER). For minimizing the overall risk, it needs to be as low
+as possible. Nonetheless, if a model would always give a low confidence as output, the system would constantly remain in
+fall-back mode and will be unable to provide the intended functionality. Therefore, the ratio of the number of certain
+and correct samples to all samples - we call it the Remaining Accuracy Rate (RAR) - needs to be as high as possible
+to stay in performance mode for most of the time.</p>
+</blockquote>
+
+<h3 id="interpretation">
+<a class="anchor" href="#interpretation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Interpretation</h3>
+<p>The predictions from the DNN are classified into 4 sections as below (Table 1 from paper)
+| | Certain | Uncertain |
+|—-|—-|—–|
+| Correct | <strong>CC</strong> | <strong>UC</strong> |
+| Incorrect | <strong>CI</strong> | <strong>UI</strong> |</p>
+
+<p>The definition of the metrics are :</p>
+
+<p>$RER = \frac{CI}{CC+CI+UC+UI}$
+$RAR = \frac{CC}{CC+CI+UC+UI}$</p>
+
+<h4 id="pros">
+<a class="anchor" href="#pros" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pros</h4>
+<ul>
+  <li>Its a very simple metric.</li>
+  <li>Simplicity of metric is a very important thing for usability of metrics.</li>
+</ul>
+
+<h4 id="cons">
+<a class="anchor" href="#cons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cons</h4>
+<ul>
+  <li>A minor issue will be on the threshold which seprates Certain vs Uncertain. Is it 99% or 90% etc. All will yield different results</li>
+  <li>A major problem which we consider is the assumption in which the uncertatiny is being planned to be used in the system.
+    <blockquote>
+      <p><strong>A system which relies on these estimates is expected to be in functional mode if the predictions are certain and in fall-back/mitigation mode 
+if the prediction is uncertain.</strong></p>
+    </blockquote>
+  </li>
+  <li>This means that the system has 2 modes
+    <ul>
+      <li>A functional mode</li>
+      <li>A fall-back/mitigation mode</li>
+    </ul>
+  </li>
+  <li>Is this a safe assumption with regards to deployment of DNN?</li>
+  <li>Can an application deploying DNN have 2 modes ?</li>
+  <li>What should an autonomous car in fall-back mode do ?</li>
+</ul>
+
+<p><img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://github.githubassets.com/images/icons/emoji/unicode/203c.png" height="20" width="20"> | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back
+:—: | :—</p>
+
+<h2 id="paper-2--fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring">
+<a class="anchor" href="#paper-2--fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paper 2 : Fail-Safe Execution of Deep learning based Systems through Uncertatiny Monitoring</h2>
+<ul>
+  <li>In this paper, as the title suggests they create a separate model called the <em>Supervisor Model</em> which will monitor the uncertainty of Deep learning and 
+avoid any faults in the system</li>
+  <li>What is a supervisor model :
+    <blockquote>
+      <p>Network supervision can be viewed as a binary classification task: malicious samples, i.e., inputs which lead to a misclassification
+ (for classification problems) or to severe
+imprecision (in regression problems) are positive samples that have to be rejected. Other samples, also called benign samples,
+are negative samples in the binary classification task. An uncertainty based supervisor accepts an input i as a benign
+sample if its uncertainty u(i) is lower than some threshold t. The choice of t is a crucial setting, as a high t will fail to
+reject many malicious samples (false negatives) and a low t  will cause too many false alerts (false positives).</p>
+    </blockquote>
+  </li>
+  <li>Thus the supervisor is a binary classification task to avoid beningn samples. They also define a metric <em>S-Score</em> which combined measures the performance
+of both the model and the supervisor model</li>
+  <li>There is lot of similarity with respect to the above paper here also</li>
+</ul>
+
+<h4 id="pros-1">
+<a class="anchor" href="#pros-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pros</h4>
+<ul>
+  <li>They have made a library out of it such that any model can be used.</li>
+  <li>The threshold on which to make the decission is now being learned by the data.</li>
+</ul>
+
+<h4 id="cons-1">
+<a class="anchor" href="#cons-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cons</h4>
+<ul>
+  <li>Again, these method is based on the assumption that the system which uses DNN has 2 modes of operation( normal mode and fall-back mode)</li>
+</ul>
+
+<p><img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://github.githubassets.com/images/icons/emoji/unicode/203c.png" height="20" width="20"> | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back
+:—: | :—</p>
+
+<h2 id="conclusion">
+<a class="anchor" href="#conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h2>
+
+<ul>
+  <li>All methods are based on the assumption that the system has 2 modes of operation</li>
+  <li>The uncertatiny estimation is used to determine whethere the DNN output should be trusted or should be avoided</li>
+</ul>
+
+<h3 id="this-is-not-enough">
+<a class="anchor" href="#this-is-not-enough" aria-hidden="true"><span class="octicon octicon-link"></span></a>This is not enough</h3>
+<ul>
+  <li>The methods which use DNN dont have a fall back mode.
+    <ul>
+      <li>If there was an non DNN based method then by “First rule of Machine/Deep Learning” that will be used for solving the problem</li>
+    </ul>
+  </li>
+  <li>There can be argument to say that there are redundant DNN systems and this method can be used to kick-off redundant system
+    <ul>
+      <li>Even this argument is not valid as if you have redundant system, you should use all of them and make a decision</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="solutions">
+<a class="anchor" href="#solutions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Solutions</h3>
+<ul>
+  <li>The one solution which I have been workin is about not binarizing the probability but the propagating it through the system</li>
+  <li>The best example is of the filters which have been developed over years to handle uncertain sensors.</li>
+</ul>
+
+<h2 id="references">
+<a class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
+<p>[1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb. 2021, 
+Accessed: Apr. 13, 2021. [Online]. Available: http://arxiv.org/abs/2102.00902.
+[2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p. 8, 2020.</p>
+
+
+  </div>
+<a class="u-url" href="/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/devblog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/devblog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/devblog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Learning about learnings</p>
+      </div>
+    </div>
+
+    <div class="social-links">
+<ul class="social-media-list">
+<li><a rel="me" href="https://github.com/deebuls" title="deebuls"><svg class="svg-icon grey"><use xlink:href="/devblog/assets/minima-social-icons.svg#github"></use></svg></a></li>
+<li><a rel="me" href="https://twitter.com/deebuls" title="deebuls"><svg class="svg-icon grey"><use xlink:href="/devblog/assets/minima-social-icons.svg#twitter"></use></svg></a></li>
+</ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
