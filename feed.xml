@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2021-04-13T04:13:46-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Using uncertainties in DNN application</title><link href="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" rel="alternate" type="text/html" title="Using uncertainties in DNN application" /><published>2021-04-13T00:00:00-05:00</published><updated>2021-04-13T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html">&lt;h1 id=&quot;application-of-uncertainty-estimation-in-dnn&quot;&gt;Application of Uncertainty Estimation in DNN&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2021-04-13T04:24:37-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Using uncertainties in DNN application</title><link href="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" rel="alternate" type="text/html" title="Using uncertainties in DNN application" /><published>2021-04-13T00:00:00-05:00</published><updated>2021-04-13T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html">&lt;h1 id=&quot;application-of-uncertainty-estimation-in-dnn&quot;&gt;Application of Uncertainty Estimation in DNN&lt;/h1&gt;
 
 &lt;h2 id=&quot;objective&quot;&gt;Objective&lt;/h2&gt;
 &lt;p&gt;We would like to look into two papers which have developed methodologies to use the uncertatiny estimated by the deep neural network(DNN) in their system.
@@ -18,11 +18,29 @@ to stay in performance mode for most of the time.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h3 id=&quot;interpretation&quot;&gt;Interpretation&lt;/h3&gt;
-&lt;p&gt;The predictions from the DNN are classified into 4 sections as below (Table 1 from paper)
-| | Certain | Uncertain |
-|—-|—-|—–|
-| Correct | &lt;strong&gt;CC&lt;/strong&gt; | &lt;strong&gt;UC&lt;/strong&gt; |
-| Incorrect | &lt;strong&gt;CI&lt;/strong&gt; | &lt;strong&gt;UI&lt;/strong&gt; |&lt;/p&gt;
+&lt;p&gt;The predictions from the DNN are classified into 4 sections as below (Table 1 from paper)&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;Certain&lt;/th&gt;
+      &lt;th&gt;Uncertain&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Correct&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;CC&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;UC&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Incorrect&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;CI&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;UI&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
 &lt;p&gt;The definition of the metrics are :&lt;/p&gt;
 
@@ -55,8 +73,8 @@ if the prediction is uncertain.&lt;/strong&gt;&lt;/p&gt;
   &lt;li&gt;What should an autonomous car in fall-back mode do ?&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;:bangbang: | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back
-:—: | :—&lt;/p&gt;
+&lt;p&gt;:bangbang: | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back |
+:-: | :- |&lt;/p&gt;
 
 &lt;h2 id=&quot;paper-2--fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring&quot;&gt;Paper 2 : Fail-Safe Execution of Deep learning based Systems through Uncertatiny Monitoring&lt;/h2&gt;
 &lt;ul&gt;
@@ -88,8 +106,8 @@ of both the model and the supervisor model&lt;/li&gt;
   &lt;li&gt;Again, these method is based on the assumption that the system which uses DNN has 2 modes of operation( normal mode and fall-back mode)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;:bangbang: | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back
-:—: | :—&lt;/p&gt;
+&lt;p&gt;:bangbang: | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back |
+:—: | :— |&lt;/p&gt;
 
 &lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
 
@@ -119,9 +137,15 @@ of both the model and the supervisor model&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
-&lt;p&gt;[1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb. 2021, 
-Accessed: Apr. 13, 2021. [Online]. Available: http://arxiv.org/abs/2102.00902.
-[2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p. 8, 2020.&lt;/p&gt;</content><author><name></name></author><summary type="html">Application of Uncertainty Estimation in DNN</summary></entry><entry><title type="html">One-vs-All Classifier</title><link href="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html" rel="alternate" type="text/html" title="One-vs-All Classifier" /><published>2021-01-01T00:00:00-06:00</published><updated>2021-01-01T00:00:00-06:00</updated><id>https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting</id><content type="html" xml:base="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html">&lt;!--
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;[1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb. 2021, 
+Accessed: Apr. 13, 2021. [Online]. Available: http://arxiv.org/abs/2102.00902.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;[2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p. 8, 2020.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content><author><name></name></author><summary type="html">Application of Uncertainty Estimation in DNN</summary></entry><entry><title type="html">One-vs-All Classifier</title><link href="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html" rel="alternate" type="text/html" title="One-vs-All Classifier" /><published>2021-01-01T00:00:00-06:00</published><updated>2021-01-01T00:00:00-06:00</updated><id>https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting</id><content type="html" xml:base="https://deebuls.github.io/devblog/probability/regression/uncertainty/robustness/2021/01/01/one-vs-all-classifier-revisiting.html">&lt;!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################

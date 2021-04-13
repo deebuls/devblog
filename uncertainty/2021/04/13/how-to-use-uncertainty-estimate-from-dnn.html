@@ -200,11 +200,29 @@ to stay in performance mode for most of the time.</p>
 
 <h3 id="interpretation">
 <a class="anchor" href="#interpretation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Interpretation</h3>
-<p>The predictions from the DNN are classified into 4 sections as below (Table 1 from paper)
-| | Certain | Uncertain |
-|—-|—-|—–|
-| Correct | <strong>CC</strong> | <strong>UC</strong> |
-| Incorrect | <strong>CI</strong> | <strong>UI</strong> |</p>
+<p>The predictions from the DNN are classified into 4 sections as below (Table 1 from paper)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Certain</th>
+      <th>Uncertain</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Correct</td>
+      <td><strong>CC</strong></td>
+      <td><strong>UC</strong></td>
+    </tr>
+    <tr>
+      <td>Incorrect</td>
+      <td><strong>CI</strong></td>
+      <td><strong>UI</strong></td>
+    </tr>
+  </tbody>
+</table>
 
 <p>The definition of the metrics are :</p>
 
@@ -239,8 +257,8 @@ if the prediction is uncertain.</strong></p>
   <li>What should an autonomous car in fall-back mode do ?</li>
 </ul>
 
-<p><img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://github.githubassets.com/images/icons/emoji/unicode/203c.png" height="20" width="20"> | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back
-:—: | :—</p>
+<p><img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://github.githubassets.com/images/icons/emoji/unicode/203c.png" height="20" width="20"> | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back |
+:-: | :- |</p>
 
 <h2 id="paper-2--fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring">
 <a class="anchor" href="#paper-2--fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring" aria-hidden="true"><span class="octicon octicon-link"></span></a>Paper 2 : Fail-Safe Execution of Deep learning based Systems through Uncertatiny Monitoring</h2>
@@ -275,8 +293,8 @@ of both the model and the supervisor model</li>
   <li>Again, these method is based on the assumption that the system which uses DNN has 2 modes of operation( normal mode and fall-back mode)</li>
 </ul>
 
-<p><img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://github.githubassets.com/images/icons/emoji/unicode/203c.png" height="20" width="20"> | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back
-:—: | :—</p>
+<p><img class="emoji" title=":bangbang:" alt=":bangbang:" src="https://github.githubassets.com/images/icons/emoji/unicode/203c.png" height="20" width="20"> | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back |
+:—: | :— |</p>
 
 <h2 id="conclusion">
 <a class="anchor" href="#conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h2>
@@ -310,9 +328,15 @@ of both the model and the supervisor model</li>
 
 <h2 id="references">
 <a class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
-<p>[1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb. 2021, 
-Accessed: Apr. 13, 2021. [Online]. Available: http://arxiv.org/abs/2102.00902.
-[2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p. 8, 2020.</p>
+<ul>
+  <li>
+    <p>[1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb. 2021, 
+Accessed: Apr. 13, 2021. [Online]. Available: http://arxiv.org/abs/2102.00902.</p>
+  </li>
+  <li>
+    <p>[2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p. 8, 2020.</p>
+  </li>
+</ul>
 
 
   </div>
