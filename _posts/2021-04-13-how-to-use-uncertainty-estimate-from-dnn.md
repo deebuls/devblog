@@ -26,8 +26,9 @@ to stay in performance mode for most of the time.
 
 ### Interpretation
 The predictions from the DNN are classified into 4 sections as below (Table 1 from paper)
+
 | | Certain | Uncertain |
-|----|----|-----|
+|-|-|-|
 | Correct | **CC** | **UC** |
 | Incorrect | **CI** | **UI** |
 
@@ -53,8 +54,8 @@ if the prediction is uncertain.**
 *  What should an autonomous car in fall-back mode do ?
 
 
-:bangbang: | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back
-:---: | :---
+:bangbang: | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back |
+:-: | :- |
 
 ## Paper 2 : Fail-Safe Execution of Deep learning based Systems through Uncertatiny Monitoring
 * In this paper, as the title suggests they create a separate model called the *Supervisor Model* which will monitor the uncertainty of Deep learning and 
@@ -79,8 +80,8 @@ of both the model and the supervisor model
 * Again, these method is based on the assumption that the system which uses DNN has 2 modes of operation( normal mode and fall-back mode)
 
 
-:bangbang: | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back
-:---: | :---
+:bangbang: | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back |
+:---: | :--- |
 
 ## Conclusion
 
@@ -101,7 +102,8 @@ of both the model and the supervisor model
 
 
 ## References
-[1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb. 2021, 
+- [1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb. 2021, 
 Accessed: Apr. 13, 2021. [Online]. Available: http://arxiv.org/abs/2102.00902.
-[2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p. 8, 2020.
+
+- [2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p. 8, 2020.
 
