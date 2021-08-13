@@ -144,6 +144,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#idea">Idea</a></li>
 <li class="toc-entry toc-h2"><a href="#journal">Journal</a></li>
 <li class="toc-entry toc-h2"><a href="#reference">Reference</a></li>
+<li class="toc-entry toc-h2"><a href="#pytorch-cifar">Pytorch cifar</a></li>
 </ul>
 </li>
 </ul><h1 id="notes-on-neurips-competition">
@@ -164,6 +165,11 @@ window.onload = wrap_img;
       <li>Working in superconvergence</li>
     </ul>
   </li>
+  <li>13th August
+    <ul>
+      <li>Roll back to pytorch-cifar and modifications</li>
+    </ul>
+  </li>
 </ul>
 
 <h2 id="reference">
@@ -176,7 +182,90 @@ window.onload = wrap_img;
       <li>cifar10, pytorchdata, cifar training, wideresenet, 92 accuracy</li>
     </ul>
   </li>
+  <li>
+<a href="">Pytorch Cifar SOA</a>
+    <ul>
+      <li>pytorch cifar10, all models,</li>
+    </ul>
+  </li>
 </ul>
+
+<h2 id="pytorch-cifar">
+<a class="anchor" href="#pytorch-cifar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pytorch cifar</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>data</th>
+      <th>criterion</th>
+      <th>optim</th>
+      <th>scheduler</th>
+      <th>epochs</th>
+      <th>accuracy</th>
+      <th>link</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Resnet18</td>
+      <td>pytorch</td>
+      <td>cross-entropy</td>
+      <td>SGD</td>
+      <td>annealing-200</td>
+      <td>200</td>
+      <td>94</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/6737083a2e144c2c94ee2b191fb43b77?experiment-tab=stdout">1</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>pytorch</td>
+      <td>cross-entropy</td>
+      <td>SGD</td>
+      <td>annealing-200</td>
+      <td>200</td>
+      <td>89</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/4ea079dd7dad4a19ae20b3c6ee1ee12c?experiment-tab=stdout">1</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>cross-entropy</td>
+      <td>SGD</td>
+      <td>annealing-200</td>
+      <td>200</td>
+      <td>90</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/37242e3a6a504dd786c8f09baeece0f6?experiment-tab=stdout">1</a></td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>Evidential</td>
+      <td>SGD</td>
+      <td>annealing-200</td>
+      <td>200</td>
+      <td>73</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/7625666bc7a44c62b53daa196c3b0b13?experiment-tab=stdout">1</a></td>
+      <td>Added randmErasing</td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>Label smooting</td>
+      <td>SGD</td>
+      <td>annealing-200</td>
+      <td>200</td>
+      <td> </td>
+      <td>??</td>
+      <td>??</td>
+    </tr>
+  </tbody>
+</table>
+
 
   </div><a class="u-url" href="/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html" hidden></a>
 </article>

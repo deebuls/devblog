@@ -3,7 +3,7 @@
     
         "post0": {
             "title": "Neurips Competition Uncertainty",
-            "content": "Notes on Neurips Competition . I am participating in the Neurips Bayesian Deep Learning Competition, I will like to journal my notes here . Idea . Broad idea is to use Evidential loss function, Dropout, TTA combination. . Journal . 8th August Working in superconvergence | . | . Reference . Super Convergence cifar10, pytorchdata, cifar training, wideresenet, 92 accuracy | . | .",
+            "content": "Notes on Neurips Competition . I am participating in the Neurips Bayesian Deep Learning Competition, I will like to journal my notes here . Idea . Broad idea is to use Evidential loss function, Dropout, TTA combination. . Journal . 8th August Working in superconvergence | . | 13th August Roll back to pytorch-cifar and modifications | . | . Reference . Super Convergence cifar10, pytorchdata, cifar training, wideresenet, 92 accuracy | . | Pytorch Cifar SOA pytorch cifar10, all models, | . | . Pytorch cifar . Model data criterion optim scheduler epochs accuracy link Notes . Resnet18 | pytorch | cross-entropy | SGD | annealing-200 | 200 | 94 | 1 |   | . Resnet20 | pytorch | cross-entropy | SGD | annealing-200 | 200 | 89 | 1 |   | . Resnet20 | tf | cross-entropy | SGD | annealing-200 | 200 | 90 | 1 |   | . Resnet20 | tf | Evidential | SGD | annealing-200 | 200 | 73 | 1 | Added randmErasing | . Resnet20 | tf | Label smooting | SGD | annealing-200 | 200 |   | ?? | ?? | .",
             "url": "https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html",
             "relUrl": "/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html",
             "date": " • Aug 8, 2021"

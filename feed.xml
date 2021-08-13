@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2021-08-08T05:36:32-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Neurips Competition Uncertainty</title><link href="https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html" rel="alternate" type="text/html" title="Neurips Competition Uncertainty" /><published>2021-08-08T00:00:00-05:00</published><updated>2021-08-08T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html">&lt;h1 id=&quot;notes-on-neurips-competition&quot;&gt;Notes on Neurips Competition&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2021-08-13T06:02:38-05:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Neurips Competition Uncertainty</title><link href="https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html" rel="alternate" type="text/html" title="Neurips Competition Uncertainty" /><published>2021-08-08T00:00:00-05:00</published><updated>2021-08-08T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html">&lt;h1 id=&quot;notes-on-neurips-competition&quot;&gt;Notes on Neurips Competition&lt;/h1&gt;
 
 &lt;p&gt;I am participating in the &lt;a href=&quot;https://izmailovpavel.github.io/neurips_bdl_competition/&quot;&gt;Neurips Bayesian Deep Learning Competition&lt;/a&gt;, I will like to journal my notes here&lt;/p&gt;
 
@@ -13,6 +13,11 @@
       &lt;li&gt;Working in superconvergence&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
+  &lt;li&gt;13th August
+    &lt;ul&gt;
+      &lt;li&gt;Roll back to pytorch-cifar and modifications&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;reference&quot;&gt;Reference&lt;/h2&gt;
@@ -23,7 +28,87 @@
       &lt;li&gt;cifar10, pytorchdata, cifar training, wideresenet, 92 accuracy&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">Notes on Neurips Competition</summary></entry><entry><title type="html">Using uncertainties in DNN application</title><link href="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" rel="alternate" type="text/html" title="Using uncertainties in DNN application" /><published>2021-04-13T00:00:00-05:00</published><updated>2021-04-13T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html">&lt;h1 id=&quot;application-of-uncertainty-estimation-in-dnn&quot;&gt;Application of Uncertainty Estimation in DNN&lt;/h1&gt;
+  &lt;li&gt;&lt;a href=&quot;&quot;&gt;Pytorch Cifar SOA&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;pytorch cifar10, all models,&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;pytorch-cifar&quot;&gt;Pytorch cifar&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Model&lt;/th&gt;
+      &lt;th&gt;data&lt;/th&gt;
+      &lt;th&gt;criterion&lt;/th&gt;
+      &lt;th&gt;optim&lt;/th&gt;
+      &lt;th&gt;scheduler&lt;/th&gt;
+      &lt;th&gt;epochs&lt;/th&gt;
+      &lt;th&gt;accuracy&lt;/th&gt;
+      &lt;th&gt;link&lt;/th&gt;
+      &lt;th&gt;Notes&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Resnet18&lt;/td&gt;
+      &lt;td&gt;pytorch&lt;/td&gt;
+      &lt;td&gt;cross-entropy&lt;/td&gt;
+      &lt;td&gt;SGD&lt;/td&gt;
+      &lt;td&gt;annealing-200&lt;/td&gt;
+      &lt;td&gt;200&lt;/td&gt;
+      &lt;td&gt;94&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://www.comet.ml/deebuls/cifar10-neurips/6737083a2e144c2c94ee2b191fb43b77?experiment-tab=stdout&quot;&gt;1&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Resnet20&lt;/td&gt;
+      &lt;td&gt;pytorch&lt;/td&gt;
+      &lt;td&gt;cross-entropy&lt;/td&gt;
+      &lt;td&gt;SGD&lt;/td&gt;
+      &lt;td&gt;annealing-200&lt;/td&gt;
+      &lt;td&gt;200&lt;/td&gt;
+      &lt;td&gt;89&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://www.comet.ml/deebuls/cifar10-neurips/4ea079dd7dad4a19ae20b3c6ee1ee12c?experiment-tab=stdout&quot;&gt;1&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Resnet20&lt;/td&gt;
+      &lt;td&gt;tf&lt;/td&gt;
+      &lt;td&gt;cross-entropy&lt;/td&gt;
+      &lt;td&gt;SGD&lt;/td&gt;
+      &lt;td&gt;annealing-200&lt;/td&gt;
+      &lt;td&gt;200&lt;/td&gt;
+      &lt;td&gt;90&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://www.comet.ml/deebuls/cifar10-neurips/37242e3a6a504dd786c8f09baeece0f6?experiment-tab=stdout&quot;&gt;1&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Resnet20&lt;/td&gt;
+      &lt;td&gt;tf&lt;/td&gt;
+      &lt;td&gt;Evidential&lt;/td&gt;
+      &lt;td&gt;SGD&lt;/td&gt;
+      &lt;td&gt;annealing-200&lt;/td&gt;
+      &lt;td&gt;200&lt;/td&gt;
+      &lt;td&gt;73&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://www.comet.ml/deebuls/cifar10-neurips/7625666bc7a44c62b53daa196c3b0b13?experiment-tab=stdout&quot;&gt;1&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;Added randmErasing&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Resnet20&lt;/td&gt;
+      &lt;td&gt;tf&lt;/td&gt;
+      &lt;td&gt;Label smooting&lt;/td&gt;
+      &lt;td&gt;SGD&lt;/td&gt;
+      &lt;td&gt;annealing-200&lt;/td&gt;
+      &lt;td&gt;200&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;??&lt;/td&gt;
+      &lt;td&gt;??&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</content><author><name></name></author><summary type="html">Notes on Neurips Competition</summary></entry><entry><title type="html">Using uncertainties in DNN application</title><link href="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html" rel="alternate" type="text/html" title="Using uncertainties in DNN application" /><published>2021-04-13T00:00:00-05:00</published><updated>2021-04-13T00:00:00-05:00</updated><id>https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn</id><content type="html" xml:base="https://deebuls.github.io/devblog/uncertainty/2021/04/13/how-to-use-uncertainty-estimate-from-dnn.html">&lt;h1 id=&quot;application-of-uncertainty-estimation-in-dnn&quot;&gt;Application of Uncertainty Estimation in DNN&lt;/h1&gt;
 
 &lt;h2 id=&quot;objective&quot;&gt;Objective&lt;/h2&gt;
 &lt;p&gt;We would like to look into two papers which have developed methodologies to use the uncertatiny estimated by the deep neural network(DNN) in their system.
