@@ -170,6 +170,17 @@ window.onload = wrap_img;
       <li>Roll back to pytorch-cifar and modifications</li>
     </ul>
   </li>
+  <li>14th August
+    <ul>
+      <li>Training on evidential loss reaches only 83% accuracy in 300 epochs.</li>
+      <li>Why is evidental loss reducing the accuracy</li>
+    </ul>
+  </li>
+  <li>15th August
+    <ul>
+      <li>Training with CE, AdamW, OnecylceLR? Can we improve training speed.</li>
+    </ul>
+  </li>
 </ul>
 
 <h2 id="reference">
@@ -247,9 +258,11 @@ window.onload = wrap_img;
       <td>Evidential</td>
       <td>SGD</td>
       <td>annealing-200</td>
-      <td>200</td>
-      <td>73</td>
-      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/7625666bc7a44c62b53daa196c3b0b13?experiment-tab=stdout">1</a></td>
+      <td>600</td>
+      <td>73/??/83</td>
+      <td>
+<a href="https://www.comet.ml/deebuls/cifar10-neurips/7625666bc7a44c62b53daa196c3b0b13?experiment-tab=stdout">1</a><a href=""></a><a href=""></a>
+</td>
       <td>Added randmErasing</td>
     </tr>
     <tr>
@@ -262,6 +275,17 @@ window.onload = wrap_img;
       <td> </td>
       <td>??</td>
       <td>??</td>
+    </tr>
+    <tr>
+      <td>Resent20</td>
+      <td>tf</td>
+      <td>cross-entropy</td>
+      <td>AdamW</td>
+      <td>1 cycle</td>
+      <td>30</td>
+      <td>??</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/beffe711cde444c0910da49c682d0398?experiment-tab=stdout">1</a></td>
+      <td> </td>
     </tr>
   </tbody>
 </table>
