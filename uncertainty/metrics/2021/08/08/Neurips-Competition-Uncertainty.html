@@ -15,7 +15,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-08-08T00:00:00-05:00" />
 <script type="application/ld+json">
-{"datePublished":"2021-08-08T00:00:00-05:00","dateModified":"2021-08-08T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html"},"description":"Neurips Competition Summary","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html","headline":"Neurips Competition Uncertainty","@context":"https://schema.org"}</script>
+{"datePublished":"2021-08-08T00:00:00-05:00","headline":"Neurips Competition Uncertainty","description":"Neurips Competition Summary","mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html"},"@type":"BlogPosting","url":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html","dateModified":"2021-08-08T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/devblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://deebuls.github.io/devblog/feed.xml" title="Deebul Nair" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -36,7 +36,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-08-08T00:00:00-05:00" />
 <script type="application/ld+json">
-{"datePublished":"2021-08-08T00:00:00-05:00","dateModified":"2021-08-08T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html"},"description":"Neurips Competition Summary","@type":"BlogPosting","url":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html","headline":"Neurips Competition Uncertainty","@context":"https://schema.org"}</script>
+{"datePublished":"2021-08-08T00:00:00-05:00","headline":"Neurips Competition Uncertainty","description":"Neurips Competition Summary","mainEntityOfPage":{"@type":"WebPage","@id":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html"},"@type":"BlogPosting","url":"https://deebuls.github.io/devblog/uncertainty/metrics/2021/08/08/Neurips-Competition-Uncertainty.html","dateModified":"2021-08-08T00:00:00-05:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 <link href="https://unpkg.com/@primer/css/dist/primer.css" rel="stylesheet" />
@@ -181,6 +181,16 @@ window.onload = wrap_img;
       <li>Training with CE, AdamW, OnecylceLR? Can we improve training speed.</li>
     </ul>
   </li>
+  <li>17th August
+    <ul>
+      <li>Dirichlet loss function.</li>
+    </ul>
+  </li>
+  <li>18th August
+    <ul>
+      <li>Dirichlet + Mixup : best results, touched 90%</li>
+    </ul>
+  </li>
 </ul>
 
 <h2 id="reference">
@@ -197,6 +207,12 @@ window.onload = wrap_img;
 <a href="">Pytorch Cifar SOA</a>
     <ul>
       <li>pytorch cifar10, all models,</li>
+    </ul>
+  </li>
+  <li>
+<a href="https://github.com/facebookresearch/mixup-cifar10/blob/master/train.py">Mixup </a>
+    <ul>
+      <li>pytorch mixup data combining while training</li>
     </ul>
   </li>
 </ul>
@@ -283,9 +299,86 @@ window.onload = wrap_img;
       <td>AdamW</td>
       <td>1 cycle</td>
       <td>30</td>
-      <td>??</td>
+      <td>83</td>
       <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/beffe711cde444c0910da49c682d0398?experiment-tab=stdout">1</a></td>
       <td> </td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>cross-entropy</td>
+      <td>AdamW</td>
+      <td>1 cycle</td>
+      <td>100</td>
+      <td>88</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/3e42b4ce283c4d069657418ef64a4a79">1</a></td>
+      <td>max_lr = 0.01</td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>cross-entropy</td>
+      <td>AdamW</td>
+      <td>1 cycle</td>
+      <td>30</td>
+      <td>50</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/17e7856afe54447bb245cfcf43056742">1</a></td>
+      <td>max_lr=0.1</td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>cross-entropy</td>
+      <td>AdamW</td>
+      <td>1 cycle</td>
+      <td>30</td>
+      <td>80</td>
+      <td><a href="">1</a></td>
+      <td>max_lr=0.05</td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>Evidential</td>
+      <td>AdamW</td>
+      <td>1 cycle</td>
+      <td>30</td>
+      <td>69</td>
+      <td><a href="">1</a></td>
+      <td>max_lr=0.05</td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>Evidential</td>
+      <td>AdamW</td>
+      <td>annealing-200</td>
+      <td>200</td>
+      <td>75</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/5d1fe7b3b4f1400b840b41a227c5a092">1</a></td>
+      <td>max_lr=0.01</td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>cross-entropy</td>
+      <td>AdamW</td>
+      <td>1 cycle</td>
+      <td>200</td>
+      <td>89</td>
+      <td><a href="https://www.comet.ml/deebuls/cifar10-neurips/d48a0594b3064f2680d4147ae08abaa5">1</a></td>
+      <td>max_lr = 0.05</td>
+    </tr>
+    <tr>
+      <td>Resnet20</td>
+      <td>tf</td>
+      <td>cross-entropy</td>
+      <td>AdamW</td>
+      <td>1 cycle</td>
+      <td>200</td>
+      <td>89</td>
+      <td><a href="">1</a></td>
+      <td>max_lr = 0.05, randomErase</td>
     </tr>
   </tbody>
 </table>
