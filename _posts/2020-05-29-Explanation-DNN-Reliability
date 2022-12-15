@@ -67,7 +67,12 @@ print(Reliability)
 
 Its bayesian rule of posterior for the beta distribution. Where the posterior is just adding the number of positives to alpha and negatives to beta .
 It then multiplied to the dirchlet prior value(0.1).
-Then the values of summed . 
+Then the values of summed.
+
+## Big Idea 
+
+The main idea of the paper [3] is the **Operational Profile** , which basically separates the input data space into multiple subset.
+The subset can be additional to the classes in the dataset.
 
 # References
 
