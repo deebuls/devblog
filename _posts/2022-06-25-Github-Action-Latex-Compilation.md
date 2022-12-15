@@ -2,11 +2,10 @@
 toc: true
 layout: post
 description: Compile Latex file using Github Action
-categories: [Latex][Github Action]
+categories: [Latex]
 image: 
 title: Compile Latex file using Github Action
 ---
-
 
 # Compiling Latex documents using Github Action
 
