@@ -49,6 +49,10 @@
 <lastmod>2022-01-19T00:00:00-06:00</lastmod>
 </url>
 <url>
+<loc>https://deebuls.github.io/devblog/statistics/uncertainty/2022/02/05/proper-scoring-interval-score-crps.html</loc>
+<lastmod>2022-02-05T00:00:00-06:00</lastmod>
+</url>
+<url>
 <loc>https://deebuls.github.io/devblog/latex/2022/06/25/Github-Action-Latex-Compilation.html</loc>
 <lastmod>2022-06-25T00:00:00-05:00</lastmod>
 </url>
@@ -71,5 +75,8 @@
 </url>
 <url>
 <loc>https://deebuls.github.io/devblog/categories/</loc>
+</url>
+<url>
+<loc>https://deebuls.github.io/devblog/page2/</loc>
 </url>
 </urlset>
