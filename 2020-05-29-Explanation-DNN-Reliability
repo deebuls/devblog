@@ -37,7 +37,7 @@ The service reliability then can be expressed via the r.v. R = 1 − F.
 Through testing
 
 ### Classification with 10 classes Reliability
-
+From : https://www.kaggle.com/code/kooaslansefat/evidential-deep-learning-reliability
 ```
 y_pred1 = model.predict(x_test)
 y_pred =  np.argmax(y_pred1,axis=1)
