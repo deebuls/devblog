@@ -13,6 +13,75 @@ title: Running ros2 humble in ubuntu lxd container
 Its always dificult to get the appropriate ubuntu version for a running a particular software. For example, currently I have ubuntu 20.04 and I want to test a software in ros2 humble. Humble requires ubuntu version 22.04.
 I wanted to try if we can use lxd containers for running the appropriate ubuntu version and installing ros in those. 
 
+## LXD start easy steps
+
+1. Install lxd in your ubuntu (Using snap)
+2. Use Lxc to  make sure its  without sudo 
+3. For using gui inside the container we eed to attach profiles to the container.
+4. Create a profile using the following command 
+```
+$ lxc profile create x11
+Profile x11 created
+```
+5. Edit the profile with the following command
+```
+$ lxc profile edit x11
+```
+6. Copy paste below in the editor below
+```
+config:
+  environment.DISPLAY: :0
+  environment.PULSE_SERVER: unix:/home/ubuntu/pulse-native
+  nvidia.driver.capabilities: all
+  nvidia.runtime: "true"
+  user.user-data: |
+    #cloud-config
+    runcmd:
+      - 'sed -i "s/; enable-shm = yes/enable-shm = no/g" /etc/pulse/client.conf'
+    packages:
+      - x11-apps
+      - mesa-utils
+      - pulseaudio
+description: GUI LXD profile
+devices:
+  PASocket1:
+    bind: container
+    connect: unix:/run/user/1000/pulse/native
+    listen: unix:/home/ubuntu/pulse-native
+    security.gid: "1000"
+    security.uid: "1000"
+    uid: "1000"
+    gid: "1000"
+    mode: "0777"
+    type: proxy
+  X0:
+    bind: container
+    connect: unix:@/tmp/.X11-unix/X1
+    listen: unix:@/tmp/.X11-unix/X0
+    security.gid: "1000"
+    security.uid: "1000"
+    type: proxy
+  mygpu:
+    type: gpu
+name: x11
+used_by: []
+```
+7. In the above file check the line ```connect: unix:@/tmp/.X11-unix/X1``` This depends on how your local machine DISPLAY is set. If your local machine DISPLAY is at X1 replace there with X0.
+8. To check your local machine display```echo $DISPLAY ```.
+9. Now lets create a container with the profile
+```
+lxc launch ubuntu:22.04 --profile default --profile x11 mycontainer
+```
+9. To get a shell in the container, run the following.
+```
+$ lxc exec mycontainer -- sudo --user ubuntu --login
+mycontainer $ sudo apt install xclock 
+mycontainer $ export DISPLAY=:0  #Add this in bashrc
+mycontainer $ xclock
+```
+10. The above command will open the xclock in GUI . If the GUI doesnt come then check your local DISPLAY and the DISPLAY inside the container. 
+11. Complete blog with explanation on the process is provided by (Simos)[https://blog.simos.info/running-x11-software-in-lxd-containers/]
+
 
 ## LXD and ROS2 installation 
 1. Started with [blog by ubuntu](https://canonical.com/blog/install-ros-2-humble-in-ubuntu-20-04-or-18-04-using-lxd-containers)
@@ -29,6 +98,7 @@ I wanted to try if we can use lxd containers for running the appropriate ubuntu 
     - inside the container 'export DISPLAY=:0' in the bash (also added in bashrc)
     - now gui is running 
     - ```$> ros2 run turtlesim turtlesim_node```
+
 
 
 
