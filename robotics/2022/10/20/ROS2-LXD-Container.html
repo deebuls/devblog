@@ -121,7 +121,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      1 min read
+      3 min read
     
 </span></p>
 
@@ -140,6 +140,7 @@ window.onload = wrap_img;
     <ul class="section-nav">
 <li class="toc-entry toc-h1"><a href="#ros2-in-lxd-container">ROS2 in Lxd container</a>
 <ul>
+<li class="toc-entry toc-h2"><a href="#lxd-start-easy-steps">LXD start easy steps</a></li>
 <li class="toc-entry toc-h2"><a href="#lxd-and-ros2-installation">LXD and ROS2 installation</a></li>
 <li class="toc-entry toc-h2"><a href="#comman-commands-to-get-started-with-lxc-development">Comman Commands to get started with lxc development</a></li>
 <li class="toc-entry toc-h2"><a href="#appendix">Appendix</a></li>
@@ -150,6 +151,85 @@ window.onload = wrap_img;
 
 <p>Its always dificult to get the appropriate ubuntu version for a running a particular software. For example, currently I have ubuntu 20.04 and I want to test a software in ros2 humble. Humble requires ubuntu version 22.04.
 I wanted to try if we can use lxd containers for running the appropriate ubuntu version and installing ros in those.</p>
+
+<h2 id="lxd-start-easy-steps">
+<a class="anchor" href="#lxd-start-easy-steps" aria-hidden="true"><span class="octicon octicon-link"></span></a>LXD start easy steps</h2>
+
+<ol>
+  <li>Install lxd in your ubuntu (Using snap)</li>
+  <li>Use Lxc to  make sure its  without sudo</li>
+  <li>For using gui inside the container we eed to attach profiles to the container.</li>
+  <li>Create a profile using the following command
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>$ lxc profile create x11
+Profile x11 created
+</code></pre></div>    </div>
+  </li>
+  <li>Edit the profile with the following command
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>$ lxc profile edit x11
+</code></pre></div>    </div>
+  </li>
+  <li>Copy paste below in the editor below
+```
+config:
+  environment.DISPLAY: :0
+  environment.PULSE_SERVER: unix:/home/ubuntu/pulse-native
+  nvidia.driver.capabilities: all
+  nvidia.runtime: “true”
+  user.user-data: |
+ #cloud-config
+ runcmd:
+    <ul>
+      <li>‘sed -i “s/; enable-shm = yes/enable-shm = no/g” /etc/pulse/client.conf’
+ packages:</li>
+      <li>x11-apps</li>
+      <li>mesa-utils</li>
+      <li>pulseaudio
+description: GUI LXD profile
+devices:
+  PASocket1:
+ bind: container
+ connect: unix:/run/user/1000/pulse/native
+ listen: unix:/home/ubuntu/pulse-native
+ security.gid: “1000”
+ security.uid: “1000”
+ uid: “1000”
+ gid: “1000”
+ mode: “0777”
+ type: proxy
+  X0:
+ bind: container
+ connect: unix:@/tmp/.X11-unix/X1
+ listen: unix:@/tmp/.X11-unix/X0
+ security.gid: “1000”
+ security.uid: “1000”
+ type: proxy
+  mygpu:
+ type: gpu
+name: x11
+used_by: []
+```</li>
+    </ul>
+  </li>
+  <li>In the above file check the line <code class="highlighter-rouge">connect: unix:@/tmp/.X11-unix/X1</code> This depends on how your local machine DISPLAY is set. If your local machine DISPLAY is at X1 replace there with X0.</li>
+  <li>To check your local machine display<code class="highlighter-rouge">echo $DISPLAY</code>.</li>
+  <li>Now lets create a container with the profile
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>lxc launch ubuntu:22.04 --profile default --profile x11 mycontainer
+</code></pre></div>    </div>
+  </li>
+  <li>To get a shell in the container, run the following.
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>$ lxc exec mycontainer -- sudo --user ubuntu --login
+mycontainer $ sudo apt install xclock 
+mycontainer $ export DISPLAY=:0  #Add this in bashrc
+mycontainer $ xclock
+</code></pre></div>    </div>
+  </li>
+  <li>The above command will open the xclock in GUI . If the GUI doesnt come then check your local DISPLAY and the DISPLAY inside the container.</li>
+  <li>Complete blog with explanation on the process is provided by (Simos)[https://blog.simos.info/running-x11-software-in-lxd-containers/]</li>
+</ol>
 
 <h2 id="lxd-and-ros2-installation">
 <a class="anchor" href="#lxd-and-ros2-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>LXD and ROS2 installation</h2>
