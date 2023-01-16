@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2023-01-13T02:47:13-06:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Migrating Kelo Tulip to ROS2</title><link href="https://deebuls.github.io/devblog/robotics/ros2/2023/01/13/Migration-ROS-Kelo-Tulip-ROS2.html" rel="alternate" type="text/html" title="Migrating Kelo Tulip to ROS2" /><published>2023-01-13T00:00:00-06:00</published><updated>2023-01-13T00:00:00-06:00</updated><id>https://deebuls.github.io/devblog/robotics/ros2/2023/01/13/Migration-ROS-Kelo-Tulip-ROS2</id><content type="html" xml:base="https://deebuls.github.io/devblog/robotics/ros2/2023/01/13/Migration-ROS-Kelo-Tulip-ROS2.html"><![CDATA[<h1 id="migration-of-ros2">Migration of ROS2</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://deebuls.github.io/devblog/feed.xml" rel="self" type="application/atom+xml" /><link href="https://deebuls.github.io/devblog/" rel="alternate" type="text/html" /><updated>2023-01-16T05:09:35-06:00</updated><id>https://deebuls.github.io/devblog/feed.xml</id><title type="html">Deebul Nair</title><subtitle>Learning about learnings</subtitle><entry><title type="html">Migrating Kelo Tulip to ROS2</title><link href="https://deebuls.github.io/devblog/robotics/ros2/2023/01/13/Migration-ROS-Kelo-Tulip-ROS2.html" rel="alternate" type="text/html" title="Migrating Kelo Tulip to ROS2" /><published>2023-01-13T00:00:00-06:00</published><updated>2023-01-13T00:00:00-06:00</updated><id>https://deebuls.github.io/devblog/robotics/ros2/2023/01/13/Migration-ROS-Kelo-Tulip-ROS2</id><content type="html" xml:base="https://deebuls.github.io/devblog/robotics/ros2/2023/01/13/Migration-ROS-Kelo-Tulip-ROS2.html"><![CDATA[<h1 id="migration-of-ros2">Migration of ROS2</h1>
 
 <ol>
   <li>As per the blog the migration steps are (ROS2 migration guide)[https://docs.ros.org/en/foxy/The-ROS2-Project/Contributing/Migration-Guide.html]
@@ -10,8 +10,38 @@
       <li>Update source code</li>
     </ul>
   </li>
-  <li>Step 1 : Package manifests</li>
-</ol>]]></content><author><name></name></author><category term="robotics" /><category term="ros2" /><summary type="html"><![CDATA[Migrating Kelo Tulip to ROS2]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.kelo-robotics.com/wp-content/uploads/2021/04/KELO_Drives_2_cropped.jpg" /><media:content medium="image" url="https://www.kelo-robotics.com/wp-content/uploads/2021/04/KELO_Drives_2_cropped.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dis-entaglement of Epistemic and Aleatoric uncertainty for Dirichlet Distribution</title><link href="https://deebuls.github.io/devblog/statistics/uncertainty/2022/12/19/dirichlet-disentanglement-epistemic-aleatoric-evidential.html" rel="alternate" type="text/html" title="Dis-entaglement of Epistemic and Aleatoric uncertainty for Dirichlet Distribution" /><published>2022-12-19T00:00:00-06:00</published><updated>2022-12-19T00:00:00-06:00</updated><id>https://deebuls.github.io/devblog/statistics/uncertainty/2022/12/19/dirichlet-disentanglement-epistemic-aleatoric-evidential</id><content type="html" xml:base="https://deebuls.github.io/devblog/statistics/uncertainty/2022/12/19/dirichlet-disentanglement-epistemic-aleatoric-evidential.html"><![CDATA[<!--
+  <li>
+    <p>Step 1 : Package manifests</p>
+  </li>
+  <li>Migration Gazebo
+    <ul>
+      <li>https://github.com/ros-simulation/gazebo_ros_pkgs/wiki</li>
+    </ul>
+  </li>
+  <li>Messages
+    <ul>
+      <li>For messages and services replace the message using the formulation below</li>
+      <li><code class="highlighter-rouge">#include &lt;sensor_msgs/JointState.hpp&gt;</code> ➡️ <code class="highlighter-rouge">#include &lt;sensor_msgs/msg/joint_state.hpp&gt;</code></li>
+      <li><code class="highlighter-rouge">#include &lt;nav_msgs/Odometry.hpp&gt;</code> ➡️ <code class="highlighter-rouge">#include &lt;nav_msgs/msg/odometry.hpp&gt;</code></li>
+      <li>You add the msg and in small letters</li>
+    </ul>
+  </li>
+  <li>Main.cpp
+    <ul>
+      <li><code class="highlighter-rouge">#include "ros/ros.h" </code> ▶️ <code class="highlighter-rouge">#include "rclcpp/rclcpp.hpp"</code></li>
+    </ul>
+  </li>
+  <li>Launching robot in Gazebo : Error model visalization
+```
+For ROS2 usage, by changing the following in any of the cameras’ urdf file</li>
+</ol>
+<mesh filename="package://realsense2_description/meshes/d415.stl" />
+
+<p>into</p>
+<mesh filename="file://$(find realsense2_description)/meshes/d415.stl" />
+
+<p>will resolve the issue, as it will evaluate to the full path when xacro generates the URDF.
+```</p>]]></content><author><name></name></author><category term="robotics" /><category term="ros2" /><summary type="html"><![CDATA[Migrating Kelo Tulip to ROS2]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://www.kelo-robotics.com/wp-content/uploads/2021/04/KELO_Drives_2_cropped.jpg" /><media:content medium="image" url="https://www.kelo-robotics.com/wp-content/uploads/2021/04/KELO_Drives_2_cropped.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Dis-entaglement of Epistemic and Aleatoric uncertainty for Dirichlet Distribution</title><link href="https://deebuls.github.io/devblog/statistics/uncertainty/2022/12/19/dirichlet-disentanglement-epistemic-aleatoric-evidential.html" rel="alternate" type="text/html" title="Dis-entaglement of Epistemic and Aleatoric uncertainty for Dirichlet Distribution" /><published>2022-12-19T00:00:00-06:00</published><updated>2022-12-19T00:00:00-06:00</updated><id>https://deebuls.github.io/devblog/statistics/uncertainty/2022/12/19/dirichlet-disentanglement-epistemic-aleatoric-evidential</id><content type="html" xml:base="https://deebuls.github.io/devblog/statistics/uncertainty/2022/12/19/dirichlet-disentanglement-epistemic-aleatoric-evidential.html"><![CDATA[<!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################

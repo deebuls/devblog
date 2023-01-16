@@ -155,8 +155,44 @@ window.onload = wrap_img;
       <li>Update source code</li>
     </ul>
   </li>
-  <li>Step 1 : Package manifests</li>
+  <li>
+    <p>Step 1 : Package manifests</p>
+  </li>
+  <li>Migration Gazebo
+    <ul>
+      <li>https://github.com/ros-simulation/gazebo_ros_pkgs/wiki</li>
+    </ul>
+  </li>
+  <li>Messages
+    <ul>
+      <li>For messages and services replace the message using the formulation below</li>
+      <li>
+<code class="highlighter-rouge">#include &lt;sensor_msgs/JointState.hpp&gt;</code> ➡️ <code class="highlighter-rouge">#include &lt;sensor_msgs/msg/joint_state.hpp&gt;</code>
+</li>
+      <li>
+<code class="highlighter-rouge">#include &lt;nav_msgs/Odometry.hpp&gt;</code> ➡️ <code class="highlighter-rouge">#include &lt;nav_msgs/msg/odometry.hpp&gt;</code>
+</li>
+      <li>You add the msg and in small letters</li>
+    </ul>
+  </li>
+  <li>Main.cpp
+    <ul>
+      <li>
+<code class="highlighter-rouge">#include "ros/ros.h" </code> ▶️ <code class="highlighter-rouge">#include "rclcpp/rclcpp.hpp"</code>
+</li>
+    </ul>
+  </li>
+  <li>Launching robot in Gazebo : Error model visalization
+```
+For ROS2 usage, by changing the following in any of the cameras’ urdf file</li>
 </ol>
+<mesh filename="package://realsense2_description/meshes/d415.stl"></mesh>
+
+<p>into</p>
+<mesh filename="file://$(find realsense2_description)/meshes/d415.stl"></mesh>
+
+<p>will resolve the issue, as it will evaluate to the full path when xacro generates the URDF.
+```</p>
 
 
   </div><a class="u-url" href="/devblog/robotics/ros2/2023/01/13/Migration-ROS-Kelo-Tulip-ROS2.html" hidden></a>
