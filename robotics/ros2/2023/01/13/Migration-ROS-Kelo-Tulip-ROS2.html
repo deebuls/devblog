@@ -141,7 +141,11 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
-<li class="toc-entry toc-h1"><a href="#migration-of-ros2">Migration of ROS2</a></li>
+<li class="toc-entry toc-h1"><a href="#migration-of-ros2">Migration of ROS2</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#errors">Errors</a></li>
+</ul>
+</li>
 </ul><h1 id="migration-of-ros2">
 <a class="anchor" href="#migration-of-ros2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Migration of ROS2</h1>
 
@@ -203,6 +207,18 @@ For ROS2 usage, by changing the following in any of the cameras’ urdf file</li
       <li>Also the paraeter to initialize it is different</li>
       <li>Check the github <a href="https://github.com/ros-simulation/gazebo_ros_pkgs/issues/1266#issuecomment-826249858">issue</a> for proper initialization</li>
       <li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="errors">
+<a class="anchor" href="#errors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Errors</h2>
+<ol>
+  <li>Starting gazebo in the launch file gives “camera assertion error “
+    <ul>
+      <li>The solution is to source Gazebo’s setup file, i.e.: <code class="highlighter-rouge">. /usr/share/gazebo/setup.sh</code>
+</li>
+      <li>https://answers.gazebosim.org//question/28066/is-libgazebo_ros_multicameraso-deprecated/</li>
     </ul>
   </li>
 </ol>
