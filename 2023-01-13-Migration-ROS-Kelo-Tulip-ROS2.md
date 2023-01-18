@@ -39,4 +39,10 @@ into
 will resolve the issue, as it will evaluate to the full path when xacro generates the URDF.
 ```
 
-   
+8. Adding laser scanner in gazebo . Errors
+    * Used the xacro method from ros1 
+    * xacro method works but plugins have changed 
+    * libgazebo_ros_laser.so is now changed to ➡️ libgazebo_ros_ray_sensor.so
+    * Also the paraeter to initialize it is different 
+    * Check the github [issue](https://github.com/ros-simulation/gazebo_ros_pkgs/issues/1266#issuecomment-826249858) for proper initialization
+    * 
