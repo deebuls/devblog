@@ -46,6 +46,21 @@ will resolve the issue, as it will evaluate to the full path when xacro generate
     * Also the paraeter to initialize it is different 
     * Check the github [issue](https://github.com/ros-simulation/gazebo_ros_pkgs/issues/1266#issuecomment-826249858) for proper initialization
     * 
+9. Ros2 node with both cpp and python then do the following 
+ 
+    * I have a mixed C++/Python package. To install a Python executable in this package, I've found it sufficient to do this:
+    * Add the Python source file to my_package/scripts
+    * Add this line at the top of ^that file: #!/usr/bin/env python3
+    * Make it executable with chmod +x
+    * Add an empty __init__.py file in my_package/scripts
+    * Add this to CMakeLists:
+```
+install(PROGRAMS  
+  scripts/my_python_file.py  
+  DESTINATION lib/${PROJECT_NAME} )
+  
+```
+    * from https://answers.ros.org/question/299269/ros2-run-python-executable-not-found/
 
 ## Errors 
 1. Starting gazebo in the launch file gives "camera assertion error "
