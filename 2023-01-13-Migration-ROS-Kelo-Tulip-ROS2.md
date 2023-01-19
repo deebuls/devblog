@@ -51,3 +51,4 @@ will resolve the issue, as it will evaluate to the full path when xacro generate
 1. Starting gazebo in the launch file gives "camera assertion error "
     * The solution is to source Gazebo's setup file, i.e.: ```. /usr/share/gazebo/setup.sh```
     * https://answers.gazebosim.org//question/28066/is-libgazebo_ros_multicameraso-deprecated/
+    * ``` echo "source /usr/share/gazebo/setup.bash" >> ~/.bashrc ``` ▶️ for persistence 
