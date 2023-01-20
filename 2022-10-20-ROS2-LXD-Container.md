@@ -136,3 +136,45 @@ History of comands used insde the container, after logging
 9  sudo apt update
 10  sudo apt install ros-humble-desktop
 ```
+
+
+## Additional: Noetic in Lxc
+1. Steps in the host computer to dowload and start and login to the machine
+
+```
+$ lxc launch images:ubuntu/20.04 noetic
+Creating noetic
+Starting noetic  
+$ lxc list
++------------+---------+----------------------+----------------------------------------------+-----------+-----------+
+|    NAME    |  STATE  |         IPV4         |                     IPV6                     |   TYPE    | SNAPSHOTS |
++------------+---------+----------------------+----------------------------------------------+-----------+-----------+
+| noetic     | RUNNING | 10.171.226.67 (eth0) | fd42:13f7:78ed:7795:216:3eff:fe25:30f (eth0) | CONTAINER | 0         |
++------------+---------+----------------------+----------------------------------------------+-----------+-----------+
+$ lxc exec noetic -- su --login ubuntu
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntu@noetic:~$ 
+
+```
+
+2. For the GUI you have to stop and attach profiel
+```
+ubuntu@noetic:~$  exit
+$ lxc stop noetic
+$ lxc profile assign noetic default,gui #or whatever name is given to profile. Check above on how to create profile
+$ lxc start noetic
+ubuntu@noetic:~$ sudo apt install x11-apps
+ubuntu@noetic:~$ xclock #should display the clock if not then check the DISPLAY value in both host and container
+``
+4. Steps in the the container for installing ros and graphics
+```
+# Follow the ros noetic page 
+Additional before adding keys install gpg 
+
+sudo apt install gpg
+
+```
+
+You have a working ubuntu noetic container with ros noetic.
