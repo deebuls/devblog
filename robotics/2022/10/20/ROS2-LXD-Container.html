@@ -121,7 +121,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      3 min read
+      4 min read
     
 </span></p>
 
@@ -144,8 +144,10 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#lxd-and-ros2-installation">LXD and ROS2 installation</a></li>
 <li class="toc-entry toc-h2"><a href="#comman-commands-to-get-started-with-lxc-development">Comman Commands to get started with lxc development</a></li>
 <li class="toc-entry toc-h2"><a href="#appendix">Appendix</a></li>
+<li class="toc-entry toc-h2"><a href="#additional-noetic-in-lxc">Additional: Noetic in Lxc</a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h1"><a href="#follow-the-ros-noetic-page">Follow the ros noetic page</a></li>
 </ul><h1 id="ros2-in-lxd-container">
 <a class="anchor" href="#ros2-in-lxd-container" aria-hidden="true"><span class="octicon octicon-link"></span></a>ROS2 in Lxd container</h1>
 
@@ -296,6 +298,53 @@ ubuntu@ubuntu-container:~$
 9  sudo apt update
 10  sudo apt install ros-humble-desktop
 </code></pre></div></div>
+
+<h2 id="additional-noetic-in-lxc">
+<a class="anchor" href="#additional-noetic-in-lxc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional: Noetic in Lxc</h2>
+<ol>
+  <li>Steps in the host computer to dowload and start and login to the machine</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ lxc launch images:ubuntu/20.04 noetic
+Creating noetic
+Starting noetic  
+$ lxc list
++------------+---------+----------------------+----------------------------------------------+-----------+-----------+
+|    NAME    |  STATE  |         IPV4         |                     IPV6                     |   TYPE    | SNAPSHOTS |
++------------+---------+----------------------+----------------------------------------------+-----------+-----------+
+| noetic     | RUNNING | 10.171.226.67 (eth0) | fd42:13f7:78ed:7795:216:3eff:fe25:30f (eth0) | CONTAINER | 0         |
++------------+---------+----------------------+----------------------------------------------+-----------+-----------+
+$ lxc exec noetic -- su --login ubuntu
+To run a command as administrator (user "root"), use "sudo &lt;command&gt;".
+See "man sudo_root" for details.
+
+ubuntu@noetic:~$ 
+
+</code></pre></div></div>
+
+<ol>
+  <li>For the GUI you have to stop and attach profiel
+```
+ubuntu@noetic:~$  exit
+$ lxc stop noetic
+$ lxc profile assign noetic default,gui #or whatever name is given to profile. Check above on how to create profile
+$ lxc start noetic
+ubuntu@noetic:~$ sudo apt install x11-apps
+ubuntu@noetic:~$ xclock #should display the clock if not then check the DISPLAY value in both host and container
+``</li>
+  <li>Steps in the the container for installing ros and graphics
+```
+    <h1 id="follow-the-ros-noetic-page">
+<a class="anchor" href="#follow-the-ros-noetic-page" aria-hidden="true"><span class="octicon octicon-link"></span></a>Follow the ros noetic page</h1>
+    <p>Additional before adding keys install gpg</p>
+  </li>
+</ol>
+
+<p>sudo apt install gpg</p>
+
+<p>```</p>
+
+<p>You have a working ubuntu noetic container with ros noetic.</p>
 
   </div><a class="u-url" href="/devblog/robotics/2022/10/20/ROS2-LXD-Container.html" hidden></a>
 </article>
