@@ -144,10 +144,9 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#lxd-and-ros2-installation">LXD and ROS2 installation</a></li>
 <li class="toc-entry toc-h2"><a href="#comman-commands-to-get-started-with-lxc-development">Comman Commands to get started with lxc development</a></li>
 <li class="toc-entry toc-h2"><a href="#appendix">Appendix</a></li>
-<li class="toc-entry toc-h2"><a href="#additional-noetic-in-lxc">Additional: Noetic in Lxc</a></li>
+<li class="toc-entry toc-h2"><a href="#additional-noetic-in-lxc">Additional: Noetic in LXC</a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h1"><a href="#follow-the-ros-noetic-page">Follow the ros noetic page</a></li>
 </ul><h1 id="ros2-in-lxd-container">
 <a class="anchor" href="#ros2-in-lxd-container" aria-hidden="true"><span class="octicon octicon-link"></span></a>ROS2 in Lxd container</h1>
 
@@ -160,7 +159,7 @@ I wanted to try if we can use lxd containers for running the appropriate ubuntu 
 <ol>
   <li>Install lxd in your ubuntu (Using snap)</li>
   <li>Use Lxc to  make sure its  without sudo</li>
-  <li>For using gui inside the container we eed to attach profiles to the container.</li>
+  <li>For using gui inside the container we need to attach profiles to the container.</li>
   <li>Create a profile using the following command
     <div class="highlighter-rouge">
 <div class="highlight"><pre class="highlight"><code>$ lxc profile create x11
@@ -172,53 +171,53 @@ Profile x11 created
 <div class="highlight"><pre class="highlight"><code>$ lxc profile edit x11
 </code></pre></div>    </div>
   </li>
-  <li>Copy paste below in the editor below
-```
-config:
-  environment.DISPLAY: :0
-  environment.PULSE_SERVER: unix:/home/ubuntu/pulse-native
-  nvidia.driver.capabilities: all
-  nvidia.runtime: “true”
-  user.user-data: |
- #cloud-config
- runcmd:
-    <ul>
-      <li>‘sed -i “s/; enable-shm = yes/enable-shm = no/g” /etc/pulse/client.conf’
- packages:</li>
-      <li>x11-apps</li>
-      <li>mesa-utils</li>
-      <li>pulseaudio
-description: GUI LXD profile
-devices:
-  PASocket1:
- bind: container
- connect: unix:/run/user/1000/pulse/native
- listen: unix:/home/ubuntu/pulse-native
- security.gid: “1000”
- security.uid: “1000”
- uid: “1000”
- gid: “1000”
- mode: “0777”
- type: proxy
-  X0:
- bind: container
- connect: unix:@/tmp/.X11-unix/X1
- listen: unix:@/tmp/.X11-unix/X0
- security.gid: “1000”
- security.uid: “1000”
- type: proxy
-  mygpu:
- type: gpu
-name: x11
-used_by: []
-```</li>
-    </ul>
-  </li>
+  <li>Copy paste below in the editor below</li>
+</ol>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">config</span><span class="pi">:</span>
+  <span class="s">environment.DISPLAY</span><span class="pi">:</span> <span class="s">:0</span>
+  <span class="s">environment.PULSE_SERVER</span><span class="pi">:</span> <span class="s">unix:/home/ubuntu/pulse-native</span>
+  <span class="s">nvidia.driver.capabilities</span><span class="pi">:</span> <span class="s">all</span>
+  <span class="s">nvidia.runtime</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
+  <span class="s">user.user-data</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">#cloud-config</span>
+    <span class="s">runcmd:</span>
+      <span class="s">- 'sed -i "s/; enable-shm = yes/enable-shm = no/g" /etc/pulse/client.conf'</span>
+    <span class="s">packages:</span>
+      <span class="s">- x11-apps</span>
+      <span class="s">- mesa-utils</span>
+      <span class="s">- pulseaudio</span>
+<span class="na">description</span><span class="pi">:</span> <span class="s">GUI LXD profile</span>
+<span class="na">devices</span><span class="pi">:</span>
+  <span class="na">PASocket1</span><span class="pi">:</span>
+    <span class="na">bind</span><span class="pi">:</span> <span class="s">container</span>
+    <span class="na">connect</span><span class="pi">:</span> <span class="s">unix:/run/user/1000/pulse/native</span>
+    <span class="na">listen</span><span class="pi">:</span> <span class="s">unix:/home/ubuntu/pulse-native</span>
+    <span class="s">security.gid</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1000"</span>
+    <span class="s">security.uid</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1000"</span>
+    <span class="na">uid</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1000"</span>
+    <span class="na">gid</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1000"</span>
+    <span class="na">mode</span><span class="pi">:</span> <span class="s2">"</span><span class="s">0777"</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">proxy</span>
+  <span class="na">X0</span><span class="pi">:</span>
+    <span class="na">bind</span><span class="pi">:</span> <span class="s">container</span>
+    <span class="na">connect</span><span class="pi">:</span> <span class="s">unix:@/tmp/.X11-unix/X1</span>
+    <span class="na">listen</span><span class="pi">:</span> <span class="s">unix:@/tmp/.X11-unix/X0</span>
+    <span class="s">security.gid</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1000"</span>
+    <span class="s">security.uid</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1000"</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">proxy</span>
+  <span class="na">mygpu</span><span class="pi">:</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">gpu</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">x11</span>
+<span class="na">used_by</span><span class="pi">:</span> <span class="pi">[]</span>
+</code></pre></div></div>
+
+<ol>
   <li>In the above file check the line <code class="highlighter-rouge">connect: unix:@/tmp/.X11-unix/X1</code> This depends on how your local machine DISPLAY is set. If your local machine DISPLAY is at X1 replace there with X0.</li>
   <li>To check your local machine display<code class="highlighter-rouge">echo $DISPLAY</code>.</li>
   <li>Now lets create a container with the profile
-    <div class="highlighter-rouge">
-<div class="highlight"><pre class="highlight"><code>lxc launch ubuntu:22.04 --profile default --profile x11 mycontainer
+    <div class="language-bash highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>lxc launch ubuntu:22.04 <span class="nt">--profile</span> default <span class="nt">--profile</span> x11 mycontainer
 </code></pre></div>    </div>
   </li>
   <li>To get a shell in the container, run the following.
@@ -300,9 +299,9 @@ ubuntu@ubuntu-container:~$
 </code></pre></div></div>
 
 <h2 id="additional-noetic-in-lxc">
-<a class="anchor" href="#additional-noetic-in-lxc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional: Noetic in Lxc</h2>
+<a class="anchor" href="#additional-noetic-in-lxc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Additional: Noetic in LXC</h2>
 <ol>
-  <li>Steps in the host computer to dowload and start and login to the machine</li>
+  <li>Steps in the host computer to dowload ubuntu 20  and login to the virtual machine</li>
 </ol>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ lxc launch images:ubuntu/20.04 noetic
@@ -323,21 +322,20 @@ ubuntu@noetic:~$
 </code></pre></div></div>
 
 <ol>
-  <li>For the GUI you have to stop and attach profiel
-```
-ubuntu@noetic:~$  exit
+  <li>For the GUI you have to stop and attach profile read above about creating a profile names x11
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>ubuntu@noetic:~$  exit
 $ lxc stop noetic
-$ lxc profile assign noetic default,gui #or whatever name is given to profile. Check above on how to create profile
+$ lxc profile assign noetic default,x11 #or whatever name is given to profile. Check above on how to create profile
 $ lxc start noetic
 ubuntu@noetic:~$ sudo apt install x11-apps
 ubuntu@noetic:~$ xclock #should display the clock if not then check the DISPLAY value in both host and container
-``</li>
-  <li>Steps in the the container for installing ros and graphics
-```
-    <h1 id="follow-the-ros-noetic-page">
-<a class="anchor" href="#follow-the-ros-noetic-page" aria-hidden="true"><span class="octicon octicon-link"></span></a>Follow the ros noetic page</h1>
-    <p>Additional before adding keys install gpg</p>
+</code></pre></div>    </div>
   </li>
+  <li>Steps in the the container for installing ros and graphics
+```bash
+// Follow the ros noetic page 
+// Additional before adding keys install gpg</li>
 </ol>
 
 <p>sudo apt install gpg</p>
