@@ -17,7 +17,7 @@ I wanted to try if we can use lxd containers for running the appropriate ubuntu 
 
 1. Install lxd in your ubuntu (Using snap)
 2. Use Lxc to  make sure its  without sudo 
-3. For using gui inside the container we eed to attach profiles to the container.
+3. For using gui inside the container we need to attach profiles to the container.
 4. Create a profile using the following command 
 ```
 $ lxc profile create x11
@@ -28,7 +28,8 @@ Profile x11 created
 $ lxc profile edit x11
 ```
 6. Copy paste below in the editor below
-```
+
+```yaml
 config:
   environment.DISPLAY: :0
   environment.PULSE_SERVER: unix:/home/ubuntu/pulse-native
@@ -66,10 +67,11 @@ devices:
 name: x11
 used_by: []
 ```
+
 7. In the above file check the line ```connect: unix:@/tmp/.X11-unix/X1``` This depends on how your local machine DISPLAY is set. If your local machine DISPLAY is at X1 replace there with X0.
 8. To check your local machine display```echo $DISPLAY ```.
 9. Now lets create a container with the profile
-```
+```bash
 lxc launch ubuntu:22.04 --profile default --profile x11 mycontainer
 ```
 9. To get a shell in the container, run the following.
@@ -138,8 +140,8 @@ History of comands used insde the container, after logging
 ```
 
 
-## Additional: Noetic in Lxc
-1. Steps in the host computer to dowload and start and login to the machine
+## Additional: Noetic in LXC
+1. Steps in the host computer to dowload ubuntu 20  and login to the virtual machine
 
 ```
 $ lxc launch images:ubuntu/20.04 noetic
@@ -159,19 +161,19 @@ ubuntu@noetic:~$
 
 ```
 
-2. For the GUI you have to stop and attach profiel
+2. For the GUI you have to stop and attach profile read above about creating a profile names x11
 ```
 ubuntu@noetic:~$  exit
 $ lxc stop noetic
-$ lxc profile assign noetic default,gui #or whatever name is given to profile. Check above on how to create profile
+$ lxc profile assign noetic default,x11 #or whatever name is given to profile. Check above on how to create profile
 $ lxc start noetic
 ubuntu@noetic:~$ sudo apt install x11-apps
 ubuntu@noetic:~$ xclock #should display the clock if not then check the DISPLAY value in both host and container
-``
-4. Steps in the the container for installing ros and graphics
 ```
-# Follow the ros noetic page 
-Additional before adding keys install gpg 
+3. Steps in the the container for installing ros and graphics
+```bash
+// Follow the ros noetic page 
+// Additional before adding keys install gpg 
 
 sudo apt install gpg
 
