@@ -1,0 +1,37 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/posts/notebooks/2023-03-01-derivative-loss-functions.html",
+      "/posts/notebooks/2023-02-28-bhattacharya-distance-dirichlet-multinomial-distributions.html",
+      "/posts/markdown/2023-02-24-SAP-AI-Sustainability.html",
+      "/posts/notebooks/2023-02-14-cauchy-distribution-boxcox-gaussian.html",
+      "/posts/notebooks/2023-02-08-fibonacci-sequence-non-recursive-formula.html",
+      "/posts/notebooks/2023-01-26-error-correcting-output-codes-.html",
+      "/posts/notebooks/2023-01-26-general-loss-function-l2.html",
+      "/posts/notebooks/2023-01-22-generalized-normal-distirbution-uncertainty-regression-ouliers.html",
+      "/posts/notebooks/2023-01-17-exponential-power-distribution.html",
+      "/posts/notebooks/2023-01-17-quantize-dnn-model-pytorch.html",
+      "/posts/markdown/2023-01-13-Migration-ROS-Kelo-Tulip-ROS2.html",
+      "/posts/notebooks/2022-12-19-dirichlet-disentanglement-epistemic-aleatoric-evidential.html",
+      "/posts/notebooks/2022-12-15-comparing-normal-laplace-cacuhy-distirbutions-interval-score.html",
+      "/posts/markdown/2022-10-20-ROS2-LXD-Container.html",
+      "/posts/markdown/2022-06-25-Github-Action-Latex-Compilation.html",
+      "/posts/markdown/2022-05-13-LerningProbabilityForApplication.html",
+      "/posts/notebooks/2022-02-05-proper-scoring-interval-score-crps.html",
+      "/posts/notebooks/2022-01-11-pytroch-embedding-2d-visualization.html",
+      "/posts/notebooks/2021-09-21-robust-statistics.html",
+      "/posts/markdown/2021-08-08-Neurips-Competition-Uncertainty.html",
+      "/posts/markdown/2021-04-13-how-to-use-uncertainty-estimate-from-dnn.html",
+      "/posts/notebooks/2021-01-01-one-vs-all-classifier-revisiting.html",
+      "/posts/markdown/2020-07-22-Learning-DNN.html",
+      "/posts/markdown/2020-05-29-Explanation-DNN-Reliability.html",
+      "/posts/markdown/2020-05-29-Explanation-DNN-Uncertainty.html",
+      "/posts/notebooks/2020-05-27-uncertainty-regression.html",
+      "/posts/markdown/2020-05-21-Explanation-Learning-DatasetShift.html",
+      "/posts/notebooks/2020-05-19-probability-normalinversegamma.html",
+      "/posts/notebooks/2020-05-05-uncertainty-regression-robustness.html",
+      "/posts/notebooks/2020-03-20-probability-likelihood.html"
+    ]
+  }
+]

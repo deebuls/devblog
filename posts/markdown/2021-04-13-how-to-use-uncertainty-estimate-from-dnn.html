@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-04-13">
+<meta name="description" content="How to use uncertainty estimates from deep neural networks">
+
+<title>new-devblog - Using uncertainties in DNN application</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">new-devblog</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Using uncertainties in DNN application</h1>
+                  <div>
+        <div class="description">
+          How to use uncertainty estimates from deep neural networks
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">uncertainty</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 13, 2021</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#application-of-uncertainty-estimation-in-dnn" id="toc-application-of-uncertainty-estimation-in-dnn" class="nav-link active" data-scroll-target="#application-of-uncertainty-estimation-in-dnn">Application of Uncertainty Estimation in DNN</a>
+  <ul class="collapse">
+  <li><a href="#objective" id="toc-objective" class="nav-link" data-scroll-target="#objective">Objective</a></li>
+  <li><a href="#paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics" id="toc-paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics" class="nav-link" data-scroll-target="#paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics">Paper 1: Benchmarking uncertatinty estimation methods in Deep learning with Safety-Related Metrics</a>
+  <ul class="collapse">
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">Interpretation</a></li>
+  </ul></li>
+  <li><a href="#paper-2-fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring" id="toc-paper-2-fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring" class="nav-link" data-scroll-target="#paper-2-fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring">Paper 2 : Fail-Safe Execution of Deep learning based Systems through Uncertatiny Monitoring</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a>
+  <ul class="collapse">
+  <li><a href="#this-is-not-enough" id="toc-this-is-not-enough" class="nav-link" data-scroll-target="#this-is-not-enough">This is not enough</a></li>
+  <li><a href="#solutions" id="toc-solutions" class="nav-link" data-scroll-target="#solutions">Solutions</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="application-of-uncertainty-estimation-in-dnn" class="level1">
+<h1>Application of Uncertainty Estimation in DNN</h1>
+<section id="objective" class="level2">
+<h2 class="anchored" data-anchor-id="objective">Objective</h2>
+<p>We would like to look into two papers which have developed methodologies to use the uncertatiny estimated by the deep neural network(DNN) in their system. The goal is to find the pros and cons of these methodologies</p>
+</section>
+<section id="paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics" class="level2">
+<h2 class="anchored" data-anchor-id="paper-1-benchmarking-uncertatinty-estimation-methods-in-deep-learning-with-safety-related-metrics">Paper 1: Benchmarking uncertatinty estimation methods in Deep learning with Safety-Related Metrics</h2>
+<p>In this paper they propose two new Safety-Related Metrics: Remaining Error Rate(RER) and Remaining Accuracy Rate(Rate). Here is definition as per the paper: &gt; A system which relies on these estimates is expected to be in functional mode if the predictions are certain and in fall-back/mitigation mode if the prediction is uncertain. However, the most critical result regarding safety are the predictions where the model is certain about its prediction but incorrect (CI). We call the ratio of the number of certain but incorrect samples to all samples the Remaining Error Rate (RER). For minimizing the overall risk, it needs to be as low as possible. Nonetheless, if a model would always give a low confidence as output, the system would constantly remain in fall-back mode and will be unable to provide the intended functionality. Therefore, the ratio of the number of certain and correct samples to all samples - we call it the Remaining Accuracy Rate (RAR) - needs to be as high as possible to stay in performance mode for most of the time.</p>
+<section id="interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation">Interpretation</h3>
+<p>The predictions from the DNN are classified into 4 sections as below (Table 1 from paper)</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Certain</th>
+<th>Uncertain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Correct</td>
+<td><strong>CC</strong></td>
+<td><strong>UC</strong></td>
+</tr>
+<tr class="even">
+<td>Incorrect</td>
+<td><strong>CI</strong></td>
+<td><strong>UI</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The definition of the metrics are :</p>
+<p><span class="math inline">\(RER = \frac{CI}{CC+CI+UC+UI}\)</span> <span class="math inline">\(RAR = \frac{CC}{CC+CI+UC+UI}\)</span></p>
+<section id="pros" class="level4">
+<h4 class="anchored" data-anchor-id="pros">Pros</h4>
+<ul>
+<li>Its a very simple metric.</li>
+<li>Simplicity of metric is a very important thing for usability of metrics.</li>
+</ul>
+</section>
+<section id="cons" class="level4">
+<h4 class="anchored" data-anchor-id="cons">Cons</h4>
+<ul>
+<li>A minor issue will be on the threshold which seprates Certain vs Uncertain. Is it 99% or 90% etc. All will yield different results</li>
+<li>A major problem which we consider is the assumption in which the uncertatiny is being planned to be used in the system. &gt; <strong>A system which relies on these estimates is expected to be in functional mode if the predictions are certain and in fall-back/mitigation mode if the prediction is uncertain.</strong></li>
+<li>This means that the system has 2 modes
+<ul>
+<li>A functional mode</li>
+<li>A fall-back/mitigation mode</li>
+</ul></li>
+<li>Is this a safe assumption with regards to deployment of DNN?</li>
+<li>Can an application deploying DNN have 2 modes ?</li>
+<li>What should an autonomous car in fall-back mode do ?</li>
+</ul>
+<p>:bangbang: | The assumption on how a system uses uncertatiny is that the system has 2 modes functional and fall-back | :-: | :- |</p>
+</section>
+</section>
+</section>
+<section id="paper-2-fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring" class="level2">
+<h2 class="anchored" data-anchor-id="paper-2-fail-safe-execution-of-deep-learning-based-systems-through-uncertatiny-monitoring">Paper 2 : Fail-Safe Execution of Deep learning based Systems through Uncertatiny Monitoring</h2>
+<ul>
+<li><p>In this paper, as the title suggests they create a separate model called the <em>Supervisor Model</em> which will monitor the uncertainty of Deep learning and avoid any faults in the system</p></li>
+<li><p>What is a supervisor model : &gt; Network supervision can be viewed as a binary classification task: malicious samples, i.e., inputs which lead to a misclassification &gt; (for classification problems) or to severe imprecision (in regression problems) are positive samples that have to be rejected. Other samples, also called benign samples, are negative samples in the binary classification task. An uncertainty based supervisor accepts an input i as a benign sample if its uncertainty u(i) is lower than some threshold t. The choice of t is a crucial setting, as a high t will fail to reject many malicious samples (false negatives) and a low t will cause too many false alerts (false positives).</p></li>
+<li><p>Thus the supervisor is a binary classification task to avoid beningn samples. They also define a metric <em>S-Score</em> which combined measures the performance of both the model and the supervisor model</p></li>
+<li><p>There is lot of similarity with respect to the above paper here also</p></li>
+</ul>
+<section id="pros-1" class="level4">
+<h4 class="anchored" data-anchor-id="pros-1">Pros</h4>
+<ul>
+<li>They have made a library out of it such that any model can be used.</li>
+<li>The threshold on which to make the decission is now being learned by the data.</li>
+</ul>
+</section>
+<section id="cons-1" class="level4">
+<h4 class="anchored" data-anchor-id="cons-1">Cons</h4>
+<ul>
+<li>Again, these method is based on the assumption that the system which uses DNN has 2 modes of operation( normal mode and fall-back mode)</li>
+</ul>
+<p>:bangbang: | The same assumption on how a system uses uncertatiny, that the system has 2 modes functional and fall-back | :—: | :— |</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<ul>
+<li>All methods are based on the assumption that the system has 2 modes of operation</li>
+<li>The uncertatiny estimation is used to determine whethere the DNN output should be trusted or should be avoided</li>
+</ul>
+<section id="this-is-not-enough" class="level3">
+<h3 class="anchored" data-anchor-id="this-is-not-enough">This is not enough</h3>
+<ul>
+<li>The methods which use DNN dont have a fall back mode.
+<ul>
+<li>If there was an non DNN based method then by “First rule of Machine/Deep Learning” that will be used for solving the problem</li>
+</ul></li>
+<li>There can be argument to say that there are redundant DNN systems and this method can be used to kick-off redundant system
+<ul>
+<li>Even this argument is not valid as if you have redundant system, you should use all of them and make a decision</li>
+</ul></li>
+</ul>
+</section>
+<section id="solutions" class="level3">
+<h3 class="anchored" data-anchor-id="solutions">Solutions</h3>
+<ul>
+<li>The one solution which I have been workin is about not binarizing the probability but the propagating it through the system</li>
+<li>The best example is of the filters which have been developed over years to handle uncertain sensors.</li>
+</ul>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li><p>[1]M. Weiss and P. Tonella, “Fail-Safe Execution of Deep Learning based Systems through Uncertainty Monitoring,” arXiv:2102.00902 [cs], Feb.&nbsp;2021, Accessed: Apr.&nbsp;13, 2021. [Online]. Available: http://arxiv.org/abs/2102.00902.</p></li>
+<li><p>[2]M. Henne, A. Schwaiger, K. Roscher, and G. Weiss, “Benchmarking Uncertainty Estimation Methods for Deep Learning With Safety-Related Metrics,” p.&nbsp;8, 2020.</p></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

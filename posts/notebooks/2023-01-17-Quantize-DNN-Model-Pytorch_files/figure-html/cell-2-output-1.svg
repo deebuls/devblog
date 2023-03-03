@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="542pt" height="696pt" viewBox="0.00 0.00 541.50 696.00">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 692)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-692 537.5,-692 537.5,4 -4,4"/>
+<!-- PyTorch\nQuantisation Aware Training\nTorch model -->
+<g id="node1" class="node">
+<title>PyTorch\nQuantisation Aware Training\nTorch model</title>
+<polygon fill="none" stroke="black" points="173,-680.5 4,-680.5 0,-676.5 0,-627.5 169,-627.5 173,-631.5 173,-680.5"/>
+<polyline fill="none" stroke="black" points="169,-676.5 0,-676.5 "/>
+<polyline fill="none" stroke="black" points="169,-676.5 169,-627.5 "/>
+<polyline fill="none" stroke="black" points="169,-676.5 173,-680.5 "/>
+<text text-anchor="middle" x="86.5" y="-665.3" font-family="Times,serif" font-size="14.00">PyTorch</text>
+<text text-anchor="middle" x="86.5" y="-650.3" font-family="Times,serif" font-size="14.00">Quantisation Aware Training</text>
+<text text-anchor="middle" x="86.5" y="-635.3" font-family="Times,serif" font-size="14.00">Torch model</text>
+</g>
+<!-- ONNX model -->
+<g id="node4" class="node">
+<title>ONNX model</title>
+<polygon fill="none" stroke="black" points="319.5,-569 225.5,-569 225.5,-475 319.5,-475 319.5,-569"/>
+<text text-anchor="middle" x="272.5" y="-518.3" font-family="Times,serif" font-size="14.00">ONNX model</text>
+</g>
+<!-- PyTorch\nQuantisation Aware Training\nTorch model&#45;&gt;ONNX model -->
+<g id="edge1" class="edge">
+<title>PyTorch\nQuantisation Aware Training\nTorch model-&gt;ONNX model</title>
+<path fill="none" stroke="black" d="M123.25,-627.32C149.96,-608.65 186.58,-583.05 216.87,-561.88"/>
+<polygon fill="black" stroke="black" points="219.03,-564.64 225.23,-556.04 215.02,-558.9 219.03,-564.64"/>
+<text text-anchor="middle" x="208" y="-590.8" font-family="Times,serif" font-size="14.00">Torch API</text>
+</g>
+<!-- PyTorch\nPost Training Quantisation\n(Dynamic/Weight only)\nTorch model -->
+<g id="node2" class="node">
+<title>PyTorch\nPost Training Quantisation\n(Dynamic/Weight only)\nTorch model</title>
+<polygon fill="none" stroke="black" points="353.5,-688 195.5,-688 191.5,-684 191.5,-620 349.5,-620 353.5,-624 353.5,-688"/>
+<polyline fill="none" stroke="black" points="349.5,-684 191.5,-684 "/>
+<polyline fill="none" stroke="black" points="349.5,-684 349.5,-620 "/>
+<polyline fill="none" stroke="black" points="349.5,-684 353.5,-688 "/>
+<text text-anchor="middle" x="272.5" y="-672.8" font-family="Times,serif" font-size="14.00">PyTorch</text>
+<text text-anchor="middle" x="272.5" y="-657.8" font-family="Times,serif" font-size="14.00">Post Training Quantisation</text>
+<text text-anchor="middle" x="272.5" y="-642.8" font-family="Times,serif" font-size="14.00">(Dynamic/Weight only)</text>
+<text text-anchor="middle" x="272.5" y="-627.8" font-family="Times,serif" font-size="14.00">Torch model</text>
+</g>
+<!-- PyTorch\nPost Training Quantisation\n(Dynamic/Weight only)\nTorch model&#45;&gt;ONNX model -->
+<g id="edge2" class="edge">
+<title>PyTorch\nPost Training Quantisation\n(Dynamic/Weight only)\nTorch model-&gt;ONNX model</title>
+<path fill="none" stroke="black" d="M272.5,-619.86C272.5,-607.63 272.5,-593.4 272.5,-579.68"/>
+<polygon fill="black" stroke="black" points="276,-579.32 272.5,-569.32 269,-579.32 276,-579.32"/>
+<text text-anchor="middle" x="301" y="-590.8" font-family="Times,serif" font-size="14.00">Torch API</text>
+</g>
+<!-- PyTorch\nPost Training Quantisation\n(Static)\nTorch model -->
+<g id="node3" class="node">
+<title>PyTorch\nPost Training Quantisation\n(Static)\nTorch model</title>
+<polygon fill="none" stroke="black" points="533.5,-688 375.5,-688 371.5,-684 371.5,-620 529.5,-620 533.5,-624 533.5,-688"/>
+<polyline fill="none" stroke="black" points="529.5,-684 371.5,-684 "/>
+<polyline fill="none" stroke="black" points="529.5,-684 529.5,-620 "/>
+<polyline fill="none" stroke="black" points="529.5,-684 533.5,-688 "/>
+<text text-anchor="middle" x="452.5" y="-672.8" font-family="Times,serif" font-size="14.00">PyTorch</text>
+<text text-anchor="middle" x="452.5" y="-657.8" font-family="Times,serif" font-size="14.00">Post Training Quantisation</text>
+<text text-anchor="middle" x="452.5" y="-642.8" font-family="Times,serif" font-size="14.00">(Static)</text>
+<text text-anchor="middle" x="452.5" y="-627.8" font-family="Times,serif" font-size="14.00">Torch model</text>
+</g>
+<!-- PyTorch\nPost Training Quantisation\n(Static)\nTorch model&#45;&gt;ONNX model -->
+<g id="edge3" class="edge">
+<title>PyTorch\nPost Training Quantisation\n(Static)\nTorch model-&gt;ONNX model</title>
+<path fill="none" stroke="black" d="M406.61,-619.86C382.66,-602.56 353.16,-581.25 327.93,-563.04"/>
+<polygon fill="black" stroke="black" points="329.71,-560 319.56,-556.99 325.62,-565.68 329.71,-560"/>
+<text text-anchor="middle" x="408" y="-590.8" font-family="Times,serif" font-size="14.00">Torch API</text>
+</g>
+<!-- Blob model -->
+<g id="node5" class="node">
+<title>Blob model</title>
+<polygon fill="none" stroke="black" points="249,-424 168,-424 168,-343 249,-343 249,-424"/>
+<text text-anchor="middle" x="208.5" y="-379.8" font-family="Times,serif" font-size="14.00">Blob model</text>
+</g>
+<!-- ONNX model&#45;&gt;Blob model -->
+<g id="edge4" class="edge">
+<title>ONNX model-&gt;Blob model</title>
+<path fill="none" stroke="black" d="M225.21,-481.81C218.84,-474.27 213.23,-465.92 209.5,-457 206.57,-449.97 204.96,-442.22 204.22,-434.47"/>
+<polygon fill="black" stroke="black" points="207.71,-434.17 203.71,-424.36 200.72,-434.52 207.71,-434.17"/>
+<text text-anchor="middle" x="262.5" y="-445.8" font-family="Times,serif" font-size="14.00">Blob converter API</text>
+</g>
+<!-- TF model -->
+<g id="node6" class="node">
+<title>TF model</title>
+<polygon fill="none" stroke="black" points="373,-419 302,-419 302,-348 373,-348 373,-419"/>
+<text text-anchor="middle" x="337.5" y="-379.8" font-family="Times,serif" font-size="14.00">TF model</text>
+</g>
+<!-- ONNX model&#45;&gt;TF model -->
+<g id="edge5" class="edge">
+<title>ONNX model-&gt;TF model</title>
+<path fill="none" stroke="black" d="M305.86,-474.76C309.38,-468.93 312.69,-462.93 315.5,-457 319.69,-448.18 323.29,-438.38 326.31,-428.91"/>
+<polygon fill="black" stroke="black" points="329.69,-429.8 329.23,-419.22 322.99,-427.78 329.69,-429.8"/>
+<text text-anchor="middle" x="353.5" y="-445.8" font-family="Times,serif" font-size="14.00">ONNX API</text>
+</g>
+<!-- TFLite model -->
+<g id="node7" class="node">
+<title>TFLite model</title>
+<polygon fill="none" stroke="black" points="383.5,-292 291.5,-292 291.5,-200 383.5,-200 383.5,-292"/>
+<text text-anchor="middle" x="337.5" y="-242.3" font-family="Times,serif" font-size="14.00">TFLite model</text>
+</g>
+<!-- TF model&#45;&gt;TFLite model -->
+<g id="edge6" class="edge">
+<title>TF model-&gt;TFLite model</title>
+<path fill="none" stroke="black" d="M337.5,-347.96C337.5,-334.2 337.5,-318.01 337.5,-302.67"/>
+<polygon fill="black" stroke="black" points="341,-302.23 337.5,-292.23 334,-302.23 341,-302.23"/>
+<text text-anchor="middle" x="382.5" y="-313.8" font-family="Times,serif" font-size="14.00">TensorFlow API</text>
+</g>
+<!-- EdgeTPU TFLite model -->
+<g id="node8" class="node">
+<title>EdgeTPU TFLite model</title>
+<polygon fill="none" stroke="black" points="412,-149 263,-149 263,0 412,0 412,-149"/>
+<text text-anchor="middle" x="337.5" y="-70.8" font-family="Times,serif" font-size="14.00">EdgeTPU TFLite model</text>
+</g>
+<!-- TFLite model&#45;&gt;EdgeTPU TFLite model -->
+<g id="edge7" class="edge">
+<title>TFLite model-&gt;EdgeTPU TFLite model</title>
+<path fill="none" stroke="black" d="M337.5,-199.58C337.5,-187.11 337.5,-173.18 337.5,-159.29"/>
+<polygon fill="black" stroke="black" points="341,-159.2 337.5,-149.2 334,-159.2 341,-159.2"/>
+<text text-anchor="middle" x="382.5" y="-170.8" font-family="Times,serif" font-size="14.00">TensorFlow API</text>
+</g>
+</g>
+</svg>

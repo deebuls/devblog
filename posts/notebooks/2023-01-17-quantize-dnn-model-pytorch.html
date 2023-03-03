@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Mohan Raj, Deebul Nair">
+<meta name="dcterms.date" content="2023-01-17">
+<meta name="description" content="Different types of quantization">
+
+<title>new-devblog - Quantization of Pytorch Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">new-devblog</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Quantization of Pytorch Models</h1>
+                  <div>
+        <div class="description">
+          Different types of quantization
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">pytorch</div>
+                <div class="quarto-category">DNN</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Mohan Raj, Deebul Nair </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 17, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#quantization-of-pytorch-models" id="toc-quantization-of-pytorch-models" class="nav-link active" data-scroll-target="#quantization-of-pytorch-models">Quantization of Pytorch Models</a>
+  <ul class="collapse">
+  <li><a href="#what-is-quantization" id="toc-what-is-quantization" class="nav-link" data-scroll-target="#what-is-quantization">What is quantization</a></li>
+  <li><a href="#types-of-quantization" id="toc-types-of-quantization" class="nav-link" data-scroll-target="#types-of-quantization">Types of quantization</a></li>
+  <li><a href="#pytorch-quantisation-approach" id="toc-pytorch-quantisation-approach" class="nav-link" data-scroll-target="#pytorch-quantisation-approach">PyTorch Quantisation approach</a></li>
+  <li><a href="#onnx-quantisation-approach" id="toc-onnx-quantisation-approach" class="nav-link" data-scroll-target="#onnx-quantisation-approach">ONNX Quantisation approach</a></li>
+  <li><a href="#api" id="toc-api" class="nav-link" data-scroll-target="#api">API</a></li>
+  </ul></li>
+  <li><a href="#pytorch-model" id="toc-pytorch-model" class="nav-link" data-scroll-target="#pytorch-model">PyTorch Model</a>
+  <ul class="collapse">
+  <li><a href="#pytorch-quantization-qat" id="toc-pytorch-quantization-qat" class="nav-link" data-scroll-target="#pytorch-quantization-qat">1. PyTorch Quantization (QAT)</a></li>
+  </ul></li>
+  <li><a href="#pytorch-to-onnx" id="toc-pytorch-to-onnx" class="nav-link" data-scroll-target="#pytorch-to-onnx">2. PyTorch to ONNX</a></li>
+  <li><a href="#onnx-quantization-dynamic" id="toc-onnx-quantization-dynamic" class="nav-link" data-scroll-target="#onnx-quantization-dynamic">3. ONNX Quantization (Dynamic)</a>
+  <ul class="collapse">
+  <li><a href="#onnx-to-blob" id="toc-onnx-to-blob" class="nav-link" data-scroll-target="#onnx-to-blob">4. ONNX to Blob</a></li>
+  <li><a href="#onnx-to-tf" id="toc-onnx-to-tf" class="nav-link" data-scroll-target="#onnx-to-tf">5. ONNX to TF</a></li>
+  <li><a href="#tf-to-tflite" id="toc-tf-to-tflite" class="nav-link" data-scroll-target="#tf-to-tflite">6. TF to TFLite</a></li>
+  <li><a href="#tflite-to-edgetpu-tflite" id="toc-tflite-to-edgetpu-tflite" class="nav-link" data-scroll-target="#tflite-to-edgetpu-tflite">7. TFLite to EdgeTPU TFLite</a></li>
+  <li><a href="#pytorch-quantization-ptq---dynamicweight-only" id="toc-pytorch-quantization-ptq---dynamicweight-only" class="nav-link" data-scroll-target="#pytorch-quantization-ptq---dynamicweight-only">PyTorch Quantization (PTQ - Dynamic/Weight only)</a></li>
+  <li><a href="#pytorch-quantization-ptq---static" id="toc-pytorch-quantization-ptq---static" class="nav-link" data-scroll-target="#pytorch-quantization-ptq---static">PyTorch Quantization (PTQ - Static)</a></li>
+  <li><a href="#test---qat-iris" id="toc-test---qat-iris" class="nav-link" data-scroll-target="#test---qat-iris">Test - QAT IRIS</a></li>
+  <li><a href="#test---blob-converter" id="toc-test---blob-converter" class="nav-link" data-scroll-target="#test---blob-converter">Test - Blob Converter</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/master/_notebooks/2023-01-17-Quantize-DNN-Model-Pytorch.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
+<section id="quantization-of-pytorch-models" class="level1">
+<h1>Quantization of Pytorch Models</h1>
+<section id="what-is-quantization" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-quantization">What is quantization</h2>
+<ul>
+<li>Quantization describes methods for carrying out calculations and storing tensors at smaller bit width than floating point precision. The default size of floating point numbers are 32 bits.</li>
+<li>For instance, quantizing the deep learning model means, converting the 32-bit floating point numbers (of weights &amp; activation outputs) to 8-bit integers.</li>
+</ul>
+</section>
+<section id="types-of-quantization" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-quantization">Types of quantization</h2>
+<ul>
+<li>Post Training Quantization (PTQ)
+<ol type="1">
+<li>Static</li>
+<li>Dynamic/Weight only</li>
+</ol></li>
+<li>Quantization Aware Training (QAT)
+<ol type="1">
+<li>Static</li>
+</ol></li>
+</ul>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Model gets smaller</td>
+<td>Potential for little degradation in accuracy</td>
+</tr>
+<tr class="even">
+<td>Reduced memory usage during inferencing</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Improves hardware accelerator latency</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Reduces inference latency</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Deployment on Edge AI devices with limited memory</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pytorch-quantisation-approach" class="level2">
+<h2 class="anchored" data-anchor-id="pytorch-quantisation-approach">PyTorch Quantisation approach</h2>
+<div class="cell" data-outputid="3419d9e2-cfce-4d95-d968-3e5d393c182c">
+<div class="cell-output cell-output-display" data-execution_count="1">
+<p><img src="2023-01-17-Quantize-DNN-Model-Pytorch_files/figure-html/cell-2-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="onnx-quantisation-approach" class="level2">
+<h2 class="anchored" data-anchor-id="onnx-quantisation-approach">ONNX Quantisation approach</h2>
+<div class="cell" data-outputid="ef2a82fb-dc38-4857-b815-72f003fc0887">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<p><img src="2023-01-17-Quantize-DNN-Model-Pytorch_files/figure-html/cell-3-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="api" class="level2">
+<h2 class="anchored" data-anchor-id="api">API</h2>
+<ol type="1">
+<li>PyTorch Quantization (QAT)
+<ul>
+<li>https://pytorch.org/tutorials/advanced/static_quantization_tutorial.html</li>
+<li>import torch</li>
+<li>from torchvision.models import MobileNetV2
+<ul>
+<li>model = MobileNetV2()</li>
+</ul></li>
+<li>Fuse relu &amp; Conv2d</li>
+<li>Insert Stubs to model
+<ul>
+<li>model = nn.Sequential(torch.quantization.QuantStub(), model, torch.quantization.DeQuantStub())</li>
+</ul></li>
+<li>Prepare model
+<ul>
+<li>m.train()</li>
+<li>backend = “fbgemm”</li>
+<li>model.qconfig = torch.quantization.get_default_qconfig(backend)</li>
+<li>torch.quantization.prepare_qat(model, inplace=True)</li>
+</ul></li>
+<li>Run standard training loop</li>
+<li>Convert
+<ul>
+<li>m.eval()</li>
+<li>model_quantized = torch.quantization.convert(model, inplace=True)</li>
+<li>torch.save(model_quantized, model_file_path)</li>
+</ul></li>
+</ul></li>
+<li>PyTorch -&gt; ONNX
+<ul>
+<li>https://pytorch.org/docs/stable/onnx.html</li>
+<li>import torch</li>
+<li>torch.onnx.export(model, sample_input, onnx_model_path, opset_version=12, input_names=[‘input’], output_names=[‘output’])</li>
+</ul></li>
+<li>ONNX Qunatization (Dynamic)
+<ul>
+<li>https://onnxruntime.ai/docs/performance/quantization.html</li>
+<li>import onnx</li>
+<li>from onnxruntime.quantization import quantize_dynamic, QuantType</li>
+<li>quantized_model = quantize_dynamic(model_path, quantised_model_path)</li>
+</ul></li>
+<li>ONNX -&gt; Blob
+<ul>
+<li>https://docs.luxonis.com/en/latest/pages/tutorials/creating-custom-nn-models/</li>
+<li>import blobconverter</li>
+<li>onnx_model = onnx.load(“./results/networks/test1.onnx”) model_simpified, check = simplify(onnx_model) onnx.save(model_simpified, “./results/networks/test_sim1.onnx”)</li>
+<li>blobconverter.from_onnx(model=onnx_model_path, data_type=“FP16”, shaves=6, use_cache=False, output_dir=blob_model_path, optimizer_params=[])</li>
+</ul></li>
+<li>ONNX -&gt; TF
+<ul>
+<li>https://github.com/onnx/onnx-tensorflow/blob/main/example/onnx_to_tf.py</li>
+<li>import onnx</li>
+<li>from onnx_tf.backend import prepare</li>
+<li>onnx_model = onnx.load(onnx_model_path)</li>
+<li>tf_rep = prepare(onnx_model)</li>
+<li>tf_rep.export_graph(tf_model_path)</li>
+</ul></li>
+<li>TF -&gt; TFLite
+<ul>
+<li>https://www.tensorflow.org/api_docs/python/tf/lite/TFLiteConverter</li>
+<li>import tensorflow as tf</li>
+<li>converter = tf.lite.TFLiteConverter.from_saved_model(tf_model_path)</li>
+<li>tflite_model = converter.convert()</li>
+<li>with open(tflite_model_path, ‘wb’) as f: f.write(tflite_model)</li>
+</ul></li>
+<li>TFLite -&gt; EdgeTPU TFLite
+<ul>
+<li>https://coral.ai/docs/edgetpu/compiler/</li>
+<li>curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -</li>
+<li>echo “deb https://packages.cloud.google.com/apt coral-edgetpu-stable main” | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list</li>
+<li>sudo apt-get update</li>
+<li>sudo apt-get install edgetpu-compiler</li>
+<li>edgetpu_compiler [options] tflite_model_path</li>
+</ul></li>
+<li>PyTorch Quantization (PTQ - Dynamic/Weight only)
+<ul>
+<li>https://pytorch.org/blog/quantization-in-practice/</li>
+</ul></li>
+<li>PyTorch Quantization (PTQ - Static)
+<ul>
+<li>https://pytorch.org/blog/quantization-in-practice/</li>
+</ul></li>
+</ol>
+<div class="cell" data-outputid="5a1b987b-7b48-465c-a42b-ceff255aa86d">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>rm <span class="op">-</span>rf <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>ls: cannot access '/tmp/MobileNet*': No such file or directory</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>torch_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2.pt"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>torch_QAT_quant_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2_TorchQATQuant.pt"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>onnx_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2.onnx"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>onnx_quant_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2_OnnxQuant.onnx"</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>onnx_sim_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2_OnnxSim.onnx"</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>blob_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2.blob"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>tf_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2.tf"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>tflite_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2.tflite"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>edgetpu_tflite_model_path <span class="op">=</span> <span class="st">"/tmp/MobileNetV2_edgetpu.tflite"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>torch_PTQ_Weight_Eager_path <span class="op">=</span> <span class="st">"/tmp/MobileNet_V2_Torch_PTQ_Quant_W_EG.pt"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>torch_PTQ_Weight_FX_path <span class="op">=</span> <span class="st">"/tmp/MobileNet_V2_Torch_PTQ_Quant_W_FX.pt"</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>torch_PTQ_Static_Eager_path <span class="op">=</span> <span class="st">"/tmp/MobileNet_V2_Torch_PTQ_Quant_S_EG.pt"</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>torch_PTQ_Static_FX_path <span class="op">=</span> <span class="st">"/tmp/MobileNet_V2_Torch_PTQ_Quant_S_FX.pt"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="pytorch-model" class="level1">
+<h1>PyTorch Model</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torchvision</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torchvision.transforms <span class="im">as</span> transforms</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision.models <span class="im">import</span> MobileNetV2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-outputid="fbcbc6bf-f650-4059-91d3-c18449b5c480">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> MobileNetV2()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>data_dir <span class="op">=</span> os.path.abspath(<span class="st">"./data"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> transforms.Compose([transforms.ToTensor(),transforms.Normalize((<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>), (<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>)), transforms.RandomErasing()])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>trainset <span class="op">=</span> torchvision.datasets.CIFAR10(root<span class="op">=</span>data_dir, train<span class="op">=</span><span class="va">True</span>, download<span class="op">=</span><span class="va">True</span>, transform<span class="op">=</span>transform)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>train_sub_len <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(trainset) <span class="op">*</span> <span class="fl">0.001</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>train_subset, val_subset <span class="op">=</span> torch.utils.data.random_split(trainset, [train_sub_len, <span class="bu">len</span>(trainset) <span class="op">-</span> train_sub_len])</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>trainloader <span class="op">=</span> torch.utils.data.DataLoader(train_subset, batch_size<span class="op">=</span><span class="dv">4</span>, shuffle<span class="op">=</span><span class="va">True</span>, num_workers<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>n_epochs <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> torch.optim.SGD(model.parameters(), lr<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>loss_fn <span class="op">=</span> torch.nn.CrossEntropyLoss()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(n_epochs):</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> images, labels <span class="kw">in</span> trainloader:</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        opt.zero_grad()</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> model(images)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(out, labels)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        opt.step()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Files already downloaded and verified</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="1031302f-5964-4bc1-d621-305c86905dc8">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>torch.save(model, torch_model_path)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root 14M Jan 20 14:20 /tmp/MobileNetV2.pt</code></pre>
+</div>
+</div>
+<section id="pytorch-quantization-qat" class="level2">
+<h2 class="anchored" data-anchor-id="pytorch-quantization-qat">1. PyTorch Quantization (QAT)</h2>
+<div class="cell" data-outputid="adb4ff26-199d-4fdf-f9e8-29a7628ba671">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torchvision</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torchvision.transforms <span class="im">as</span> transforms</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision.models <span class="im">import</span> MobileNetV2</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>data_dir <span class="op">=</span> os.path.abspath(<span class="st">"./data"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> transforms.Compose([transforms.ToTensor(),transforms.Normalize((<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>), (<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>)), transforms.RandomErasing()])</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>trainset <span class="op">=</span> torchvision.datasets.CIFAR10(root<span class="op">=</span>data_dir, train<span class="op">=</span><span class="va">True</span>, download<span class="op">=</span><span class="va">True</span>, transform<span class="op">=</span>transform)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>train_sub_len <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(trainset) <span class="op">*</span> <span class="fl">0.001</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>train_subset, val_subset <span class="op">=</span> torch.utils.data.random_split(trainset, [train_sub_len, <span class="bu">len</span>(trainset) <span class="op">-</span> train_sub_len])</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>trainloader <span class="op">=</span> torch.utils.data.DataLoader(train_subset, batch_size<span class="op">=</span><span class="dv">4</span>, shuffle<span class="op">=</span><span class="va">True</span>, num_workers<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> MobileNetV2()</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">"""Fuse"""</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># pair_of_modules_to_fuze = []</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># for name, layer in model.named_modules():</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#     if isinstance(layer, torch.nn.Linear):</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#         pair_of_modules_to_fuze.append([name.split('.')[-1]])</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#     elif isinstance(layer, torch.nn.ReLU) and len(pair_of_modules_to_fuze) &gt; 0:</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#         pair_of_modules_to_fuze[-1].append(name.split('.')[-1])</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># pair_of_modules_to_fuze = list(filter(lambda x: len(x) == 2, pair_of_modules_to_fuze))</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># torch.quantization.fuse_modules(model.modules(), pair_of_modules_to_fuze, inplace=True)</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">"""Insert stubs"""</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> torch.nn.Sequential(torch.quantization.QuantStub(), </span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>                  model, </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>                  torch.quantization.DeQuantStub())</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co">"""Prepare"""</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>model.train()</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>model.qconfig <span class="op">=</span> torch.quantization.get_default_qconfig(<span class="st">"fbgemm"</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>torch.quantization.prepare_qat(model, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co">"""Training Loop"""</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>n_epochs <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> torch.optim.SGD(model.parameters(), lr<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>loss_fn <span class="op">=</span> torch.nn.CrossEntropyLoss()</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(n_epochs):</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> inputs, labels <span class="kw">in</span> trainloader:</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>        opt.zero_grad()</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> model(inputs)</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> loss_fn(out, labels)</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>        opt.step()</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="co">"""Convert"""</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>model_quantized <span class="op">=</span> torch.quantization.convert(model, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>torch.save(model_quantized, torch_QAT_quant_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Files already downloaded and verified</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/usr/local/lib/python3.8/dist-packages/torch/ao/quantization/observer.py:214: UserWarning: Please use quant_min and quant_max to specify the range for observers.                     reduce_range will be deprecated in a future release of PyTorch.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="bf493e31-37d0-4908-fcb9-e38a60b70bd5">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="pytorch-to-onnx" class="level1">
+<h1>2. PyTorch to ONNX</h1>
+<div class="cell" data-outputid="904aef9d-b2fa-49f9-c778-f126b965f73b">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> torch.load(torch_model_path)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>torch.onnx.export(model,               </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                  images,                         </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                  onnx_model_path,   </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                  export_params<span class="op">=</span><span class="va">True</span>,             </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                  do_constant_folding<span class="op">=</span><span class="va">True</span>,  </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>                  input_names <span class="op">=</span> [<span class="st">'input'</span>],   </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                  output_names <span class="op">=</span> [<span class="st">'output'</span>], </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                  dynamic_axes<span class="op">=</span>{<span class="st">'input'</span> : {<span class="dv">0</span> : <span class="st">'batch_size'</span>},   </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                                <span class="st">'output'</span> : {<span class="dv">0</span> : <span class="st">'batch_size'</span>}})</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt</code></pre>
+</div>
+</div>
+</section>
+<section id="onnx-quantization-dynamic" class="level1">
+<h1>3. ONNX Quantization (Dynamic)</h1>
+<div class="cell" data-outputid="593ce6f7-3104-446d-f636-c914ff725bf4">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install onnx <span class="op">-</span>q</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install onnxruntime <span class="op">-</span>q</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> onnxruntime.quantization <span class="im">import</span> quantize_dynamic, QuantType</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.5/13.5 MB 108.5 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.0/1.0 MB 66.6 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+tensorflow 2.9.2 requires protobuf&lt;3.20,&gt;=3.9.2, but you have protobuf 3.20.3 which is incompatible.
+tensorboard 2.9.1 requires protobuf&lt;3.20,&gt;=3.9.2, but you have protobuf 3.20.3 which is incompatible.
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 89.5 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 46.0/46.0 KB 4.9 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 86.8/86.8 KB 9.5 MB/s eta 0:00:00</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>quantized_model <span class="op">=</span> quantize_dynamic(onnx_model_path, onnx_quant_model_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="onnx-to-blob" class="level2">
+<h2 class="anchored" data-anchor-id="onnx-to-blob">4. ONNX to Blob</h2>
+<div class="cell" data-outputid="6d93c5ae-a89d-4ff3-9428-036083e581e8">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install onnxsim <span class="op">-</span>q</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install Flask<span class="op">==</span><span class="fl">2.1.0</span> PyYAML<span class="op">==</span><span class="fl">5.4.1</span> boto3<span class="op">==</span><span class="fl">1.17.39</span> gunicorn<span class="op">==</span><span class="fl">20.1.0</span> sentry<span class="op">-</span>sdk <span class="op">-</span>q</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install blobconverter <span class="op">-</span>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.0/2.0 MB 66.8 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 238.9/238.9 KB 21.2 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 84.5/84.5 KB 9.4 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 95.2/95.2 KB 9.6 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 662.4/662.4 KB 29.8 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 131.4/131.4 KB 14.9 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 KB 9.5 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 177.4/177.4 KB 15.3 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 232.7/232.7 KB 21.5 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 96.6/96.6 KB 11.3 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.1/133.1 KB 15.1 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.4/73.4 KB 7.3 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.7/7.7 MB 77.3 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 140.6/140.6 KB 14.0 MB/s eta 0:00:00
+ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
+tensorboard 2.9.1 requires protobuf&lt;3.20,&gt;=3.9.2, but you have protobuf 3.20.3 which is incompatible.
+notebook 5.7.16 requires jinja2&lt;=3.0.0, but you have jinja2 3.1.2 which is incompatible.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> onnx</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> onnxsim <span class="im">import</span> simplify</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> blobconverter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>model_simpified, check <span class="op">=</span> simplify(onnx_model_path)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>onnx.save(model_simpified, onnx_sim_model_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-outputid="336c52e3-600f-4602-d39e-be2f49e68859">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># blobconverter.from_onnx(</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     model=onnx_sim_model_path,</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     data_type="FP16",</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     shaves=6,</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     use_cache=False,</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     output_dir=blob_model_path,</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     optimizer_params=[])</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root 3.6M Jan 20 14:20 /tmp/MobileNetV2_OnnxQuant.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2_OnnxSim.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt</code></pre>
+</div>
+</div>
+</section>
+<section id="onnx-to-tf" class="level2">
+<h2 class="anchored" data-anchor-id="onnx-to-tf">5. ONNX to TF</h2>
+<div class="cell" data-outputid="af25c0de-6622-4228-dec6-246cb4bdafc4">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install onnx<span class="op">-</span>tf <span class="op">-</span>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0.0/226.1 KB ? eta -:--:--     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 226.1/226.1 KB 16.3 MB/s eta 0:00:00
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0.0/1.1 MB ? eta -:--:--     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 53.7 MB/s eta 0:00:00</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="d213d090-58c0-46e9-abc2-41446f33235a">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> onnx_tf.backend <span class="im">import</span> prepare</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow_probability</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>onnx_model <span class="op">=</span> onnx.load(onnx_model_path)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>tf_rep <span class="op">=</span> prepare(onnx_model)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>tf_rep.export_graph(tf_model_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>WARNING:absl:Found untraced functions such as gen_tensor_dict while saving (showing 1 of 1). These functions will not be directly callable after loading.</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="44058334-4f3e-48b6-bf5f-d9597797b986">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root 3.6M Jan 20 14:20 /tmp/MobileNetV2_OnnxQuant.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2_OnnxSim.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt
+
+/tmp/MobileNetV2.tf:
+total 14M
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 assets
+-rw-r--r-- 1 root root  14M Jan 20 14:21 saved_model.pb
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 variables</code></pre>
+</div>
+</div>
+</section>
+<section id="tf-to-tflite" class="level2">
+<h2 class="anchored" data-anchor-id="tf-to-tflite">6. TF to TFLite</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># def fake_dataset_generator(shape, n_iter):</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     def dataset():</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#         for _ in range(n_iter):</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co">#             data = np.random.randn(*shape)</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co">#             data *= (1 / 255)</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#             batch = np.expand_dims(data, axis=0)</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#             yield [batch.astype(np.float32)]</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     return dataset</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co"># datagen = fake_dataset_generator((192, 192, 3), 10)</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>converter <span class="op">=</span> tf.lite.TFLiteConverter.from_saved_model(tf_model_path)</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co"># converter.representative_dataset = datagen</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co"># converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="co"># converter.inference_input_type = tf.uint8</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co"># converter.inference_output_type = tf.uint8</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="co"># converter.optimizations = [tf.lite.Optimize.DEFAULT]</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>tflite_model <span class="op">=</span> converter.convert()</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(tflite_model_path, <span class="st">'wb'</span>) <span class="im">as</span> f: </span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  f.write(tflite_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-outputid="f941f430-f373-4e89-ab43-aeed66756222">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root 3.6M Jan 20 14:20 /tmp/MobileNetV2_OnnxQuant.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2_OnnxSim.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root  14M Jan 20 14:22 /tmp/MobileNetV2.tflite
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt
+
+/tmp/MobileNetV2.tf:
+total 14M
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 assets
+-rw-r--r-- 1 root root  14M Jan 20 14:21 saved_model.pb
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 variables</code></pre>
+</div>
+</div>
+</section>
+<section id="tflite-to-edgetpu-tflite" class="level2">
+<h2 class="anchored" data-anchor-id="tflite-to-edgetpu-tflite">7. TFLite to EdgeTPU TFLite</h2>
+<div class="cell" data-outputid="4465299c-7d77-49ff-d2ea-397cb62cc769">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl https:<span class="op">//</span>packages.cloud.google.com<span class="op">/</span>apt<span class="op">/</span>doc<span class="op">/</span>apt<span class="op">-</span>key.gpg <span class="op">|</span> sudo apt<span class="op">-</span>key add <span class="op">-</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>echo <span class="st">"deb https://packages.cloud.google.com/apt coral-edgetpu-stable main"</span> <span class="op">|</span> sudo tee <span class="op">/</span>etc<span class="op">/</span>apt<span class="op">/</span>sources.<span class="bu">list</span>.d<span class="op">/</span>coral<span class="op">-</span>edgetpu.<span class="bu">list</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>sudo apt<span class="op">-</span>get update</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>sudo apt<span class="op">-</span>get install edgetpu<span class="op">-</span>compiler</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  1210  100  1210    0     0  60500      0 --:--:-- --:--:-- --:--:-- 60500
+OK
+deb https://packages.cloud.google.com/apt coral-edgetpu-stable main
+Get:1 https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/ InRelease [3,622 B]
+Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
+Get:3 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+Get:4 http://ppa.launchpad.net/c2d4u.team/c2d4u4.0+/ubuntu focal InRelease [18.1 kB]
+Get:5 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+Get:6 https://packages.cloud.google.com/apt coral-edgetpu-stable InRelease [6,332 B]
+Ign:7 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  InRelease
+Get:8 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
+Hit:9 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64  InRelease
+Hit:10 https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu2004/x86_64  Release
+Get:11 https://packages.cloud.google.com/apt coral-edgetpu-stable/main amd64 Packages [2,317 B]
+Hit:12 http://ppa.launchpad.net/cran/libgit2/ubuntu focal InRelease
+Get:13 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2,909 kB]
+Hit:14 http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal InRelease
+Hit:16 http://ppa.launchpad.net/graphics-drivers/ppa/ubuntu focal InRelease
+Get:17 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [982 kB]
+Get:18 http://ppa.launchpad.net/c2d4u.team/c2d4u4.0+/ubuntu focal/main Sources [2,374 kB]
+Get:19 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [1,879 kB]
+Get:20 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1,284 kB]
+Get:21 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [2,436 kB]
+Get:22 http://archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [2,003 kB]
+Get:23 http://ppa.launchpad.net/c2d4u.team/c2d4u4.0+/ubuntu focal/main amd64 Packages [1,125 kB]
+Fetched 15.4 MB in 2s (7,459 kB/s)
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following NEW packages will be installed:
+  edgetpu-compiler
+0 upgraded, 1 newly installed, 0 to remove and 30 not upgraded.
+Need to get 7,913 kB of archives.
+After this operation, 31.2 MB of additional disk space will be used.
+Get:1 https://packages.cloud.google.com/apt coral-edgetpu-stable/main amd64 edgetpu-compiler amd64 16.0 [7,913 kB]
+Fetched 7,913 kB in 1s (14.9 MB/s)
+debconf: unable to initialize frontend: Dialog
+debconf: (No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 76, &lt;&gt; line 1.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+dpkg-preconfigure: unable to re-open stdin: 
+Selecting previously unselected package edgetpu-compiler.
+(Reading database ... 129504 files and directories currently installed.)
+Preparing to unpack .../edgetpu-compiler_16.0_amd64.deb ...
+Unpacking edgetpu-compiler (16.0) ...
+Setting up edgetpu-compiler (16.0) ...
+Processing triggers for libc-bin (2.31-0ubuntu9.9) ...</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="1cce9d9f-b3b8-4480-af4e-2bb0ac3279a1">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#https://github.com/google-coral/edgetpu/issues/453</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>edgetpu_compiler <span class="st">"/tmp/MobileNetV2.tflite"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Edge TPU Compiler version 16.0.384591198
+Started a compilation timeout timer of 180 seconds.
+ERROR: Attempting to use a delegate that only supports static-sized tensors with a graph that has dynamic-sized tensors.
+Compilation failed: Model failed in Tflite interpreter. Please ensure model can be loaded/run in Tflite interpreter.
+Compilation child process completed within timeout period.
+Compilation failed! </code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="86d11be8-439e-44d1-dbca-d282d18d3c51">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root 3.6M Jan 20 14:20 /tmp/MobileNetV2_OnnxQuant.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2_OnnxSim.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root  14M Jan 20 14:22 /tmp/MobileNetV2.tflite
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt
+
+/tmp/MobileNetV2.tf:
+total 14M
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 assets
+-rw-r--r-- 1 root root  14M Jan 20 14:21 saved_model.pb
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 variables</code></pre>
+</div>
+</div>
+</section>
+<section id="pytorch-quantization-ptq---dynamicweight-only" class="level2">
+<h2 class="anchored" data-anchor-id="pytorch-quantization-ptq---dynamicweight-only">PyTorch Quantization (PTQ - Dynamic/Weight only)</h2>
+<p>https://pytorch.org/blog/quantization-in-practice/</p>
+<div class="cell" data-outputid="4591b584-5815-4271-b173-e314359dd38a">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> MobileNetV2()</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">## EAGER MODE</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.quantization <span class="im">import</span> quantize_dynamic</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>model_quantized <span class="op">=</span> quantize_dynamic(model<span class="op">=</span>model, qconfig_spec<span class="op">=</span>{nn.LSTM, nn.Linear}, dtype<span class="op">=</span>torch.qint8, inplace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>torch.save(model_quantized, torch_PTQ_Weight_Eager_path)</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="co">## FX MODE</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.quantization <span class="im">import</span> quantize_fx</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>qconfig_dict <span class="op">=</span> {<span class="st">""</span>: torch.quantization.default_dynamic_qconfig} </span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>example_inputs <span class="op">=</span> <span class="bu">iter</span>(trainloader)</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>img, lab <span class="op">=</span> <span class="bu">next</span>(example_inputs)</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>model_prepared <span class="op">=</span> quantize_fx.prepare_fx(model, qconfig_dict, img)</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>model_quantized <span class="op">=</span> quantize_fx.convert_fx(model_prepared)</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>torch.save(model_quantized, torch_PTQ_Weight_FX_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/usr/local/lib/python3.8/dist-packages/torch/ao/quantization/fx/prepare.py:1530: UserWarning: Passing a QConfig dictionary to prepare is deprecated and will not be supported in a future version. Please pass in a QConfigMapping instead.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="48f59f08-b584-4c0b-84b2-a5e6ae77c128">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root 3.6M Jan 20 14:20 /tmp/MobileNetV2_OnnxQuant.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2_OnnxSim.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root  14M Jan 20 14:22 /tmp/MobileNetV2.tflite
+-rw-r--r-- 1 root root  10M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_W_EG.pt
+-rw-r--r-- 1 root root 9.8M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_W_FX.pt
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt
+
+/tmp/MobileNetV2.tf:
+total 14M
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 assets
+-rw-r--r-- 1 root root  14M Jan 20 14:21 saved_model.pb
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 variables</code></pre>
+</div>
+</div>
+</section>
+<section id="pytorch-quantization-ptq---static" class="level2">
+<h2 class="anchored" data-anchor-id="pytorch-quantization-ptq---static">PyTorch Quantization (PTQ - Static)</h2>
+<p>https://pytorch.org/blog/quantization-in-practice/</p>
+<div class="cell" data-outputid="fa7a319e-1c7b-4f4f-e69e-6020c9ad2a94">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> copy</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> MobileNetV2()</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co">## EAGER MODE</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> copy.deepcopy(model)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>m.<span class="bu">eval</span>()</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co"># torch.quantization.fuse_modules(m, ['0','1'], inplace=True) </span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co"># torch.quantization.fuse_modules(m, ['2','3'], inplace=True) </span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> nn.Sequential(torch.quantization.QuantStub(), </span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>                  m, </span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>                  torch.quantization.DeQuantStub())</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>m.qconfig <span class="op">=</span> torch.quantization.get_default_qconfig(<span class="st">"fbgemm"</span>)</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>torch.quantization.prepare(m, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>example_inputs <span class="op">=</span> <span class="bu">iter</span>(trainloader)</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>img, lab <span class="op">=</span> <span class="bu">next</span>(example_inputs)</span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>    m(img)</span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>model_quantized <span class="op">=</span> torch.quantization.convert(m, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>torch.save(model_quantized, torch_PTQ_Static_Eager_path)</span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a><span class="co">## FX MODE</span></span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.quantization <span class="im">import</span> quantize_fx</span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> copy.deepcopy(model)</span>
+<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a>m.<span class="bu">eval</span>()</span>
+<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a>qconfig_dict <span class="op">=</span> {<span class="st">""</span>: torch.quantization.get_default_qconfig(<span class="st">"fbgemm"</span>)}</span>
+<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>model_prepared <span class="op">=</span> quantize_fx.prepare_fx(m, qconfig_dict, img)</span>
+<span id="cb44-37"><a href="#cb44-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-38"><a href="#cb44-38" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.inference_mode():</span>
+<span id="cb44-39"><a href="#cb44-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb44-40"><a href="#cb44-40" aria-hidden="true" tabindex="-1"></a>    model_prepared(img)</span>
+<span id="cb44-41"><a href="#cb44-41" aria-hidden="true" tabindex="-1"></a>model_quantized <span class="op">=</span> quantize_fx.convert_fx(model_prepared)</span>
+<span id="cb44-42"><a href="#cb44-42" aria-hidden="true" tabindex="-1"></a>torch.save(model_quantized, torch_PTQ_Static_FX_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/usr/local/lib/python3.8/dist-packages/torch/ao/quantization/observer.py:214: UserWarning: Please use quant_min and quant_max to specify the range for observers.                     reduce_range will be deprecated in a future release of PyTorch.
+  warnings.warn(</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="e1c33ec6-fb86-4efc-e27a-632c4a55a27d">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root 3.6M Jan 20 14:20 /tmp/MobileNetV2_OnnxQuant.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2_OnnxSim.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root  14M Jan 20 14:22 /tmp/MobileNetV2.tflite
+-rw-r--r-- 1 root root 4.1M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_S_EG.pt
+-rw-r--r-- 1 root root 3.8M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_S_FX.pt
+-rw-r--r-- 1 root root  10M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_W_EG.pt
+-rw-r--r-- 1 root root 9.8M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_W_FX.pt
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt
+
+/tmp/MobileNetV2.tf:
+total 14M
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 assets
+-rw-r--r-- 1 root root  14M Jan 20 14:21 saved_model.pb
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 variables</code></pre>
+</div>
+</div>
+<p>https://pytorch.org/docs/stable/generated/torch.quantization.quantize_fx.prepare_fx.html</p>
+</section>
+<section id="test---qat-iris" class="level2">
+<h2 class="anchored" data-anchor-id="test---qat-iris">Test - QAT IRIS</h2>
+<div class="cell" data-outputid="7d5eccc2-cbd6-4c7f-9b9c-26f671d513d3">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.autograd <span class="im">import</span> Variable</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.quantization <span class="im">import</span> QuantStub, DeQuantStub</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> load_iris(return_X_y<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>train_X, test_X, train_y, test_y <span class="op">=</span> train_test_split(x, y, test_size<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>train_X <span class="op">=</span> Variable(torch.Tensor(train_X).<span class="bu">float</span>())</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>test_X <span class="op">=</span> Variable(torch.Tensor(test_X).<span class="bu">float</span>())</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>train_y <span class="op">=</span> Variable(torch.Tensor(train_y).<span class="bu">long</span>())</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>test_y <span class="op">=</span> Variable(torch.Tensor(test_y).<span class="bu">long</span>())</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Net(nn.Module):</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(Net, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc1 <span class="op">=</span> nn.Linear(<span class="dv">4</span>, <span class="dv">100</span>)</span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc2 <span class="op">=</span> nn.Linear(<span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc3 <span class="op">=</span> nn.Linear(<span class="dv">100</span>, <span class="dv">3</span>)</span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.softmax <span class="op">=</span> nn.Softmax(dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.quant <span class="op">=</span> QuantStub() </span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.dequant <span class="op">=</span> DeQuantStub() </span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, X):</span>
+<span id="cb48-26"><a href="#cb48-26" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> <span class="va">self</span>.quant(X)</span>
+<span id="cb48-27"><a href="#cb48-27" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> F.relu(<span class="va">self</span>.fc1(X))</span>
+<span id="cb48-28"><a href="#cb48-28" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> <span class="va">self</span>.fc2(X)</span>
+<span id="cb48-29"><a href="#cb48-29" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> <span class="va">self</span>.fc3(X)</span>
+<span id="cb48-30"><a href="#cb48-30" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> <span class="va">self</span>.softmax(X)</span>
+<span id="cb48-31"><a href="#cb48-31" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> <span class="va">self</span>.dequant(X)</span>
+<span id="cb48-32"><a href="#cb48-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> X</span>
+<span id="cb48-33"><a href="#cb48-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-34"><a href="#cb48-34" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> Net()</span>
+<span id="cb48-35"><a href="#cb48-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-36"><a href="#cb48-36" aria-hidden="true" tabindex="-1"></a>m.train()</span>
+<span id="cb48-37"><a href="#cb48-37" aria-hidden="true" tabindex="-1"></a>backend <span class="op">=</span> <span class="st">"fbgemm"</span></span>
+<span id="cb48-38"><a href="#cb48-38" aria-hidden="true" tabindex="-1"></a>m.qconfig <span class="op">=</span> torch.quantization.get_default_qconfig(backend)</span>
+<span id="cb48-39"><a href="#cb48-39" aria-hidden="true" tabindex="-1"></a>torch.quantization.prepare_qat(m, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb48-40"><a href="#cb48-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-41"><a href="#cb48-41" aria-hidden="true" tabindex="-1"></a>n_epochs <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb48-42"><a href="#cb48-42" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> torch.optim.SGD(m.parameters(), lr<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb48-43"><a href="#cb48-43" aria-hidden="true" tabindex="-1"></a>loss_fn <span class="op">=</span> torch.nn.CrossEntropyLoss()</span>
+<span id="cb48-44"><a href="#cb48-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-45"><a href="#cb48-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-46"><a href="#cb48-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(n_epochs):</span>
+<span id="cb48-47"><a href="#cb48-47" aria-hidden="true" tabindex="-1"></a>    opt.zero_grad()</span>
+<span id="cb48-48"><a href="#cb48-48" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> m(train_X)</span>
+<span id="cb48-49"><a href="#cb48-49" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> loss_fn(out, train_y)</span>
+<span id="cb48-50"><a href="#cb48-50" aria-hidden="true" tabindex="-1"></a>    loss.backward()</span>
+<span id="cb48-51"><a href="#cb48-51" aria-hidden="true" tabindex="-1"></a>    opt.step()</span>
+<span id="cb48-52"><a href="#cb48-52" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb48-53"><a href="#cb48-53" aria-hidden="true" tabindex="-1"></a>m.<span class="bu">eval</span>()</span>
+<span id="cb48-54"><a href="#cb48-54" aria-hidden="true" tabindex="-1"></a>model_quantized <span class="op">=</span> torch.quantization.convert(m, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb48-55"><a href="#cb48-55" aria-hidden="true" tabindex="-1"></a>torch.save(model_quantized, <span class="st">'/tmp/Test_QAT_iris.pt'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/usr/local/lib/python3.8/dist-packages/torch/ao/quantization/observer.py:214: UserWarning: Please use quant_min and quant_max to specify the range for observers.                     reduce_range will be deprecated in a future release of PyTorch.
+  warnings.warn(</code></pre>
+</div>
+</div>
+</section>
+<section id="test---blob-converter" class="level2">
+<h2 class="anchored" data-anchor-id="test---blob-converter">Test - Blob Converter</h2>
+<div class="cell" data-outputid="900916f6-3b3d-4710-f360-f236761ff11b">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CatImgs(nn.Module):</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, img1, img2, img3):</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> torch.cat((img1, img2, img3), <span class="dv">3</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.ones((<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">300</span>, <span class="dv">300</span>), dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>torch.onnx.export(</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    CatImgs(),</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    (X, X, X),</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/tmp/Test_Blob_Onnx.onnx"</span>,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    opset_version<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    do_constant_folding<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> onnx</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> onnxsim <span class="im">import</span> simplify</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>onnx_model <span class="op">=</span> onnx.load(<span class="st">"/tmp/Test_Blob_Onnx.onnx"</span>)</span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>model_simpified, check <span class="op">=</span> simplify(onnx_model)</span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>onnx.save(model_simpified, <span class="st">"/tmp/Test_Blob_OnnxSim.onnx"</span>)</span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> blobconverter</span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>blobconverter.from_onnx(</span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"/tmp/Test_Blob_OnnxSim.onnx"</span>,</span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>    output_dir<span class="op">=</span><span class="st">"/tmp/Test_Blob.blob"</span>,</span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>    data_type<span class="op">=</span><span class="st">"FP16"</span>,</span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>    shaves<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>    use_cache<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>    optimizer_params<span class="op">=</span>[]</span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Downloading /tmp/Test_Blob.blob/Test_Blob_OnnxSim_openvino_2021.4_6shave.blob...
+[==================================================]
+Done</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>PosixPath('/tmp/Test_Blob.blob/Test_Blob_OnnxSim_openvino_2021.4_6shave.blob')</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="fa212e43-90fd-4de7-b403-d42100d9c23b">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>MobileNet<span class="op">*</span> <span class="op">&amp;</span> ls <span class="op">-</span>lh <span class="op">/</span>tmp<span class="op">/</span>Test<span class="op">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-rw-r--r-- 1 root root  283 Jan 20 14:22 /tmp/Test_Blob_Onnx.onnx
+-rw-r--r-- 1 root root  285 Jan 20 14:22 /tmp/Test_Blob_OnnxSim.onnx
+-rw-r--r-- 1 root root  21K Jan 20 14:22 /tmp/Test_QAT_iris.pt
+
+/tmp/Test_Blob.blob:
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.onnx
+-rw-r--r-- 1 root root 3.6M Jan 20 14:20 /tmp/MobileNetV2_OnnxQuant.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2_OnnxSim.onnx
+-rw-r--r-- 1 root root  14M Jan 20 14:20 /tmp/MobileNetV2.pt
+-rw-r--r-- 1 root root  14M Jan 20 14:22 /tmp/MobileNetV2.tflite
+-rw-r--r-- 1 root root 4.1M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_S_EG.pt
+-rw-r--r-- 1 root root 3.8M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_S_FX.pt
+-rw-r--r-- 1 root root  10M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_W_EG.pt
+-rw-r--r-- 1 root root 9.8M Jan 20 14:22 /tmp/MobileNet_V2_Torch_PTQ_Quant_W_FX.pt
+-rw-r--r-- 1 root root 4.1M Jan 20 14:20 /tmp/MobileNetV2_TorchQATQuant.pt
+
+/tmp/MobileNetV2.tf:
+total 4.0K
+-rw-r--r-- 1 root root 1.0K Jan 20 14:22 Test_Blob_OnnxSim_openvino_2021.4_6shave.blob
+total 14M
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 assets
+-rw-r--r-- 1 root root  14M Jan 20 14:21 saved_model.pb
+drwxr-xr-x 2 root root 4.0K Jan 20 14:21 variables</code></pre>
+</div>
+</div>
+<p><strong>TODO</strong> 1. Fix Blob converter for MobileNet<br>
+2. Fix Compile TFLite to EdgeTPU TFLite<br>
+</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
