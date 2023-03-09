@@ -1,5 +1,5 @@
 ---
-title: "new-devblog"
+title: "devblog"
 listing:
   contents: posts
   sort: "date desc"
