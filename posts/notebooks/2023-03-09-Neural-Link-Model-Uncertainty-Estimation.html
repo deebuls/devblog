@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Andrew Jesson">
+<meta name="author" content="Andrew Jesson, Deebul Nair">
 
 <title>devblog - Neural Linear Model (aka Gaussian Process)</title>
 <style>
@@ -178,7 +178,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Andrew Jesson </p>
+               <p>Andrew Jesson, Deebul Nair </p>
             </div>
     </div>
       
@@ -209,8 +209,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Based on the tweet by <a href="https://twitter.com/anndvision/status/1617398841950760961">Andrew Jesson</a>. Below is from the notebook shared by Andrew.</p>
 <p>Thanks to <a href="https://twitter.com/DHolzmueller/status/1617811316340830208?s=20">David Holzmüller</a>, <a href="https://twitter.com/sirbayes/status/1617703912731181062?s=20">Kevin Patrick Murphy</a>, and <a href="https://twitter.com/jasonhartford/status/1617708456261349377?s=20">Jason Hartford</a> for correctly identifying this approach as the Neural Linear Model (NLM). The NLM seems to have first appeared as the Marginalized Neural Network in <a href="https://ieeexplore.ieee.org/abstract/document/5499041">Marginalized Neural Network Mixtures for Large-Scale Regression</a> and then in <a href="http://proceedings.mlr.press/v37/snoek15.html">Scalable Bayesian Optimization Using Deep Neural Networks</a>. <a href="https://arxiv.org/abs/1912.08416">Benchmarking the Neural Linear Model for Regression</a> compares the NLM to mean field variational inference and Monte Carlo dropout Bayesian Neural Networks and concludes that methods such as NLM which do exact inference over a subset of parameters may perform better than methods that do variational inference over all parameters.</p>
 <div class="cell" data-execution_count="1">
-<details>
-<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -223,13 +221,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"figure.figsize"</span>: (<span class="dv">12</span>, <span class="dv">9</span>),</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>sns.set_theme(style<span class="op">=</span><span class="st">"darkgrid"</span>, palette<span class="op">=</span><span class="st">"colorblind"</span>, rc<span class="op">=</span>rc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
-<div class="cell" data-execution_count="2">
-<details>
-<summary>Code</summary>
+<div class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Simulated(torch.utils.data.Dataset):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n<span class="op">=</span><span class="dv">1000</span>, sigma<span class="op">=</span><span class="fl">0.1</span>, in_between<span class="op">=</span><span class="va">False</span>):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, n<span class="op">=</span><span class="dv">1000</span>, sigma<span class="op">=</span><span class="fl">0.1</span>, in_between<span class="op">=</span><span class="va">False</span>, outliers_percentage<span class="op">=</span><span class="va">None</span>):</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> in_between:</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>            mask <span class="op">=</span> torch.distributions.Bernoulli(<span class="fl">0.5</span>).sample(torch.Size([n, <span class="dv">1</span>]))</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.data <span class="op">=</span> (<span class="op">-</span><span class="dv">2</span> <span class="op">*</span> torch.rand(n, <span class="dv">1</span>).<span class="bu">float</span>() <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> mask <span class="op">\</span></span>
@@ -237,33 +232,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.data <span class="op">=</span> torch.randn(n, <span class="dv">1</span>).<span class="bu">float</span>()</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.targets <span class="op">=</span> f(<span class="va">self</span>.data, sigma).<span class="bu">float</span>()</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.targets)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.data[idx], <span class="va">self</span>.targets[idx]</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, sigma<span class="op">=</span><span class="fl">0.1</span>):</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> torch.tensor([<span class="op">-</span><span class="fl">0.6667</span>, <span class="op">-</span><span class="fl">0.6012</span>, <span class="op">-</span><span class="fl">1.0172</span>, <span class="op">-</span><span class="fl">0.7687</span>, <span class="fl">1.4680</span>, <span class="op">-</span><span class="fl">0.1678</span>])</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    fx <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(w)):</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        fx <span class="op">+=</span> w[i] <span class="op">*</span> (x<span class="op">**</span>i)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    fx <span class="op">*=</span> np.sin(np.pi <span class="op">*</span> x)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    fx <span class="op">*=</span> np.exp(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (x<span class="op">**</span><span class="dv">2</span>)) <span class="op">/</span> np.sqrt(<span class="dv">2</span> <span class="op">*</span> np.pi)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        fx.squeeze(<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> torch.randn(</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            <span class="bu">len</span>(x),</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span> sigma</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">#Adding outliers</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (outliers_percentage):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>          num_outliers <span class="op">=</span> <span class="bu">int</span>((outliers_percentage<span class="op">/</span><span class="dv">100</span>) <span class="op">*</span> n)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>          outliers <span class="op">=</span> torch.distributions.Uniform(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>              torch.tensor([<span class="op">-</span><span class="fl">5.0</span>]), torch.tensor([<span class="fl">5.0</span>])).sample(torch.Size([num_outliers]))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>          mask <span class="op">=</span> torch.randint_like(outliers, high<span class="op">=</span>n).<span class="bu">long</span>()</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>          <span class="co">#print(outliers)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>          <span class="va">self</span>.targets[mask] <span class="op">=</span> outliers.<span class="bu">float</span>()</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>):</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.targets)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, idx):</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.data[idx], <span class="va">self</span>.targets[idx]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f(x, sigma<span class="op">=</span><span class="fl">0.1</span>):</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> torch.tensor([<span class="op">-</span><span class="fl">0.6667</span>, <span class="op">-</span><span class="fl">0.6012</span>, <span class="op">-</span><span class="fl">1.0172</span>, <span class="op">-</span><span class="fl">0.7687</span>, <span class="fl">1.4680</span>, <span class="op">-</span><span class="fl">0.1678</span>])</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    fx <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(w)):</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        fx <span class="op">+=</span> w[i] <span class="op">*</span> (x<span class="op">**</span>i)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    fx <span class="op">*=</span> np.sin(np.pi <span class="op">*</span> x)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    fx <span class="op">*=</span> np.exp(<span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (x<span class="op">**</span><span class="dv">2</span>)) <span class="op">/</span> np.sqrt(<span class="dv">2</span> <span class="op">*</span> np.pi)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        fx.squeeze(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">+</span> torch.randn(</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>            <span class="bu">len</span>(x),</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span> sigma</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="3">
-<details>
-<summary>Code</summary>
+<div class="cell" data-execution_count="62">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>num_features <span class="op">=</span> <span class="dv">100</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n_train <span class="op">=</span> <span class="dv">200</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>dr <span class="op">=</span> <span class="fl">0.05</span></span>
@@ -304,11 +305,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>        },</span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    ]</span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
-<div class="cell" data-outputid="256a8c43-5fed-467d-ca5f-a6202c25bd75" data-execution_count="4">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="20c192fa-eb72-4536-f4da-4bfc5c6942af" data-execution_count="63">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model.train()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">500</span>):</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  train_loss <span class="op">=</span> []</span>
@@ -323,41 +321,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    train_loss.append(loss.item())</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> epoch <span class="op">%</span> <span class="dv">20</span> <span class="op">==</span> <span class="dv">0</span>:</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">, loss: </span><span class="sc">{</span>np<span class="sc">.</span>mean(train_loss)<span class="sc">:.02f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 0, loss: 3.35
-Epoch 20, loss: 0.27
-Epoch 40, loss: 0.05
-Epoch 60, loss: -0.14
-Epoch 80, loss: -0.28
-Epoch 100, loss: -0.43
-Epoch 120, loss: -0.40
-Epoch 140, loss: -0.53
-Epoch 160, loss: -0.49
-Epoch 180, loss: -0.66
-Epoch 200, loss: -0.58
-Epoch 220, loss: -0.64
-Epoch 240, loss: -0.71
-Epoch 260, loss: -0.78
-Epoch 280, loss: -0.80
-Epoch 300, loss: -0.77
-Epoch 320, loss: -0.78
-Epoch 340, loss: -0.73
-Epoch 360, loss: -0.57
-Epoch 380, loss: -0.74
-Epoch 400, loss: -0.77
-Epoch 420, loss: -0.75
-Epoch 440, loss: -0.80
-Epoch 460, loss: -0.72
-Epoch 480, loss: -0.79</code></pre>
+<pre><code>Epoch 0, loss: 2.83
+Epoch 20, loss: 0.10
+Epoch 40, loss: -0.08
+Epoch 60, loss: -0.28
+Epoch 80, loss: -0.36
+Epoch 100, loss: -0.38
+Epoch 120, loss: -0.48
+Epoch 140, loss: -0.67
+Epoch 160, loss: -0.67
+Epoch 180, loss: -0.63
+Epoch 200, loss: -0.73
+Epoch 220, loss: -0.67
+Epoch 240, loss: -0.70
+Epoch 260, loss: -0.76
+Epoch 280, loss: -0.71
+Epoch 300, loss: -0.58
+Epoch 320, loss: -0.84
+Epoch 340, loss: -0.75
+Epoch 360, loss: -0.79
+Epoch 380, loss: -0.83
+Epoch 400, loss: -0.79
+Epoch 420, loss: -0.71
+Epoch 440, loss: -0.62
+Epoch 460, loss: -0.74
+Epoch 480, loss: -0.89</code></pre>
 </div>
 </div>
 <section id="computing-uncertainty" class="level2">
 <h2 class="anchored" data-anchor-id="computing-uncertainty">Computing uncertainty</h2>
 <p>Need to compute <span class="math inline">\(\phi(X_{\text{test}})\)</span> and <span class="math inline">\(\phi(X_{\text{train}})\)</span></p>
-<div class="cell" data-outputid="e2991bfc-abdd-4603-a501-471ba22f41ac" data-execution_count="5">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="5bd29671-91ff-4728-dd6e-66e2fcef75e5" data-execution_count="64">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">150</span>).unsqueeze(<span class="op">-</span><span class="dv">1</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
@@ -365,37 +360,28 @@ Epoch 480, loss: -0.79</code></pre>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    phi_test <span class="op">=</span> model[:<span class="op">-</span><span class="dv">1</span>](x_test)</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    phi_train <span class="op">=</span> model[:<span class="op">-</span><span class="dv">1</span>](ds.data)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phi_train.shape, phi_test.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>torch.Size([200, 100]) torch.Size([150, 100])</code></pre>
 </div>
 </div>
 <p>Now we calculate, <span class="math inline">\(\sigma^{-2}\phi(X_{\text{train}})^{⊤} \phi(X_{\text{train}}) + \mathbf{I}\)</span>, which has shape num_features x num_features. This is different from a standard GP with size n_train x n_train.</p>
-<div class="cell" data-execution_count="6">
-<details>
-<summary>Code</summary>
+<div class="cell" data-execution_count="65">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>I <span class="op">=</span> torch.eye(num_features)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> phi_train.T <span class="op">@</span> phi_train <span class="op">/</span> torch.square(softplus(log_sigma).detach())  <span class="op">+</span> I</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
 <p>Now we solve for <span class="math inline">\(\phi(x)^{\top}\left(\sigma^{-2}\phi(X_{\text{train}})^{⊤} \phi(X_{\text{train}}) + \mathbf{I}\right)^{-1}\phi(x)\)</span>. We can use the identity <span class="math inline">\(\phi(x)^{\top}\left(\sigma^{-2}\phi(X_{\text{train}})^{⊤} \phi(X_{\text{train}}) + \mathbf{I}\right)^{-1}\phi(x) = ||L^{-1}\phi(x)||^2_2\)</span>, with <span class="math inline">\(L\)</span> the Cholesky decomposition of <span class="math inline">\(\left(\sigma^{-2}\phi(X_{\text{train}})^{⊤} \phi(X_{\text{train}}) + \mathbf{I}\right)^{-1}\)</span>. Thank you Andreas Kirsch.</p>
 <p>As pointed out by <a href="https://twitter.com/yaringal/status/1617441355885867008?s=46&amp;t=qRmt95MoVGdbvfCdmK2ssA">Yarin Gal</a>, this is in fact Bayesian Linear regression in penultimate layer feature space. Which is indeed, <a href="https://twitter.com/andrewgwils/status/1617284759142469634?s=46&amp;t=qRmt95MoVGdbvfCdmK2ssA">“sort of a deep kernel GP.”</a></p>
-<div class="cell" data-outputid="0cbe244c-fecd-4a32-837d-40f20be8f325" data-execution_count="7">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="a1e70a02-d4ea-49e2-8b1e-f6d4eb77e4c7" data-execution_count="66">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> torch.linalg.cholesky(A)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(L.shape)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> torch.linalg.solve_triangular(L, phi_test.T, upper<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>cov <span class="op">=</span> v.T <span class="op">@</span> v <span class="op">+</span> <span class="fl">1e-5</span> <span class="op">*</span> torch.eye(<span class="bu">len</span>(phi_test))</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>f_stddev <span class="op">=</span> torch.sqrt(torch.diag(cov))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>torch.Size([100, 100])</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="285cc2d4-52f7-4c39-9c0f-3c6a04f4a278" data-execution_count="8">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="71619ca9-83f9-43b3-db5b-06216d1ba113" data-execution_count="67">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">9</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.scatterplot(x<span class="op">=</span>ds.data.ravel(), y<span class="op">=</span>ds.targets.ravel())</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.lineplot(x<span class="op">=</span>x_test.ravel(), y<span class="op">=</span>mu_pred.ravel())</span>
@@ -406,28 +392,21 @@ Epoch 480, loss: -0.79</code></pre>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.3</span>,</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.ylim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-display">
 <p><img src="2023-03-09-Neural-Link-Model-Uncertainty-Estimation_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <section id="pretty-samples" class="level3">
 <h3 class="anchored" data-anchor-id="pretty-samples">Pretty Samples</h3>
-<div class="cell" data-execution_count="9">
-<details>
-<summary>Code</summary>
+<div class="cell" data-execution_count="68">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> torch.distributions.MultivariateNormal(loc<span class="op">=</span>mu_pred.ravel(), covariance_matrix<span class="op">=</span>cov)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>f_samples <span class="op">=</span> dist.sample(torch.Size([<span class="dv">20</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
-<div class="cell" data-outputid="863dfc0f-28a7-43a6-b122-a49586a53634" data-execution_count="10">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="dfbc6a45-0f60-4c68-c4f5-2bff4afee0a5" data-execution_count="69">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.scatterplot(x<span class="op">=</span>ds.data.ravel(), y<span class="op">=</span>ds.targets.ravel())</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> func <span class="kw">in</span> f_samples:</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> sns.lineplot(x<span class="op">=</span>x_test.ravel(), y<span class="op">=</span>func.to(<span class="st">"cpu"</span>), color<span class="op">=</span><span class="st">"C0"</span>, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.ylim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-display">
 <p><img src="2023-03-09-Neural-Link-Model-Uncertainty-Estimation_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
 </div>
@@ -437,9 +416,7 @@ Epoch 480, loss: -0.79</code></pre>
 <section id="in-between-uncertainty" class="level2">
 <h2 class="anchored" data-anchor-id="in-between-uncertainty">In-between uncertainty</h2>
 <p><a href="https://twitter.com/liyzhen2/status/1617431076225568768?s=46&amp;t=qRmt95MoVGdbvfCdmK2ssA">Great comment from Yingzhen Li</a> on in-between uncertainty! Let’s take a look.</p>
-<div class="cell" data-execution_count="11">
-<details>
-<summary>Code</summary>
+<div class="cell" data-execution_count="71">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>num_features <span class="op">=</span> <span class="dv">100</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>n_train <span class="op">=</span> <span class="dv">200</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>dr <span class="op">=</span> <span class="fl">0.05</span></span>
@@ -480,11 +457,8 @@ Epoch 480, loss: -0.79</code></pre>
 <span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>        },</span>
 <span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    ]</span>
 <span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
-<div class="cell" data-outputid="8eaf3254-92e7-4653-f964-a354c94f86cb" data-execution_count="12">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="0863ba62-7bdc-4402-c04c-2c43ec79becc" data-execution_count="72">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.train()</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">500</span>):</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  train_loss <span class="op">=</span> []</span>
@@ -499,38 +473,35 @@ Epoch 480, loss: -0.79</code></pre>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    train_loss.append(loss.item())</span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> epoch <span class="op">%</span> <span class="dv">20</span> <span class="op">==</span> <span class="dv">0</span>:</span>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">, loss: </span><span class="sc">{</span>np<span class="sc">.</span>mean(train_loss)<span class="sc">:.02f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Epoch 0, loss: 13.04
-Epoch 20, loss: 1.02
+<pre><code>Epoch 0, loss: 13.52
+Epoch 20, loss: 0.87
 Epoch 40, loss: 0.26
-Epoch 60, loss: 0.08
-Epoch 80, loss: -0.11
-Epoch 100, loss: -0.11
-Epoch 120, loss: -0.22
-Epoch 140, loss: -0.09
-Epoch 160, loss: -0.33
-Epoch 180, loss: -0.46
+Epoch 60, loss: -0.04
+Epoch 80, loss: -0.14
+Epoch 100, loss: -0.13
+Epoch 120, loss: -0.25
+Epoch 140, loss: -0.03
+Epoch 160, loss: -0.42
+Epoch 180, loss: -0.35
 Epoch 200, loss: -0.41
-Epoch 220, loss: -0.35
-Epoch 240, loss: -0.38
-Epoch 260, loss: -0.49
+Epoch 220, loss: -0.47
+Epoch 240, loss: -0.36
+Epoch 260, loss: -0.41
 Epoch 280, loss: -0.44
-Epoch 300, loss: -0.41
-Epoch 320, loss: -0.55
-Epoch 340, loss: -0.53
-Epoch 360, loss: -0.56
-Epoch 380, loss: -0.59
-Epoch 400, loss: -0.57
-Epoch 420, loss: -0.60
-Epoch 440, loss: -0.54
-Epoch 460, loss: -0.57
-Epoch 480, loss: -0.50</code></pre>
+Epoch 300, loss: -0.54
+Epoch 320, loss: -0.48
+Epoch 340, loss: -0.55
+Epoch 360, loss: -0.55
+Epoch 380, loss: -0.57
+Epoch 400, loss: -0.46
+Epoch 420, loss: -0.52
+Epoch 440, loss: -0.44
+Epoch 460, loss: -0.60
+Epoch 480, loss: -0.52</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="13">
-<details>
-<summary>Code</summary>
+<div class="cell" data-execution_count="73">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">150</span>).unsqueeze(<span class="op">-</span><span class="dv">1</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
@@ -545,11 +516,8 @@ Epoch 480, loss: -0.50</code></pre>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> torch.linalg.solve_triangular(L, phi_test.T, upper<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>cov <span class="op">=</span> v.T <span class="op">@</span> v <span class="op">+</span> <span class="fl">1e-5</span> <span class="op">*</span> torch.eye(<span class="bu">len</span>(phi_test))</span>
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>f_stddev <span class="op">=</span> torch.sqrt(torch.diag(cov))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
-<div class="cell" data-outputid="7ac38e06-32e6-4888-e750-99a4db2cc88c" data-execution_count="14">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="f1d0b1f6-0352-44ca-951b-7537d87825ed" data-execution_count="74">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">9</span>))</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.scatterplot(x<span class="op">=</span>ds.data.ravel(), y<span class="op">=</span>ds.targets.ravel())</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.lineplot(x<span class="op">=</span>x_test.ravel(), y<span class="op">=</span>mu_pred.ravel())</span>
@@ -559,28 +527,142 @@ Epoch 480, loss: -0.50</code></pre>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    y2<span class="op">=</span>mu_pred.ravel() <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> f_stddev,</span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.3</span>,</span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-display">
 <p><img src="2023-03-09-Neural-Link-Model-Uncertainty-Estimation_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="15">
-<details>
-<summary>Code</summary>
+<div class="cell" data-execution_count="75">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> torch.distributions.MultivariateNormal(loc<span class="op">=</span>mu_pred.ravel(), covariance_matrix<span class="op">=</span>cov)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>f_samples <span class="op">=</span> dist.sample(torch.Size([<span class="dv">50</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
-<div class="cell" data-outputid="bf0bf889-9581-4ed4-a0e9-673379accc5c" data-execution_count="16">
-<details>
-<summary>Code</summary>
+<div class="cell" data-outputid="f3e79820-2974-47fc-f0a0-dde9df4ed40c" data-execution_count="76">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.scatterplot(x<span class="op">=</span>ds.data.ravel(), y<span class="op">=</span>ds.targets.ravel())</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> func <span class="kw">in</span> f_samples:</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> sns.lineplot(x<span class="op">=</span>x_test.ravel(), y<span class="op">=</span>func.to(<span class="st">"cpu"</span>), color<span class="op">=</span><span class="st">"C0"</span>, alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.ylim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output cell-output-display">
 <p><img src="2023-03-09-Neural-Link-Model-Uncertainty-Estimation_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="with-outliers" class="level2">
+<h2 class="anchored" data-anchor-id="with-outliers">With Outliers</h2>
+<p>Adding 5% outliers : The loss increases from -0.89 to 1.27 .</p>
+<div class="cell" data-outputid="f8eac18f-59e7-4a25-e27b-79f9d1c9909e" data-execution_count="78">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>num_features <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>n_train <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>dr <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> torch.nn.Sequential(</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    torch.nn.Linear(<span class="dv">1</span>, num_features),</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    torch.nn.ReLU(),</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    torch.nn.Dropout(dr),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    torch.nn.Linear(num_features, num_features),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    torch.nn.ReLU(),</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    torch.nn.Dropout(dr),</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    torch.nn.Linear(num_features, num_features),</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    torch.nn.ReLU(),</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    torch.nn.Dropout(dr),</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    torch.nn.Linear(num_features, <span class="dv">1</span>),</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>log_sigma <span class="op">=</span> torch.nn.Parameter(<span class="op">-</span><span class="dv">2</span> <span class="op">*</span> torch.ones(<span class="dv">1</span>))</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> Simulated(n<span class="op">=</span>n_train, outliers_percentage<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>dl <span class="op">=</span> torch.utils.data.DataLoader(</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    ds,</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    shuffle<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    drop_last<span class="op">=</span><span class="va">True</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> torch.optim.AdamW(</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>            <span class="st">"params"</span>: model.parameters(),</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>            <span class="st">"lr"</span>: <span class="fl">1e-3</span>,</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>            <span class="st">"weight_decay"</span>: (<span class="dv">1</span> <span class="op">-</span> dr)</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>            <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> <span class="bu">len</span>(ds)),</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>            <span class="st">"params"</span>: log_sigma,</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>            <span class="st">"lr"</span>: <span class="fl">1e-2</span>,</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>            <span class="st">"weight_decay"</span>: <span class="fl">1e-6</span>,</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>model.train()</span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">500</span>):</span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>  train_loss <span class="op">=</span> []</span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> batch <span class="kw">in</span> dl:</span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> batch</span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>    mu <span class="op">=</span> model(x)</span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>    dist <span class="op">=</span> torch.distributions.Normal(mu, softplus(log_sigma))</span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span> <span class="op">-</span>dist.log_prob(y.unsqueeze(<span class="op">-</span><span class="dv">1</span>)).mean()</span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>    optimizer.zero_grad()</span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>    loss.backward()</span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a>    optimizer.step()</span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>    train_loss.append(loss.item())</span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> epoch <span class="op">%</span> <span class="dv">20</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">, loss: </span><span class="sc">{</span>np<span class="sc">.</span>mean(train_loss)<span class="sc">:.02f}</span><span class="ss">"</span>)</span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a>x_test <span class="op">=</span> torch.linspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">150</span>).unsqueeze(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">eval</span>()</span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a>    mu_pred <span class="op">=</span> model(x_test)</span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>    phi_test <span class="op">=</span> model[:<span class="op">-</span><span class="dv">1</span>](x_test)</span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a>    phi_train <span class="op">=</span> model[:<span class="op">-</span><span class="dv">1</span>](ds.data)</span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(phi_train.shape, phi_test.shape)</span>
+<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>I <span class="op">=</span> torch.eye(num_features)</span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> phi_train.T <span class="op">@</span> phi_train <span class="op">/</span> torch.square(softplus(log_sigma).detach())  <span class="op">+</span> I</span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> torch.linalg.cholesky(A)</span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(L.shape)</span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> torch.linalg.solve_triangular(L, phi_test.T, upper<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>cov <span class="op">=</span> v.T <span class="op">@</span> v <span class="op">+</span> <span class="fl">1e-5</span> <span class="op">*</span> torch.eye(<span class="bu">len</span>(phi_test))</span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a>f_stddev <span class="op">=</span> torch.sqrt(torch.diag(cov))</span>
+<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">9</span>))</span>
+<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.scatterplot(x<span class="op">=</span>ds.data.ravel(), y<span class="op">=</span>ds.targets.ravel())</span>
+<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> sns.lineplot(x<span class="op">=</span>x_test.ravel(), y<span class="op">=</span>mu_pred.ravel())</span>
+<span id="cb21-77"><a href="#cb21-77" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.fill_between(</span>
+<span id="cb21-78"><a href="#cb21-78" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_test.ravel(), </span>
+<span id="cb21-79"><a href="#cb21-79" aria-hidden="true" tabindex="-1"></a>    y1<span class="op">=</span>mu_pred.ravel() <span class="op">+</span> <span class="fl">1.96</span> <span class="op">*</span> f_stddev, </span>
+<span id="cb21-80"><a href="#cb21-80" aria-hidden="true" tabindex="-1"></a>    y2<span class="op">=</span>mu_pred.ravel() <span class="op">-</span> <span class="fl">1.96</span> <span class="op">*</span> f_stddev,</span>
+<span id="cb21-81"><a href="#cb21-81" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.3</span>,</span>
+<span id="cb21-82"><a href="#cb21-82" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-83"><a href="#cb21-83" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> plt.ylim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 0, loss: 25.33
+Epoch 20, loss: 5.53
+Epoch 40, loss: 3.51
+Epoch 60, loss: 2.53
+Epoch 80, loss: 2.00
+Epoch 100, loss: 1.35
+Epoch 120, loss: 1.61
+Epoch 140, loss: 1.49
+Epoch 160, loss: 1.43
+Epoch 180, loss: 1.39
+Epoch 200, loss: 1.33
+Epoch 220, loss: 1.34
+Epoch 240, loss: 1.23
+Epoch 260, loss: 1.27
+Epoch 280, loss: 1.21
+Epoch 300, loss: 1.32
+Epoch 320, loss: 1.29
+Epoch 340, loss: 1.27
+Epoch 360, loss: 1.29
+Epoch 380, loss: 1.28
+Epoch 400, loss: 1.29
+Epoch 420, loss: 1.28
+Epoch 440, loss: 1.22
+Epoch 460, loss: 1.17
+Epoch 480, loss: 1.27
+torch.Size([200, 100]) torch.Size([150, 100])
+torch.Size([100, 100])</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="2023-03-09-Neural-Link-Model-Uncertainty-Estimation_files/figure-html/cell-18-output-2.png" class="img-fluid"></p>
 </div>
 </div>
 
