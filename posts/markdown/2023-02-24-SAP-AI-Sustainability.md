@@ -12,6 +12,13 @@ toc: true
 
 ---
 
+## SAP AI Core
+
+* Doing exercises using SAP AI Core 
+* Following instructions from the open source [](https://github.com/SAP-samples/btp-ai-sustainability-bootcamp/blob/opensap-freetier/prerequisites/prerequisites.md#0-free-tier-plan-for-sap-ai-core-and-sap-ai-launchpad)
+
+## Why sustainability
+
 1. Sustainability
 * Pillars of sustainability - society, economy, environmnt
 
