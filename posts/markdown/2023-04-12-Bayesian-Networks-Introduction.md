@@ -5,7 +5,7 @@ categories:
 - probability
 date: '2023-04-12'
 description: Brief Explanation of Bayesian Network
-image:
+image: images/bn.png
 layout: post
 title: Bayesian Networks ? What and Why
 toc: true
