@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-04-12">
+<meta name="description" content="Brief Explanation of Bayesian Network">
+
+<title>devblog - Bayesian Networks ? What and Why</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">devblog</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Bayesian Networks ? What and Why</h1>
+                  <div>
+        <div class="description">
+          Brief Explanation of Bayesian Network
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">probability</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 12, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-is-bayesian-network" id="toc-what-is-bayesian-network" class="nav-link active" data-scroll-target="#what-is-bayesian-network">What is Bayesian Network ?</a></li>
+  <li><a href="#when-to-use-a-bayesian-network" id="toc-when-to-use-a-bayesian-network" class="nav-link" data-scroll-target="#when-to-use-a-bayesian-network">When to use a Bayesian Network?</a></li>
+  <li><a href="#process-of-designing-a-bayesian-network" id="toc-process-of-designing-a-bayesian-network" class="nav-link" data-scroll-target="#process-of-designing-a-bayesian-network">Process of designing a Bayesian Network</a></li>
+  <li><a href="#example-dialogue-management" id="toc-example-dialogue-management" class="nav-link" data-scroll-target="#example-dialogue-management">Example Dialogue Management</a>
+  <ul class="collapse">
+  <li><a href="#python-code" id="toc-python-code" class="nav-link" data-scroll-target="#python-code">Python code</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="what-is-bayesian-network" class="level1">
+<h1>What is Bayesian Network ?</h1>
+<p>A Bayesian network is a graphical model used to represent probabilistic relationships among a set of variables. In a Bayesian network, each variable is represented by a node in the graph, and the edges between nodes represent the probabilistic dependencies between them. The nodes in the graph are typically labeled with the name of the corresponding variable and the conditional probability distribution of the variable given its parents. Bayesian networks are commonly used in machine learning, artificial intelligence, and decision-making applications. They are particularly useful in situations where there are many variables with complex interdependencies, and where it is difficult to determine the relationships between them using traditional statistical methods. By using Bayesian networks, it is possible to model the probability of certain events occurring, given a set of observed data. This makes it a powerful tool for making predictions, performing diagnosis, and making decisions based on uncertain information.</p>
+</section>
+<section id="when-to-use-a-bayesian-network" class="level1">
+<h1>When to use a Bayesian Network?</h1>
+<p>Bayesian networks are useful in situations where you need to model the probability of certain events occurring, given a set of observed data, and where there are many variables with complex interdependencies. Here are some specific situations where Bayesian networks are commonly used:</p>
+<ul>
+<li><p>Predictive modeling: Bayesian networks can be used to build predictive models for a variety of applications, such as weather forecasting, disease diagnosis, and financial forecasting. By modeling the probabilistic relationships between different variables, it is possible to predict the likelihood of certain events occurring in the future.</p></li>
+<li><p>Decision-making: Bayesian networks can be used to make decisions based on uncertain information. For example, in medical diagnosis, a Bayesian network can be used to determine the probability of a patient having a certain disease given their symptoms and medical history.</p></li>
+<li><p>Risk assessment: Bayesian networks can be used to assess risk in a variety of contexts, such as finance, insurance, and engineering. By modeling the probabilistic relationships between different variables, it is possible to identify the most important factors that contribute to risk and to develop strategies for reducing it.</p></li>
+<li><p>Causal inference: Bayesian networks can be used to infer causal relationships between different variables. For example, in economics, a Bayesian network can be used to determine the causal relationship between different economic variables, such as inflation and interest rates.</p></li>
+</ul>
+<p>Overall, Bayesian networks are a powerful tool for modeling complex probabilistic relationships between different variables and for making decisions based on uncertain information.</p>
+</section>
+<section id="process-of-designing-a-bayesian-network" class="level1">
+<h1>Process of designing a Bayesian Network</h1>
+<p>Suppose you have a decision-making problem with uncertain information. What is the process involved in designing a bayesian network?</p>
+<p>The process of designing a Bayesian network for a decision-making problem with uncertain information can be broken down into the following steps: * Identify the decision problem: Determine the specific decision problem that you want to solve using a Bayesian network. This may involve defining the decision variables, the outcomes of the decision, and the uncertainties that affect the decision. * Identify the relevant variables: Identify the variables that are relevant to the decision problem. These may include both observable and unobservable variables that affect the outcome of the decision. * Define the structure of the Bayesian network: Determine the structure of the Bayesian network by specifying the relationships between the variables. This involves defining the directed acyclic graph (DAG) that represents the network, where each node in the graph represents a variable and the edges represent probabilistic dependencies between the variables. * Specify the conditional probability distributions: Specify the conditional probability distributions for each node in the Bayesian network. This involves determining the probabilities of each possible outcome of the variable given the values of its parent variables. * Parameterize the Bayesian network: Estimate the parameters of the Bayesian network from data or expert knowledge. This involves using Bayesian inference to learn the conditional probability distributions of each node in the network given the observed data. * Evaluate the Bayesian network: Evaluate the performance of the Bayesian network by comparing its predictions to observed data or using other metrics, such as accuracy, precision, and recall. * Use the Bayesian network to make decisions: Use the Bayesian network to make decisions based on the uncertain information. This involves computing the posterior probabilities of different outcomes given the observed data and using decision rules, such as maximum expected utility or maximum likelihood, to select the best course of action.</p>
+<p>Overall, designing a Bayesian network for decision-making problems with uncertain information involves a combination of domain knowledge, statistical modeling, and machine learning techniques.</p>
+</section>
+<section id="example-dialogue-management" class="level1">
+<h1>Example Dialogue Management</h1>
+<p>Here is an example of a Bayesian network for dialogue management:</p>
+<p>The variables in the network are:</p>
+<ul>
+<li><p><strong>User goal</strong>: This variable represents the user’s goal in the dialogue, such as finding information, making a request, or expressing an opinion. It can take on values such as “information request,” “task completion,” or “opinion expression.”</p></li>
+<li><p><strong>User preference</strong>: This variable represents the user’s preference for different types of responses from the robot, such as a direct answer, a clarification question, or a confirmation request. It can take on values such as “direct answer,” “clarification question,” or “confirmation request.”</p></li>
+<li><p><strong>Dialogue context</strong>: This variable represents the context of the dialogue, such as the topic being discussed, the stage of the dialogue, and the user’s previous statements. It can take on values such as “topic: weather,” “stage: introduction,” or “previous statement: positive feedback.”</p></li>
+<li><p><strong>Robot understanding</strong>: This variable represents the robot’s understanding of the user’s utterance, such as whether it was a question, a statement, or a request. It can take on values such as “question,” “statement,” or “request.”</p></li>
+<li><p><strong>Robot response</strong>: This variable represents the possible responses that the robot can make to the user’s utterance, such as providing information, asking for clarification, or requesting confirmation. It can take on values such as “provide information,” “ask for clarification,” or “request confirmation.”</p></li>
+</ul>
+<p>The conditional probability distributions for each node in the network would be determined based on data or expert knowledge. For example, the probability of a user goal being “information request” given a dialogue context of “topic: weather” might be higher than the probability of a user goal being “opinion expression” in the same context.</p>
+<p>To use the Bayesian network to make decisions about the content and timing of the robot’s utterances, we would start by observing the values of the user goal, user preference, and dialogue context nodes. We would then compute the posterior probabilities of the robot understanding and robot response nodes given these observed values using Bayes’ theorem. Finally, we would select the response with the highest expected utility or maximum likelihood as the robot’s utterance.</p>
+<section id="python-code" class="level2">
+<h2 class="anchored" data-anchor-id="python-code">Python code</h2>
+<p>We will use the PyAgum library to create the BN and try to infer .</p>
+<pre><code>
+# Create a Bayesian network object
+bn = gum.BayesNet('Dialogue Management')
+
+# Add the nodes to the network
+user_goal = bn.add(gum.LabelizedVariable('user_goal', 'User Goal', 3))
+user_preference = bn.add(gum.LabelizedVariable('user_preference', 'User Preference', 3))
+dialogue_context = bn.add(gum.LabelizedVariable('dialogue_context', 'Dialogue Context', 3))
+robot_understanding = bn.add(gum.LabelizedVariable('robot_understanding', 'Robot Understanding', 3))
+robot_response = bn.add(gum.LabelizedVariable('robot_response', 'Robot Response', 3))
+bn.addArc(user_preference,robot_understanding)
+bn.addArc(dialogue_context,robot_understanding)
+#bn.addArc(user_goal,robot_understanding)
+
+bn.addArc(robot_understanding,robot_response)
+
+
+# Define the conditional probability distributions for each node
+bn.cpt(user_goal).fillWith([0.3, 0.4, 0.3])
+bn.cpt(user_preference).fillWith([0.4, 0.3, 0.3])
+bn.cpt(dialogue_context).fillWith([0.2, 0.6, 0.2])
+
+bn.cpt(robot_understanding)[{'user_preference': 0, 'dialogue_context': 0}] = [0.4, 0.3, 0.3]
+bn.cpt(robot_understanding)[{'user_preference': 0, 'dialogue_context': 1}] = [0.3, 0.4, 0.3]
+bn.cpt(robot_understanding)[{'user_preference': 0, 'dialogue_context': 2}] = [0.3, 0.3, 0.4]
+
+bn.cpt(robot_understanding)[{'user_preference': 1, 'dialogue_context': 0}] = [0.2, 0.5, 0.3]
+bn.cpt(robot_understanding)[{'user_preference': 1, 'dialogue_context': 1}] = [0.3, 0.4, 0.3]
+bn.cpt(robot_understanding)[{'user_preference': 1, 'dialogue_context': 2}] = [0.3, 0.3, 0.4]
+
+bn.cpt(robot_understanding)[{'user_preference': 2, 'dialogue_context': 0}] = [0.2, 0.3, 0.5]
+bn.cpt(robot_understanding)[{'user_preference': 2, 'dialogue_context': 1}] = [0.3, 0.3, 0.4]
+bn.cpt(robot_understanding)[{'user_preference': 2, 'dialogue_context': 2}] = [0.3, 0.4, 0.3]
+
+bn.cpt(robot_response)[{'robot_understanding': 0}] = [0.5, 0.2, 0.3]
+bn.cpt(robot_response)[{'robot_understanding': 1}] = [0.3, 0.5, 0.2]
+bn.cpt(robot_response)[{'robot_understanding': 2}] = [0.2, 0.3, 0.5]
+
+gnb.showBN(bn,size='30')
+</code></pre>
+<pre><code># Observe the values of the user_goal and dialogue_context nodes
+#bn.setEvidence({'user_goal': 0, 'dialogue_context': 0})
+
+# Infer the posterior probabilities of the robot_understanding and robot_response nodes
+ie = gum.LazyPropagation(bn)
+
+# Observe the values of the user_goal and dialogue_context nodes
+ie.setEvidence({'user_goal': 0, 'dialogue_context': 0})
+
+ie.makeInference()
+
+robot_understanding_posterior = ie.posterior(robot_understanding)
+robot_response_posterior = ie.posterior(robot_response)
+
+# Select the response with the highest probability as the robot's utterance
+robot_response = robot_response_posterior.toarray().argmax()
+
+print('Robot response: {}'.format(robot_response))</code></pre>
+<p>Output</p>
+<pre><code>Robot response: 2</code></pre>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

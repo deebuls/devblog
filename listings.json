@@ -3,6 +3,8 @@
     "listing": "/index.html",
     "items": [
       "/posts/notebooks/2023-03-09-Neural-Link-Model-Uncertainty-Estimation.html",
+      "/posts/markdown/images/Readme.html",
+      "/posts/markdown/2023-04-12-Bayesian-Networks-Introduction.html",
       "/posts/notebooks/2023-03-01-derivative-loss-functions.html",
       "/posts/notebooks/2023-02-28-bhattacharya-distance-dirichlet-multinomial-distributions.html",
       "/posts/markdown/2023-02-24-SAP-AI-Sustainability.html",
@@ -26,8 +28,8 @@
       "/posts/markdown/2021-04-13-how-to-use-uncertainty-estimate-from-dnn.html",
       "/posts/notebooks/2021-01-01-one-vs-all-classifier-revisiting.html",
       "/posts/markdown/2020-07-22-Learning-DNN.html",
-      "/posts/markdown/2020-05-29-Explanation-DNN-Uncertainty.html",
       "/posts/markdown/2020-05-29-Explanation-DNN-Reliability.html",
+      "/posts/markdown/2020-05-29-Explanation-DNN-Uncertainty.html",
       "/posts/notebooks/2020-05-27-uncertainty-regression.html",
       "/posts/markdown/2020-05-21-Explanation-Learning-DatasetShift.html",
       "/posts/notebooks/2020-05-19-probability-normalinversegamma.html",

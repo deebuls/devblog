@@ -1,1 +1,1 @@
-Sitemap: https://github.com/deebuls/devblog/sitemap.xml
+Sitemap: https://deebuls.github.io/devblog/sitemap.xml
