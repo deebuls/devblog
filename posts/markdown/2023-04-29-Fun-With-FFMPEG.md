@@ -3,7 +3,7 @@ categories:
 - fun
 date: '2023-04-29'
 description: ffmpeg different commands
-image: images/bn.png
+image: images/FFmpeg.png
 layout: post
 title: FFMPEG - Automating video edition
 toc: true
