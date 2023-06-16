@@ -2,9 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/notebooks/2023-03-09-Neural-Link-Model-Uncertainty-Estimation.html",
+      "/posts/notebooks/2023-06-15-Intro-To-Statistial-Testing.html",
       "/posts/markdown/2023-04-29-Fun-With-FFMPEG.html",
       "/posts/markdown/2023-04-12-Bayesian-Networks-Introduction.html",
+      "/posts/notebooks/2023-03-09-Neural-Link-Model-Uncertainty-Estimation.html",
       "/posts/notebooks/2023-03-01-derivative-loss-functions.html",
       "/posts/notebooks/2023-02-28-bhattacharya-distance-dirichlet-multinomial-distributions.html",
       "/posts/markdown/2023-02-24-SAP-AI-Sustainability.html",
@@ -34,8 +35,7 @@
       "/posts/markdown/2020-05-21-Explanation-Learning-DatasetShift.html",
       "/posts/notebooks/2020-05-19-probability-normalinversegamma.html",
       "/posts/notebooks/2020-05-05-uncertainty-regression-robustness.html",
-      "/posts/notebooks/2020-03-20-probability-likelihood.html",
-      "/posts/notebooks/2023-06-15-Intro-To-Statistial-Testing.html"
+      "/posts/notebooks/2020-03-20-probability-likelihood.html"
     ]
   }
 ]
