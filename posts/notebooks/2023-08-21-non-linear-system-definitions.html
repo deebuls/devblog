@@ -63,6 +63,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -154,8 +156,55 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/main/posts/notebooks/2023-08-21-non-linear-system-definitions.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
+<section id="non-linear-system-definitions" class="level1">
+<h1>Non Linear system Definitions</h1>
+<p>When building kalman filter we define the system using mathematical equations like system equation, Odinary differential equation, Partial diferential equation, state-space equation, etc.</p>
+<p>I am collecting a set of these equations for easy access.</p>
+<section id="open-research-question" class="level3">
+<h3 class="anchored" data-anchor-id="open-research-question">Open Research Question</h3>
+<p>** Is there a meta-model domain specific language for specifing these models and the corresponsing filter **</p>
+<p>** How to use Json-ld based DSL be used to reperesent systems and the filters **</p>
+</section>
+<section id="single-rotatry-joint-robot-arm" class="level2">
+<h2 class="anchored" data-anchor-id="single-rotatry-joint-robot-arm">Single Rotatry Joint Robot Arm</h2>
+<p>Copied from [1]</p>
+<p>Consider the following example: A robot arm is moved by a single rotary joint. Since the robot arm is affected by gravity, the torque acting on the rotary joint depends on the current angle. The robot arm is observed by some sensor that is capable of measuring the absolute orientation. Our goal is to estimate the angle of the rotary joint.</p>
+<p>The <strong>system</strong> can be modeled by</p>
+<p><span class="math display">\[ \theta_{k+1}=a_{k}(\theta_{k})+w_{k} \]</span></p>
+<p>with <strong>system function</strong></p>
+<p><span class="math display">\[ a_{k}(\theta_{k})=\theta_{k}+\underbrace{c_{1}\sin (\theta_{k})}_{\rm gravity}+\underbrace{c_{2}}_{\rm velocity}, \]</span> where <span class="math inline">\(\theta_k\)</span> is the state and <span class="math inline">\(w_k\)</span> is Wrapped Normal-distributed noise. The constants c1,c2 can be derived from a physical model of the system.</p>
+<p>The <strong>measurement equation</strong> is given by</p>
+<p><span class="math display">\[ \hat{z}_{k}=\theta_{k}+v_{k}, \]</span> where <span class="math inline">\(z_k\)</span> is the orientation measurement and <span class="math inline">\(v_k\)</span> is WrappdNormal-distributed noise.</p>
+<section id="another-representation-of-same-system-2" class="level3">
+<h3 class="anchored" data-anchor-id="another-representation-of-same-system-2">Another representation of same system [2]</h3>
+<p><span class="math display">\[ \begin{align*}
+\boldsymbol{\theta }_{k} = &amp;\boldsymbol{\theta }_{k-1}+d_{1} \sin (\boldsymbol{\theta }_{k-1})+d_{2}+\eta _{k-1}, \tag{35}\\
+\mathbf{y}_{k} = \begin{bmatrix}\sin \left(\theta_{k}\right) \\\cos \left(\theta_{k}\right)\end{bmatrix}+\vartheta_{k},\tag{36}
+\end{align*} \]</span></p>
+<p>where d1 and d2 are constants.</p>
+<p>The initial true and estimated states are taken as θ0=0 and θ~0|0=π , respectively, while the initial variance is taken as P0|0=2 . We assign d1=0.1 , d2=0.15 , Q=0.1 , and R=diag(0.2,0.2) . The simulation is performed for 200 time-steps and angular RMSEs are computed by implementing 1000 Monte-Carlo simulations.</p>
+<ul>
+<li>[1] G. Kurz, I. Gilitschenski and U. D. Hanebeck, “Recursive nonlinear filtering for angular data based on circular distributions,” 2013 American Control Conference, Washington, DC, USA, 2013, pp.&nbsp;5439-5445, doi: 10.1109/ACC.2013.6580688.</li>
+<li>[2]</li>
+</ul>
+</section>
+</section>
+<section id="problem-2" class="level2">
+<h2 class="anchored" data-anchor-id="problem-2">Problem 2</h2>
+<p>Copied from [2]</p>
+<p>The second problem considered is a general multivariate nonlinear angular estimation problem [14]. In this problem, the state dynamics are of oscillatory nature, while the measurement equation is a monotone increasing function of arguments (e.g.&nbsp;a positive quadratic form or its positive square root). Similar, system models often appear in sonar-based bearing measurements and GPS (Global positioning system)-based information on the angle of arrival. This problem has been widely used in literature [11], [14], [44], [45] for validating the filtering performance. The state-space model of this problem can be written as [14],</p>
+<p><span class="math display">\[ \begin{align*} \boldsymbol {\theta }_{k}=&amp;|2 \cos (\boldsymbol {\theta }_{k-1})|+{\eta _{k-1}}, \tag{37}\\ \mathbf {y}_{k}=&amp;\sqrt {(1+ \boldsymbol {\theta }_{k}^{T} \boldsymbol {\theta }_{k})} +\vartheta _{k}.\tag{38}\end{align*} \]</span></p>
+<p>We consider a three-dimensional system (θk∈D3,yk∈D ) and assign the initial true and estimated states as θ0=[0,−π,π]T and θ~0|0=[−π,π,π/2]T , respectively, while initial error covariance is taken as P0|0=2In . The noise covariances are assigned as Q=diag([0.05,0.05,0.05]) and R=0.1 . The states are estimated for 200 time-steps and the results are evaluated by performing 1000 Monte-Carlo runs.</p>
+</section>
+<section id="uncertainty-propagation-in-python" class="level2">
+<h2 class="anchored" data-anchor-id="uncertainty-propagation-in-python">Uncertainty Propagation in Python</h2>
+<p>Example based on [1] for Cartesian to Polar Transformation . Below is the text</p>
+<p>The simple example of transforming the coordinates of a point from the Cartesian to the Polar plane is considered. We assume that the mean and standard uncertainty of the cartesian coordinates <span class="math inline">\((x, y)\)</span> are known a priori and the quanti- ties are declared as uncertain objects as depicted in Fig. 2. The radial and angular coordinates <span class="math inline">\((r, θ)\)</span> are computed by applying the transformation equations <span class="math display">\[r = \sqrt{x^2 + y^2}\]</span> and <span class="math display">\[\theta = arctan(y/x)\]</span>, respectively.</p>
+<p>[1] <a href="https://www.aau.at/wp-content/uploads/2020/03/UT_Uncertainty_Propagation.pdf">Automatic Uncertainty Propagation Based on the Unscented Transform</a></p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
