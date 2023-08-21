@@ -1,151 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://github.com/deebuls/devblog/index.html</loc>
-    <lastmod>2023-06-16T17:41:18.230Z</lastmod>
-  </url>
-  <url>
     <loc>https://github.com/deebuls/devblog/about.html</loc>
-    <lastmod>2023-06-16T17:41:19.162Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-05-29-Explanation-DNN-Reliability.html</loc>
-    <lastmod>2023-06-16T17:41:19.610Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-05-29-Explanation-DNN-Uncertainty.html</loc>
-    <lastmod>2023-06-16T17:41:20.026Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2021-08-08-Neurips-Competition-Uncertainty.html</loc>
-    <lastmod>2023-06-16T17:41:20.638Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2022-06-25-Github-Action-Latex-Compilation.html</loc>
-    <lastmod>2023-06-16T17:41:21.370Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2023-04-12-Bayesian-Networks-Introduction.html</loc>
-    <lastmod>2023-06-16T17:41:21.950Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2023-01-13-Migration-ROS-Kelo-Tulip-ROS2.html</loc>
-    <lastmod>2023-06-16T17:41:22.414Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-07-22-Learning-DNN.html</loc>
-    <lastmod>2023-06-16T17:41:22.826Z</lastmod>
+    <lastmod>2023-08-21T10:59:33.716Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/deebuls/devblog/posts/markdown/2023-04-29-Fun-With-FFMPEG.html</loc>
-    <lastmod>2023-06-16T17:41:23.438Z</lastmod>
+    <lastmod>2023-08-21T10:59:32.976Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2023-02-24-SAP-AI-Sustainability.html</loc>
-    <lastmod>2023-06-16T17:41:23.894Z</lastmod>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2023-01-13-Migration-ROS-Kelo-Tulip-ROS2.html</loc>
+    <lastmod>2023-08-21T10:59:32.148Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-05-29-Explanation-DNN-Uncertainty.html</loc>
+    <lastmod>2023-08-21T10:59:31.128Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/deebuls/devblog/posts/markdown/2022-10-20-ROS2-LXD-Container.html</loc>
-    <lastmod>2023-06-16T17:41:24.466Z</lastmod>
+    <lastmod>2023-08-21T10:59:30.256Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2023-02-24-SAP-AI-Sustainability.html</loc>
+    <lastmod>2023-08-21T10:59:29.384Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-05-29-Explanation-DNN-Reliability.html</loc>
+    <lastmod>2023-08-21T10:59:28.704Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/deebuls/devblog/posts/markdown/2021-04-13-how-to-use-uncertainty-estimate-from-dnn.html</loc>
-    <lastmod>2023-06-16T17:41:25.102Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-05-21-Explanation-Learning-DatasetShift.html</loc>
-    <lastmod>2023-06-16T17:41:25.530Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/markdown/2022-05-13-LerningProbabilityForApplication.html</loc>
-    <lastmod>2023-06-16T17:41:25.926Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2020-03-20-probability-likelihood.html</loc>
-    <lastmod>2023-06-16T17:41:26.814Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2020-05-19-probability-normalinversegamma.html</loc>
-    <lastmod>2023-06-16T17:41:27.334Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-12-19-dirichlet-disentanglement-epistemic-aleatoric-evidential.html</loc>
-    <lastmod>2023-06-16T17:41:27.906Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-02-14-cauchy-distribution-boxcox-gaussian.html</loc>
-    <lastmod>2023-06-16T17:41:28.562Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-17-quantize-dnn-model-pytorch.html</loc>
-    <lastmod>2023-06-16T17:41:29.462Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-06-15-Intro-To-Statistial-Testing.html</loc>
-    <lastmod>2023-06-16T17:41:32.514Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-02-05-proper-scoring-interval-score-crps.html</loc>
-    <lastmod>2023-06-16T17:41:33.082Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-17-exponential-power-distribution.html</loc>
-    <lastmod>2023-06-16T17:41:33.814Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-03-09-Neural-Link-Model-Uncertainty-Estimation.html</loc>
-    <lastmod>2023-06-16T17:41:34.478Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-06-16-fomo.html</loc>
-    <lastmod>2023-06-16T17:41:34.922Z</lastmod>
+    <lastmod>2023-08-21T10:59:27.840Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/deebuls/devblog/posts/notebooks/2021-01-01-one-vs-all-classifier-revisiting.html</loc>
-    <lastmod>2023-06-16T17:41:35.390Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2020-05-27-uncertainty-regression.html</loc>
-    <lastmod>2023-06-16T17:41:36.150Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-01-11-pytroch-embedding-2d-visualization.html</loc>
-    <lastmod>2023-06-16T17:41:37.082Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-26-general-loss-function-l2.html</loc>
-    <lastmod>2023-06-16T17:41:37.670Z</lastmod>
+    <lastmod>2023-08-21T10:59:26.940Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-26-error-correcting-output-codes-.html</loc>
-    <lastmod>2023-06-16T17:41:38.286Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-02-08-fibonacci-sequence-non-recursive-formula.html</loc>
-    <lastmod>2023-06-16T17:41:38.894Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-12-15-comparing-normal-laplace-cacuhy-distirbutions-interval-score.html</loc>
-    <lastmod>2023-06-16T17:41:39.486Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2021-09-21-robust-statistics.html</loc>
-    <lastmod>2023-06-16T17:41:39.983Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-02-28-bhattacharya-distance-dirichlet-multinomial-distributions.html</loc>
-    <lastmod>2023-06-16T17:41:40.615Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-03-01-derivative-loss-functions.html</loc>
-    <lastmod>2023-06-16T17:41:41.203Z</lastmod>
+    <lastmod>2023-08-21T10:59:26.076Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/deebuls/devblog/posts/notebooks/2020-05-05-uncertainty-regression-robustness.html</loc>
-    <lastmod>2023-06-16T17:41:42.015Z</lastmod>
+    <lastmod>2023-08-21T10:59:25.164Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-22-generalized-normal-distirbution-uncertainty-regression-ouliers.html</loc>
-    <lastmod>2023-06-16T17:41:42.667Z</lastmod>
+    <lastmod>2023-08-21T10:59:24.020Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-06-15-Intro-To-Statistial-Testing.html</loc>
+    <lastmod>2023-08-21T10:59:23.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-01-11-pytroch-embedding-2d-visualization.html</loc>
+    <lastmod>2023-08-21T10:59:20.116Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2021-09-21-robust-statistics.html</loc>
+    <lastmod>2023-08-21T10:59:19.000Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-03-09-Neural-Link-Model-Uncertainty-Estimation.html</loc>
+    <lastmod>2023-08-21T10:59:18.084Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2020-05-27-uncertainty-regression.html</loc>
+    <lastmod>2023-08-21T10:59:16.980Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-17-quantize-dnn-model-pytorch.html</loc>
+    <lastmod>2023-08-21T10:59:15.908Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-12-15-comparing-normal-laplace-cacuhy-distirbutions-interval-score.html</loc>
+    <lastmod>2023-08-21T10:59:14.716Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/index.html</loc>
+    <lastmod>2023-08-21T10:59:13.560Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/2020-01-01-template-notebook.html</loc>
+    <lastmod>2023-08-21T10:59:14.212Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-03-01-derivative-loss-functions.html</loc>
+    <lastmod>2023-08-21T10:59:15.208Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-02-08-fibonacci-sequence-non-recursive-formula.html</loc>
+    <lastmod>2023-08-21T10:59:16.376Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-02-14-cauchy-distribution-boxcox-gaussian.html</loc>
+    <lastmod>2023-08-21T10:59:17.508Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-02-28-bhattacharya-distance-dirichlet-multinomial-distributions.html</loc>
+    <lastmod>2023-08-21T10:59:18.604Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2020-03-20-probability-likelihood.html</loc>
+    <lastmod>2023-08-21T10:59:19.424Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-17-exponential-power-distribution.html</loc>
+    <lastmod>2023-08-21T10:59:20.688Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-12-19-dirichlet-disentanglement-epistemic-aleatoric-evidential.html</loc>
+    <lastmod>2023-08-21T10:59:23.456Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2022-02-05-proper-scoring-interval-score-crps.html</loc>
+    <lastmod>2023-08-21T10:59:24.496Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2020-05-19-probability-normalinversegamma.html</loc>
+    <lastmod>2023-08-21T10:59:25.564Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-01-26-general-loss-function-l2.html</loc>
+    <lastmod>2023-08-21T10:59:26.548Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/notebooks/2023-06-16-fomo.html</loc>
+    <lastmod>2023-08-21T10:59:27.304Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2021-08-08-Neurips-Competition-Uncertainty.html</loc>
+    <lastmod>2023-08-21T10:59:28.352Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-05-21-Explanation-Learning-DatasetShift.html</loc>
+    <lastmod>2023-08-21T10:59:29.756Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2023-04-12-Bayesian-Networks-Introduction.html</loc>
+    <lastmod>2023-08-21T10:59:30.744Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2022-06-25-Github-Action-Latex-Compilation.html</loc>
+    <lastmod>2023-08-21T10:59:31.740Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2022-05-13-LerningProbabilityForApplication.html</loc>
+    <lastmod>2023-08-21T10:59:32.492Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/deebuls/devblog/posts/markdown/2020-07-22-Learning-DNN.html</loc>
+    <lastmod>2023-08-21T10:59:33.328Z</lastmod>
   </url>
 </urlset>
