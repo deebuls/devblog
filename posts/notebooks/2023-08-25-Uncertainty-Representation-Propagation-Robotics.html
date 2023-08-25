@@ -23,6 +23,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -199,6 +233,130 @@ ul.task-list li input[type="checkbox"] {
 <li>[16] G. Chirikjian, Stochastic Models, Information Theory, and Lie Groups, Volume 1: Classical Results and Geometric Methods. Springer Science &amp; Business Media, 2009, vol.&nbsp;1.</li>
 <li>[17] ——, Stochastic Models, Information Theory, and Lie Groups, Volume 2: Analytic Methods and Modern Applications. Springer Science &amp; Business Media, 2011, vol.&nbsp;2.</li>
 </ul>
+<div class="cell" data-outputid="7494c87e-1f55-4399-e681-b129c5420487" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>git clone https:<span class="op">//</span>github.com<span class="op">/</span>dinhhuy2109<span class="op">/</span>python<span class="op">-</span>cope.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cloning into 'python-cope'...
+remote: Enumerating objects: 361, done.
+remote: Total 361 (delta 0), reused 0 (delta 0), pack-reused 361
+Receiving objects: 100% (361/361), 1.17 MiB | 3.46 MiB/s, done.
+Resolving deltas: 100% (199/199), done.</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="e90ab2db-2426-434d-ea6b-0f6fa5febf19" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install trimesh <span class="op">-</span>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0.0/685.4 kB ? eta -:--:--     ━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.7/685.4 kB 1.9 MB/s eta 0:00:01     ━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━ 317.4/685.4 kB 4.4 MB/s eta 0:00:01     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━ 614.4/685.4 kB 5.8 MB/s eta 0:00:01     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 685.4/685.4 kB 5.1 MB/s eta 0:00:00</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> importlib <span class="im">import</span> <span class="bu">reload</span>  <span class="co"># Python 3.4+</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-outputid="887db3ac-2bbe-4434-e80d-b068265a5aa1" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>cd python<span class="op">-</span>cope <span class="op">&amp;&amp;</span> sudo pip install <span class="op">-</span>e .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Obtaining file:///content/python-cope
+  Preparing metadata (setup.py) ... done
+Installing collected packages: cope
+  Attempting uninstall: cope
+    Found existing installation: cope 1.0.0
+    Uninstalling cope-1.0.0:
+      Successfully uninstalled cope-1.0.0
+  Running setup.py develop for cope
+Successfully installed cope-1.0.0</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="62317a4d-2a67-48c5-c65e-b7a4608dd6ef" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy  <span class="im">as</span> np</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cope</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d <span class="im">import</span> Axes3D</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>starttime <span class="op">=</span> time.time()</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>tiny <span class="op">=</span> <span class="fl">1e-5</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>T1 <span class="op">=</span> np.eye(<span class="dv">4</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>sigma1 <span class="op">=</span> np.diag([tiny,tiny,tiny,tiny,tiny,tiny],<span class="dv">0</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>T2 <span class="op">=</span> np.eye(<span class="dv">4</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>T2[:<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> np.array([<span class="dv">0</span>,<span class="fl">0.15</span>,<span class="dv">0</span>])</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>sigma2 <span class="op">=</span> np.diag([tiny,tiny,tiny,<span class="fl">0.01</span>,tiny,<span class="fl">0.01</span>],<span class="dv">0</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>T3 <span class="op">=</span> np.eye(<span class="dv">4</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>T3[:<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> np.array([<span class="dv">0</span>,<span class="dv">0</span>,<span class="op">-</span><span class="fl">0.03</span>])</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>sigma3 <span class="op">=</span> np.diag([tiny,tiny,tiny,tiny,tiny,<span class="fl">0.1</span>],<span class="dv">0</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>T4 <span class="op">=</span> np.eye(<span class="dv">4</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>T4[:<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> np.array([<span class="dv">0</span>,<span class="fl">0.14</span>,<span class="dv">0</span>])</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>sigma4 <span class="op">=</span> np.diag([tiny,tiny,tiny,tiny,tiny,tiny],<span class="dv">0</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>T12, sigma12 <span class="op">=</span> cope.Propagating(T1,sigma1,T2,sigma2)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>T23, sigma23 <span class="op">=</span> cope.Propagating(T12,sigma12,T3,sigma3)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>T34, sigma34 <span class="op">=</span> cope.Propagating(T23,sigma23,T4,sigma4)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Propagation took </span><span class="sc">%.4f</span><span class="st"> seconds'</span> <span class="op">%</span> (time.time() <span class="op">-</span> starttime))</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>Tv <span class="op">=</span> T34</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>Tv[:<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">=</span> Tv[:<span class="dv">3</span>,<span class="dv">3</span>] <span class="op">+</span> np.array([<span class="fl">0.001</span>,<span class="fl">0.002</span>,<span class="op">-</span><span class="fl">0.001</span>])</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>sigmav <span class="op">=</span> np.diag([tiny,tiny,tiny,<span class="fl">0.01</span>,<span class="fl">0.2</span>,tiny])</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>Te,sigmae,iters <span class="op">=</span> cope.Fusing([T34,Tv],[sigma34,sigmav], maxiterations<span class="op">=</span><span class="dv">10</span>, retiter<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Took </span><span class="sc">%.4f</span><span class="st"> seconds and </span><span class="sc">%d</span><span class="st"> iterations'</span> <span class="op">%</span> (time.time() <span class="op">-</span> starttime, iters))</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>cope.Visualize([T12,T34,Te],[sigma12, sigma34,sigmae],<span class="dv">100</span>)</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="co"># visualize(T,sigma,100,2)</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>ModuleNotFoundError: ignored</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="3ea50c1d-a908-45f1-a1b0-fbac87b36b43" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Visualize(Tlist,sigmalist, nsamples <span class="op">=</span> <span class="dv">100</span>):</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">"""</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">  Visualize an estimation (a point will be used to represent the translation position of a transformation)</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">  @param Tlist:     a list of Transformations</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">  @param sigmalist: a list of corresponding sigmas</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">  @param nsamples:  the number of samples generated for each (T,sigma)</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">  """</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="im">import</span> matplotlib.cm <span class="im">as</span> cm</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  fig <span class="op">=</span> plt.figure()</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  ax <span class="op">=</span> fig.add_subplot(<span class="dv">111</span>, projection<span class="op">=</span><span class="st">'3d'</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  cholsigmalist <span class="op">=</span> []</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  colors <span class="op">=</span> <span class="bu">iter</span>(cm.rainbow(np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="bu">len</span>(Tlist))))</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(sigmalist)):</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="bu">next</span>(colors)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    cholsigma <span class="op">=</span> np.linalg.cholesky(sigmalist[i]).T</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    Tsample <span class="op">=</span> []</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(nsamples):</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>      vecsample <span class="op">=</span> np.dot(cholsigma,np.random.randn(<span class="dv">6</span>,<span class="dv">1</span>))</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>      <span class="co">#vecsample = np.dot(cholsigma, np.random.uniform(-1,1,size = 6))</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>      vecsample.resize(<span class="dv">6</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>      Tsample <span class="op">=</span> np.dot(VecToTran(vecsample), Tlist[i])</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>      ax.scatter(Tsample[<span class="dv">0</span>,<span class="dv">3</span>],Tsample[<span class="dv">1</span>,<span class="dv">3</span>],Tsample[<span class="dv">2</span>,<span class="dv">3</span>], c <span class="op">=</span> color)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  ax.set_autoscaley_on(<span class="va">False</span>)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>  ax.set_xlim([<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>])</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  ax.set_ylim([<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>])</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  ax.set_zlim([<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>])</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  ax.set_xlabel(<span class="st">'X Label'</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  ax.set_ylabel(<span class="st">'Y Label'</span>)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  ax.set_zlabel(<span class="st">'Z Label'</span>)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="st">"plotting now "</span>)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  plt.savefig(<span class="st">'/content/plot.png'</span>)</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  plt.show()</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>python3: can't open file '/content/setup.py': [Errno 2] No such file or directory</code></pre>
+</div>
+</div>
 
 
 </section>
