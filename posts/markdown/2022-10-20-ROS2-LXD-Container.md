@@ -184,3 +184,38 @@ sudo apt install gpg
 ```
 
 You have a working ubuntu noetic container with ros noetic.
+
+## Adding a camera to the container 
+
+Information from here [1](https://askubuntu.com/questions/760473/how-to-use-a-video-device-in-a-lxd-container)
+```
+lxc config device add my-container video0 unix-char path=/dev/video0
+```
+restart the container and check
+
+
+
+The group and permissions for your /dev/video0 are not correct. The groop root for your /dev/video0 will deny access to the camera for users outside this group.
+
+The output of ```ls -l /dev/video0``` should look like this:
+```
+crw-rw----+ 1 root video 81, 1 Apr 19 22:25 /dev/video0
+```
+Try fixing the group by running:
+```
+sudo chown root:video /dev/video0
+```
+Then fix permissions by running:
+```
+sudo chmod 660 /dev/video0
+```
+
+if the group video is missing try fixing it by these commands and running again the above commands 
+```
+sudo adduser www-data video
+sudo usermod -a -G video www-data
+```
+
+
+
+You might need to give permissions
