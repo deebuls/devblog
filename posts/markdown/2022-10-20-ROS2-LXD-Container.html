@@ -184,6 +184,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#comman-commands-to-get-started-with-lxc-development" id="toc-comman-commands-to-get-started-with-lxc-development" class="nav-link" data-scroll-target="#comman-commands-to-get-started-with-lxc-development">Comman Commands to get started with lxc development</a></li>
   <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
   <li><a href="#additional-noetic-in-lxc" id="toc-additional-noetic-in-lxc" class="nav-link" data-scroll-target="#additional-noetic-in-lxc">Additional: Noetic in LXC</a></li>
+  <li><a href="#adding-a-camera-to-the-container" id="toc-adding-a-camera-to-the-container" class="nav-link" data-scroll-target="#adding-a-camera-to-the-container">Adding a camera to the container</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -360,6 +361,23 @@ ubuntu@noetic:~$ xclock #should display the clock if not then check the DISPLAY 
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install gpg</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You have a working ubuntu noetic container with ros noetic.</p>
+</section>
+<section id="adding-a-camera-to-the-container" class="level2">
+<h2 class="anchored" data-anchor-id="adding-a-camera-to-the-container">Adding a camera to the container</h2>
+<p>Information from here <a href="https://askubuntu.com/questions/760473/how-to-use-a-video-device-in-a-lxd-container">1</a></p>
+<pre><code>lxc config device add my-container video0 unix-char path=/dev/video0</code></pre>
+<p>restart the container and check</p>
+<p>The group and permissions for your /dev/video0 are not correct. The groop root for your /dev/video0 will deny access to the camera for users outside this group.</p>
+<p>The output of <code>ls -l /dev/video0</code> should look like this:</p>
+<pre><code>crw-rw----+ 1 root video 81, 1 Apr 19 22:25 /dev/video0</code></pre>
+<p>Try fixing the group by running:</p>
+<pre><code>sudo chown root:video /dev/video0</code></pre>
+<p>Then fix permissions by running:</p>
+<pre><code>sudo chmod 660 /dev/video0</code></pre>
+<p>if the group video is missing try fixing it by these commands and running again the above commands</p>
+<pre><code>sudo adduser www-data video
+sudo usermod -a -G video www-data</code></pre>
+<p>You might need to give permissions</p>
 
 
 </section>
