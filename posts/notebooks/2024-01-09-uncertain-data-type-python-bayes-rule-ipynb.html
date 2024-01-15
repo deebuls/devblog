@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Deebul Nair">
+<meta name="dcterms.date" content="2024-01-09">
+<meta name="description" content="Python class for uncertain datatype">
 
-<title>devblog - “Uncertain Data types - Sampling based Bayes-Laplace Rule”</title>
+<title>devblog - Uncertain Data types - Sampling based Bayes-Laplace Rule</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,7 +103,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -142,14 +145,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">“Uncertain Data types - Sampling based Bayes-Laplace Rule”</h1>
-                      </div>
+      <h1 class="title">Uncertain Data types - Sampling based Bayes-Laplace Rule</h1>
+                  <div>
+        <div class="description">
+          Python class for uncertain datatype
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">coding uncertainty</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Deebul Nair </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 9, 2024</p>
+      </div>
+    </div>
     
       
     </div>
@@ -158,25 +181,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#uncertain-data-types" id="toc-uncertain-data-types" class="nav-link active" data-scroll-target="#uncertain-data-types">Uncertain Data Types</a>
+  <ul class="collapse">
+  <li><a href="#tldr" id="toc-tldr" class="nav-link" data-scroll-target="#tldr">TLDR</a>
+  <ul class="collapse">
+  <li><a href="#goal" id="toc-goal" class="nav-link" data-scroll-target="#goal">Goal</a></li>
+  <li><a href="#todo-small-write-up-on-the-above-code" id="toc-todo-small-write-up-on-the-above-code" class="nav-link" data-scroll-target="#todo-small-write-up-on-the-above-code">TODO Small write up on the above code</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#bayes-laplace-rule" id="toc-bayes-laplace-rule" class="nav-link" data-scroll-target="#bayes-laplace-rule">Bayes Laplace Rule</a>
+  <ul class="collapse">
+  <li><a href="#how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources" id="toc-how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources" class="nav-link" data-scroll-target="#how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources">How will you merge uncertain information of same value from 2 different sources ?</a>
+  <ul class="collapse">
+  <li><a href="#answer-bayes-laplace-rule" id="toc-answer-bayes-laplace-rule" class="nav-link" data-scroll-target="#answer-bayes-laplace-rule">ANSWER : Bayes Laplace Rule</a></li>
+  <li><a href="#corner-case" id="toc-corner-case" class="nav-link" data-scroll-target="#corner-case">Corner Case</a></li>
+  </ul></li>
+  <li><a href="#possible-solutions-not-working" id="toc-possible-solutions-not-working" class="nav-link" data-scroll-target="#possible-solutions-not-working">Possible solutions (Not working)</a></li>
+  </ul></li>
+  <li><a href="#with-unscented-approaches" id="toc-with-unscented-approaches" class="nav-link" data-scroll-target="#with-unscented-approaches">With Unscented Approaches</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a>
+  <ul class="collapse">
+  <li><a href="#bayes" id="toc-bayes" class="nav-link" data-scroll-target="#bayes">Bayes</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
-<p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/main/posts/notebooks/2024-01-09-uncertain-data-type-python-bayes-rule-ipynb.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
-<blockquote class="blockquote">
-<p>Python class for uncertain datatype</p>
-</blockquote>
-<ul>
-<li>toc: true</li>
-<li>branch: main</li>
-<li>comments: false</li>
-<li>author: Deebul Nair</li>
-<li>image: images/sampling_bayes_laplace_rule.png</li>
-<li>categories: [coding, uncertainty]</li>
-</ul>
 <section id="uncertain-data-types" class="level1">
 <h1>Uncertain Data Types</h1>
 <p>Uncertain data types play a crucial role in robotics by addressing uncertainties in sensor measurements. For instance, in robotic localization, sensors may provide imprecise information about the robot’s position. The advantage lies in using probabilistic models to represent this uncertainty. Methodologies like Bayesian filtering help integrate sensor data and estimate the robot’s position more accurately. In software development for robotics, uncertainty-aware algorithms enhance navigation and mapping. Applications include autonomous vehicles, where uncertain data types improve decision-making in dynamic environments. However, challenges arise in developing efficient algorithms due to the computational demands of handling uncertainty in real-time robotic systems.</p>
