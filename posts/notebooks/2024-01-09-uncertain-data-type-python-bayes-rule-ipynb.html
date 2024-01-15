@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Deebul Nair">
+<meta name="dcterms.date" content="2023-01-09">
 
-<title>devblog - “Uncertain Data types - Sampling based Bayes-Laplace Rule”</title>
+<title>devblog - Uncertain Data types - Sampling based Bayes-Laplace Rule</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -94,11 +96,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -140,14 +144,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">“Uncertain Data types - Sampling based Bayes-Laplace Rule”</h1>
-                      </div>
+      <h1 class="title">Uncertain Data types - Sampling based Bayes-Laplace Rule</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">coding</div>
+                <div class="quarto-category">uncertainty</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Deebul Nair </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">2023-01-09</p>
+      </div>
+    </div>
     
       
     </div>
@@ -156,7 +176,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#uncertain-data-types" id="toc-uncertain-data-types" class="nav-link active" data-scroll-target="#uncertain-data-types">Uncertain Data Types</a>
+  <ul class="collapse">
+  <li><a href="#tldr" id="toc-tldr" class="nav-link" data-scroll-target="#tldr">TLDR</a>
+  <ul class="collapse">
+  <li><a href="#goal" id="toc-goal" class="nav-link" data-scroll-target="#goal">Goal</a></li>
+  <li><a href="#todo-small-write-up-on-the-above-code" id="toc-todo-small-write-up-on-the-above-code" class="nav-link" data-scroll-target="#todo-small-write-up-on-the-above-code">TODO Small write up on the above code</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#bayes-laplace-rule" id="toc-bayes-laplace-rule" class="nav-link" data-scroll-target="#bayes-laplace-rule">Bayes Laplace Rule</a>
+  <ul class="collapse">
+  <li><a href="#how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources" id="toc-how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources" class="nav-link" data-scroll-target="#how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources">How will you merge uncertain information of same value from 2 different sources ?</a>
+  <ul class="collapse">
+  <li><a href="#answer-bayes-laplace-rule" id="toc-answer-bayes-laplace-rule" class="nav-link" data-scroll-target="#answer-bayes-laplace-rule">ANSWER : Bayes Laplace Rule</a></li>
+  <li><a href="#corner-case" id="toc-corner-case" class="nav-link" data-scroll-target="#corner-case">Corner Case</a></li>
+  </ul></li>
+  <li><a href="#possible-solutions-not-working" id="toc-possible-solutions-not-working" class="nav-link" data-scroll-target="#possible-solutions-not-working">Possible solutions (Not working)</a></li>
+  </ul></li>
+  <li><a href="#with-unscented-approaches" id="toc-with-unscented-approaches" class="nav-link" data-scroll-target="#with-unscented-approaches">With Unscented Approaches</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a>
+  <ul class="collapse">
+  <li><a href="#bayes" id="toc-bayes" class="nav-link" data-scroll-target="#bayes">Bayes</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -164,21 +213,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/main/posts/notebooks/2024-01-09-uncertain-data-type-python-bayes-rule-ipynb.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
-<ul>
-<li>toc: true</li>
-<li>branch: master</li>
-<li>comments: false</li>
-<li>author: Deebul Nair</li>
-<li>image: images/sampling_bayes_laplace_rule.png</li>
-<li>date: 2023-01-09</li>
-<li>categories: [coding, uncertainty]</li>
-</ul>
 <section id="uncertain-data-types" class="level1">
 <h1>Uncertain Data Types</h1>
 <p>Uncertain data types play a crucial role in robotics by addressing uncertainties in sensor measurements. For instance, in robotic localization, sensors may provide imprecise information about the robot’s position. The advantage lies in using probabilistic models to represent this uncertainty. Methodologies like Bayesian filtering help integrate sensor data and estimate the robot’s position more accurately. In software development for robotics, uncertainty-aware algorithms enhance navigation and mapping. Applications include autonomous vehicles, where uncertain data types improve decision-making in dynamic environments. However, challenges arise in developing efficient algorithms due to the computational demands of handling uncertainty in real-time robotic systems.</p>
 <p>Efforts to create uncertain data types span various programming languages, each with its approach. In C and C++, developers often implement uncertainty by using custom data structures and libraries. They leverage pointers and structures to represent uncertain values and design algorithms for uncertainty propagation. In Julia, a high-level programming language, the focus is on mathematical simplicity and performance. The language’s flexibility allows developers to design custom data types and functions tailored to uncertain data, enhancing computational efficiency. Probabilistic programming languages like Stan and Pyro offer specialized constructs for uncertain data types. These languages enable developers to express uncertainty directly in their models, simplifying the incorporation of probabilistic reasoning. Overall, efforts in uncertain data types reflect the diverse strategies employed across languages, ranging from low-level control in C and C++ to high-level expressiveness in Julia and specialized support in probabilistic programming languages.</p>
 <p>In paper <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/06/uncertaint-toppicks-magazine-copy-15-1.pdf">Uncertain<t></t></a> they developed a datatype called Uncertain<t> in C# language . For years I was thinking of implementing something similar in python but was missing some motivation. Recently I came accross another hardware level library developed by a company called <a href="https://signaloid.com/">Signaloid</a> doing the same in C and C++ language. Since their sample code were available in <a href="https://github.com/signaloid/Signaloid-Demo-General-CXX">github</a>, I got a motivation to write the pending python library.</t></p>
-<div class="cell" data-execution_count="106">
+<section id="tldr" class="level2">
+<h2 class="anchored" data-anchor-id="tldr">TLDR</h2>
+<section id="goal" class="level3">
+<h3 class="anchored" data-anchor-id="goal">Goal</h3>
+<ul>
+<li>Lets say we have a sensor reading <span class="math inline">\(x\)</span> with value 10 we want to represent it in python we will write <code>x=10</code>.</li>
+<li>Now we have additional information that the sensor reading is not accurate and the sensor reading is around 10.</li>
+<li><strong>How do you represent this uncertain information in code?</strong></li>
+<li><strong>Not only represent we would like to do matematical operations (add, subtract, power etc) with this value and still keep the uncertain information</strong></li>
+<li>There are different <a href="https://deebuls.github.io/devblog/posts/notebooks/2023-08-25-Uncertainty-Representation-Propagation-Robotics.html">methodology for representation of uncertain value</a> and different ways to do it in code.</li>
+<li>In this blog we use the parametric representation method, where we model the uncertain information is modelled using any statistical Distribution (Normal, Laplace, exponential etc)</li>
+<li>For the mathematical operations on these uncertain values we then use 2 methods :
+<ol type="1">
+<li>Sampling based Monto Carlo method</li>
+<li>Sigma points propagation</li>
+</ol></li>
+</ul>
+<p>The names of the classes and the different methods have been inspired by the Signaloid library <a href="https://github.com/signaloid/Signaloid-Demo-General-CXX">github</a></p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> stats</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.integrate <span class="im">import</span> trapz</span>
@@ -186,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>EPSILON <span class="op">=</span> sys.float_info.epsilon</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>NUM_SAMPLES <span class="op">=</span> <span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="eb33449a-ab89-47b7-f0fb-e942153af999" data-execution_count="73">
+<div class="cell" data-outputid="eb33449a-ab89-47b7-f0fb-e942153af999">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> uDoubleGaussDist:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Custom datatype replicating double datatype with mathematical operators.</span></span>
@@ -270,28 +328,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 1.666666654618567</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="f76e76e8-d5a6-4660-c547-ae54baae3575" data-execution_count="47">
+<div class="cell" data-outputid="f76e76e8-d5a6-4660-c547-ae54baae3575">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit a<span class="op">+</span>b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1.61 ms ± 296 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="73fbff41-599f-47b0-82a1-af35fee65b09" data-execution_count="48">
+<div class="cell" data-outputid="73fbff41-599f-47b0-82a1-af35fee65b09">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>timeit <span class="fl">2.5</span><span class="op">+</span><span class="fl">1.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>15.6 ns ± 3.94 ns per loop (mean ± std. dev. of 7 runs, 100000000 loops each)</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="1d06faf6-567a-4814-af37-8567ac6c5564" data-execution_count="65">
+<div class="cell" data-outputid="1d06faf6-567a-4814-af37-8567ac6c5564">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sys.float_info.epsilon</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="65">
 <pre><code>2.220446049250313e-16</code></pre>
 </div>
 </div>
 </section>
+<section id="todo-small-write-up-on-the-above-code" class="level3">
+<h3 class="anchored" data-anchor-id="todo-small-write-up-on-the-above-code">TODO Small write up on the above code</h3>
+<ol type="1">
+<li>Sampling</li>
+<li>fitting</li>
+</ol>
+</section>
+</section>
+</section>
 <section id="bayes-laplace-rule" class="level1">
 <h1>Bayes Laplace Rule</h1>
-<div class="cell" data-outputid="775d0b51-502c-4ec6-c144-2b9c94706263" data-execution_count="113">
+<ul>
+<li>The story here is we have 2 sensors measuring a single value.</li>
+<li>Sensor 1 has a particular uncertainty</li>
+<li>sensor 2 is more accurate and hasa lesser uncertainty</li>
+<li>But both sensors are providing information of the same entity.</li>
+</ul>
+<section id="how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources" class="level2">
+<h2 class="anchored" data-anchor-id="how-will-you-merge-uncertain-information-of-same-value-from-2-different-sources">How will you merge uncertain information of same value from 2 different sources ?</h2>
+<section id="answer-bayes-laplace-rule" class="level3">
+<h3 class="anchored" data-anchor-id="answer-bayes-laplace-rule">ANSWER : Bayes Laplace Rule</h3>
+<div class="cell" data-outputid="775d0b51-502c-4ec6-c144-2b9c94706263">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> uDoubleBayesLaplace(prior: uDoubleGaussDist, evidence: uDoubleGaussDist) <span class="op">-&gt;</span> uDoubleGaussDist:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Perform Bayesian inference using Laplace approximation.</span></span>
@@ -352,7 +429,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Calculated Posterior mean  2.3000294910807897</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="9a331b86-7423-4663-8344-05e3d11bcd6e" data-execution_count="114">
+<div class="cell" data-outputid="9a331b86-7423-4663-8344-05e3d11bcd6e">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plotuDoubleBayesLaplace(prior, evidence, posterior):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>)</span>
@@ -398,9 +475,10 @@ Calculated Posterior mean  2.3000294910807897</code></pre>
 <span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>plotuDoubleBayesLaplace(prior, evidence, posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
+<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
 </div>
 </div>
+</section>
 <section id="corner-case" class="level3">
 <h3 class="anchored" data-anchor-id="corner-case">Corner Case</h3>
 <p>Need things to improve.</p>
@@ -413,7 +491,7 @@ Calculated Posterior mean  2.3000294910807897</code></pre>
 <ol start="2" type="1">
 <li>When the values are very far apart like 1 and 1000</li>
 </ol>
-<div class="cell" data-outputid="e259d317-38a9-448b-8b21-d82c87181159" data-execution_count="80">
+<div class="cell" data-outputid="e259d317-38a9-448b-8b21-d82c87181159">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>prior <span class="op">=</span> uDoubleGaussDist(<span class="fl">2.5</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>evidence <span class="op">=</span> uDoubleGaussDist(<span class="fl">1.5</span>)</span>
@@ -421,10 +499,10 @@ Calculated Posterior mean  2.3000294910807897</code></pre>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plotuDoubleBayesLaplace(prior, evidence, posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
+<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-outputid="d11e9551-1a52-4ff7-84c9-5e4fa8ade9df" data-execution_count="82">
+<div class="cell" data-outputid="d11e9551-1a52-4ff7-84c9-5e4fa8ade9df">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>prior <span class="op">=</span> uDoubleGaussDist(<span class="fl">2.5</span>, <span class="fl">0.1</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>evidence <span class="op">=</span> uDoubleGaussDist(<span class="dv">1000</span>, <span class="fl">0.1</span>)</span>
@@ -432,9 +510,10 @@ Calculated Posterior mean  2.3000294910807897</code></pre>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>plotuDoubleBayesLaplace(prior, evidence, posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
 </div>
 </div>
+</section>
 </section>
 <section id="possible-solutions-not-working" class="level2">
 <h2 class="anchored" data-anchor-id="possible-solutions-not-working">Possible solutions (Not working)</h2>
@@ -446,7 +525,7 @@ Calculated Posterior mean  2.3000294910807897</code></pre>
 <li>because of the differnt precision the sample generation process is not working</li>
 <li>Need an alternative to the sample generation from pdf</li>
 </ul>
-<div class="cell" data-outputid="53221e2d-1c6c-4411-e20f-643f0a8c0a76" data-execution_count="107">
+<div class="cell" data-outputid="53221e2d-1c6c-4411-e20f-643f0a8c0a76">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> uDoubleBayesLaplace(prior, evidence):</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  samples <span class="op">=</span> np.sort( np.append(np.linspace(prior.distirbution.ppf(<span class="fl">0.01</span>),</span>
@@ -607,7 +686,7 @@ Calculated Posterior mean  2.041209314588317</code></pre>
 </section>
 <section id="notes" class="level1">
 <h1>Notes</h1>
-<div class="cell" data-outputid="f53e3dcd-71a3-4d88-f0db-0adf26f5a274" data-execution_count="1">
+<div class="cell" data-outputid="f53e3dcd-71a3-4d88-f0db-0adf26f5a274">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#hide</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> stats</span>
@@ -651,10 +730,10 @@ Calculated Posterior mean  2.041209314588317</code></pre>
 <pre><code>&lt;matplotlib.legend.Legend at 0x7c5ddbbcf730&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-16-output-2.png" class="img-fluid"></p>
+<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-15-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-outputid="00097127-324a-4431-9287-42770f1840a5" data-execution_count="3">
+<div class="cell" data-outputid="00097127-324a-4431-9287-42770f1840a5">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>prior_pdf <span class="op">=</span> prior.pdf(samples)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">sum</span>((samples <span class="op">**</span> <span class="dv">3</span>) <span class="op">*</span> prior_pdf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -662,7 +741,7 @@ Calculated Posterior mean  2.041209314588317</code></pre>
 <pre><code>708.7380350553744</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="82e9d83e-6521-4765-a5cb-952886e0e25e" data-execution_count="4">
+<div class="cell" data-outputid="82e9d83e-6521-4765-a5cb-952886e0e25e">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>prior_pdf <span class="op">=</span> prior.pdf(samples)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>stats.moment(pdf_, moment <span class="op">=</span> <span class="dv">2</span>) <span class="co">#variance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -670,7 +749,7 @@ Calculated Posterior mean  2.041209314588317</code></pre>
 <pre><code>0.0038653585400454265</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="083b93e5-3f36-4f6b-fb66-6d8f9531b263" data-execution_count="6">
+<div class="cell" data-outputid="083b93e5-3f36-4f6b-fb66-6d8f9531b263">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -699,10 +778,10 @@ Calculated Posterior mean  2.041209314588317</code></pre>
 <pre><code>&lt;matplotlib.legend.Legend at 0x7c5dd8cb40a0&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-21-output-2.png" class="img-fluid"></p>
+<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-20-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-outputid="010a3d0e-2aa9-40de-81bd-d22de6d9bb42" data-execution_count="7">
+<div class="cell" data-outputid="010a3d0e-2aa9-40de-81bd-d22de6d9bb42">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"prior "</span>, prior.ppf(<span class="fl">0.01</span>), (prior.ppf(<span class="fl">0.01</span>)<span class="op">+</span>prior.ppf(<span class="fl">0.99</span>))<span class="op">/</span><span class="dv">2</span>,  prior.ppf(<span class="fl">0.99</span>))</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"likelihood "</span>, likelihood.ppf(<span class="fl">0.01</span>), (likelihood.ppf(<span class="fl">0.01</span>)<span class="op">+</span>likelihood.ppf(<span class="fl">0.99</span>))<span class="op">/</span><span class="dv">2</span>,  likelihood.ppf(<span class="fl">0.99</span>))</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"posterior "</span>, posterior.ppf(<span class="fl">0.01</span>), (posterior.ppf(<span class="fl">0.01</span>)<span class="op">+</span>posterior.ppf(<span class="fl">0.99</span>))<span class="op">/</span><span class="dv">2</span>,  posterior.ppf(<span class="fl">0.99</span>), loc1)</span>
@@ -718,7 +797,7 @@ posterior est  16.020956377877475 23.0 29.979043622122525 22.88130759175763</cod
 </div>
 <section id="bayes" class="level3">
 <h3 class="anchored" data-anchor-id="bayes">Bayes</h3>
-<div class="cell" data-outputid="5604871d-66b6-412d-f6ee-2c210bcae627" data-execution_count="62">
+<div class="cell" data-outputid="5604871d-66b6-412d-f6ee-2c210bcae627">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>mus<span class="op">=</span>[<span class="fl">2.5</span>, <span class="fl">1.5</span>]</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>sigmas<span class="op">=</span>[<span class="fl">1e-2</span>, <span class="fl">1e-2</span>]</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -780,31 +859,31 @@ posterior est  16.020956377877475 23.0 29.979043622122525 22.88130759175763</cod
  nan nan nan nan nan nan nan nan nan nan]</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-25-output-3.png" class="img-fluid"></p>
+<p><img src="2024-01-09-uncertain-data-type-python-bayes-rule-ipynb_files/figure-html/cell-24-output-3.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-outputid="03916a74-789b-4d4f-9e32-e132dd45396f" data-execution_count="28">
+<div class="cell" data-outputid="03916a74-789b-4d4f-9e32-e132dd45396f">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>posterior_lower <span class="op">=</span> samples[np.argmax(prior_pdf<span class="op">&gt;</span><span class="fl">0.01</span>)]</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (posterior_lower)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>3.3473042519183185</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="72f7f0b5-7efd-4dc4-8228-f8b718d6d1a6" data-execution_count="29">
+<div class="cell" data-outputid="72f7f0b5-7efd-4dc4-8228-f8b718d6d1a6">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>posterior_upper <span class="op">=</span> samples[<span class="op">-</span>np.argmax(np.flip(prior_pdf)<span class="op">&gt;</span><span class="fl">0.01</span>)]</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (posterior_upper)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>12.949071588325708</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="7816ebf9-af68-4f23-d250-a4aa7bf1ee98" data-execution_count="30">
+<div class="cell" data-outputid="7816ebf9-af68-4f23-d250-a4aa7bf1ee98">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>posterior_mean <span class="op">=</span> samples[np.argmax(prior_pdf)]</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (posterior_mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>8.006985459292492</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="65ea65de-adba-43b7-fbfc-5559b3b3efdf" data-execution_count="35">
+<div class="cell" data-outputid="65ea65de-adba-43b7-fbfc-5559b3b3efdf">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>posterior_variance <span class="op">=</span> (<span class="fl">0.01</span><span class="op">*</span>(posterior_lower<span class="op">-</span>posterior_mean)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="fl">0.01</span><span class="op">*</span>(posterior_upper <span class="op">-</span> posterior_mean)<span class="op">**</span><span class="dv">2</span>)<span class="op">/</span><span class="dv">2</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>posterior_sd <span class="op">=</span> np.sqrt(posterior_variance)</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (posterior_variance)</span>
@@ -814,14 +893,14 @@ posterior est  16.020956377877475 23.0 29.979043622122525 22.88130759175763</cod
 0.4802959726103195</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="a23d862a-258c-40c0-d73b-53c13899e436" data-execution_count="42">
+<div class="cell" data-outputid="a23d862a-258c-40c0-d73b-53c13899e436">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>prior_samples <span class="op">=</span> prior.rvs(<span class="dv">100</span>)</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>np.std(prior_samples<span class="op">*</span>(<span class="dv">1</span><span class="op">+</span>prior_pdf))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="42">
 <pre><code>2.1604512762874606</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="f66af8a1-01ee-4a89-c702-614332dee445" data-execution_count="44">
+<div class="cell" data-outputid="f66af8a1-01ee-4a89-c702-614332dee445">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>generated_samples <span class="op">=</span> np.random.choice(samples, size<span class="op">=</span><span class="dv">100</span>, p<span class="op">=</span>prior_pdf<span class="op">/</span>np.<span class="bu">sum</span>(prior_pdf))</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>np.std(generated_samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="44">
