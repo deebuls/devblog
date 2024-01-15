@@ -170,7 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">2023-08-25</p>
+        <p class="date">August 25, 2023</p>
       </div>
     </div>
     
@@ -188,7 +188,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/main/posts/notebooks/2023-08-25-Uncertainty-Representation-Propagation-Robotics.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
 <section id="uncertainty-pose-representation-and-propagation-of-uncertainty-in-robotics" class="level1">
 <h1>Uncertainty Pose Representation and Propagation of uncertainty in Robotics</h1>
 <p>From : A probabilistic framework for tracking uncertainties in robotic manipulation Huy Nguyen and Quang-Cuong Pham</p>
@@ -233,7 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>[16] G. Chirikjian, Stochastic Models, Information Theory, and Lie Groups, Volume 1: Classical Results and Geometric Methods. Springer Science &amp; Business Media, 2009, vol.&nbsp;1.</li>
 <li>[17] ——, Stochastic Models, Information Theory, and Lie Groups, Volume 2: Analytic Methods and Modern Applications. Springer Science &amp; Business Media, 2011, vol.&nbsp;2.</li>
 </ul>
-<div class="cell" data-outputid="7494c87e-1f55-4399-e681-b129c5420487" data-execution_count="1">
+<div class="cell" data-outputid="7494c87e-1f55-4399-e681-b129c5420487">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>git clone https:<span class="op">//</span>github.com<span class="op">/</span>dinhhuy2109<span class="op">/</span>python<span class="op">-</span>cope.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cloning into 'python-cope'...
@@ -243,16 +242,16 @@ Receiving objects: 100% (361/361), 1.17 MiB | 3.46 MiB/s, done.
 Resolving deltas: 100% (199/199), done.</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="e90ab2db-2426-434d-ea6b-0f6fa5febf19" data-execution_count="2">
+<div class="cell" data-outputid="e90ab2db-2426-434d-ea6b-0f6fa5febf19">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install trimesh <span class="op">-</span>q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0.0/685.4 kB ? eta -:--:--     ━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.7/685.4 kB 1.9 MB/s eta 0:00:01     ━━━━━━━━━━━━━━━━━━╺━━━━━━━━━━━━━━━━━━━━ 317.4/685.4 kB 4.4 MB/s eta 0:00:01     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸━━━━ 614.4/685.4 kB 5.8 MB/s eta 0:00:01     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 685.4/685.4 kB 5.1 MB/s eta 0:00:00</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="4">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> importlib <span class="im">import</span> <span class="bu">reload</span>  <span class="co"># Python 3.4+</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="887db3ac-2bbe-4434-e80d-b068265a5aa1" data-execution_count="19">
+<div class="cell" data-outputid="887db3ac-2bbe-4434-e80d-b068265a5aa1">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>cd python<span class="op">-</span>cope <span class="op">&amp;&amp;</span> sudo pip install <span class="op">-</span>e .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Obtaining file:///content/python-cope
@@ -266,7 +265,7 @@ Installing collected packages: cope
 Successfully installed cope-1.0.0</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="62317a4d-2a67-48c5-c65e-b7a4608dd6ef" data-execution_count="20">
+<div class="cell" data-outputid="62317a4d-2a67-48c5-c65e-b7a4608dd6ef">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy  <span class="im">as</span> np</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cope</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d <span class="im">import</span> Axes3D</span>
@@ -316,7 +315,7 @@ Successfully installed cope-1.0.0</code></pre>
 <pre><code>ModuleNotFoundError: ignored</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="3ea50c1d-a908-45f1-a1b0-fbac87b36b43" data-execution_count="3">
+<div class="cell" data-outputid="3ea50c1d-a908-45f1-a1b0-fbac87b36b43">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> Visualize(Tlist,sigmalist, nsamples <span class="op">=</span> <span class="dv">100</span>):</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">"""</span></span>
