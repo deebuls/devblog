@@ -6,11 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Deebul Nair">
-<meta name="dcterms.date" content="2020-01-01">
-<meta name="description" content="To understand Likelihood of distributions">
+<meta name="dcterms.date" content="2024-03-11">
+<meta name="description" content="My notes for cpp">
 
-<title>devblog - Template</title>
+<title>devblog - Cpp Common Knowledge</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -108,7 +73,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -150,29 +115,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Template</h1>
+      <h1 class="title">Cpp Common Knowledge</h1>
                   <div>
         <div class="description">
-          To understand Likelihood of distributions
+          My notes for cpp
         </div>
       </div>
-                </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">programming, cpp</div>
+              </div>
+                  </div>
   </div>
     
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Deebul Nair </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">January 1, 2020</p>
+        <p class="date">March 11, 2024</p>
       </div>
     </div>
     
@@ -183,7 +145,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#cpp-some-questions" id="toc-cpp-some-questions" class="nav-link active" data-scroll-target="#cpp-some-questions">CPP some questions</a>
+  <ul class="collapse">
+  <li><a href="#why-add-ifndef-and-define-_header_h-in-the-top-of-header-files" id="toc-why-add-ifndef-and-define-_header_h-in-the-top-of-header-files" class="nav-link" data-scroll-target="#why-add-ifndef-and-define-_header_h-in-the-top-of-header-files">1. Why add #ifndef and #define _HEADER_H in the top of header files ?</a>
+  <ul class="collapse">
+  <li><a href="#preventing-multiple-inclusions" id="toc-preventing-multiple-inclusions" class="nav-link" data-scroll-target="#preventing-multiple-inclusions">Preventing Multiple Inclusions:</a></li>
+  <li><a href="#benefits" id="toc-benefits" class="nav-link" data-scroll-target="#benefits">Benefits:</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section">2.</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -191,11 +169,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="template" class="level1">
-<h1>Template</h1>
-<div id="cell-2" class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># T</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<section id="cpp-some-questions" class="level1">
+<h1>CPP some questions</h1>
+<p>Some questions for my CPP learning and its answers</p>
+<section id="why-add-ifndef-and-define-_header_h-in-the-top-of-header-files" class="level2">
+<h2 class="anchored" data-anchor-id="why-add-ifndef-and-define-_header_h-in-the-top-of-header-files">1. Why add #ifndef and #define _HEADER_H in the top of header files ?</h2>
+<section id="preventing-multiple-inclusions" class="level3">
+<h3 class="anchored" data-anchor-id="preventing-multiple-inclusions">Preventing Multiple Inclusions:</h3>
+<p>Header files often contain declarations for functions, variables, classes, etc., that multiple source files might need. Without #ifndef and #define, including the same header file twice in a source file would lead to multiple definitions, causing compilation errors.</p>
+<p>Example:</p>
+<pre class="code"><code>#ifndef MY_HEADER_H  // Check if MY_HEADER_H is not defined
+#define MY_HEADER_H  // Define MY_HEADER_H to prevent re-inclusion
+
+// Header contents (functions, variables, etc.)
+
+#endif               // End of conditional inclusion</code></pre>
+</section>
+<section id="benefits" class="level3">
+<h3 class="anchored" data-anchor-id="benefits">Benefits:</h3>
+<ul>
+<li>Ensures header files are included only once, preventing compilation errors.</li>
+<li>Makes code more maintainable and avoids unexpected behavior.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="section" class="level1">
+<h1>2.</h1>
 
 
 </section>

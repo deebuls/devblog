@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.551">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -82,7 +82,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -91,6 +97,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -100,16 +107,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">devblog</span>
     </a>
@@ -121,23 +155,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -209,6 +243,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+
 <p><a href="https://colab.research.google.com/github/deebuls/devblog/blob/master/_notebooks/2023-02-28-Bhattacharya-Distance-Dirichlet-Multinomial-Distributions.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
 <section id="logarthmic-form-of-bhattachrya-distance-between-dirichlet-densities" class="level1">
 <h1>Logarthmic form of Bhattachrya distance between Dirichlet densities</h1>
@@ -236,7 +271,7 @@ B(\alpha,\beta) = B(\alpha) + B(\beta) - B(\alpha+\beta)
 B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 \]</span></p>
 <p>Equation from [2] is easy to code and debung than [1] so we implemented it</p>
-<div class="cell" data-execution_count="2">
+<div id="cell-3" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> digamma</span>
@@ -248,7 +283,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#todo check if values are positive and above 1</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> logBalpha(alpha) <span class="op">+</span> logBalpha(beta) <span class="op">-</span> logBalpha(alpha<span class="op">+</span>beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="a1f043cd-e82d-4323-f7bf-cbda53820bd5" data-execution_count="3">
+<div id="cell-4" class="cell" data-outputid="a1f043cd-e82d-4323-f7bf-cbda53820bd5" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>): <span class="bu">print</span> (logBalpha(np.ones(i))) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-inf
@@ -268,7 +303,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <h2 class="anchored" data-anchor-id="test-1-minimum-distance-for-different-number-of-alphas">Test 1: Minimum distance for different number of alphas</h2>
 <p>The minimum distance starts from 0 and reduces as number of classes increases.</p>
 <p>If one class is confident then the distance between them will get lower than the no information class distance . See test 4 where for 5 classes the distance goes lower than 6.45 as seen below.</p>
-<div class="cell" data-outputid="5f280e9e-239c-4f03-eb14-88ddf0c25963" data-execution_count="11">
+<div id="cell-6" class="cell" data-outputid="5f280e9e-239c-4f03-eb14-88ddf0c25963" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">10</span>): </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(i), bhattacharya_distance_dirichlet(np.ones(i), np.ones(i))) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -288,7 +323,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <h2 class="anchored" data-anchor-id="test-2-with-high-values-of-alpha-effect-on-distance">Test 2: With high values of alpha effect on distance</h2>
 <p>Here we observe that the distance between same alphas keeps on decreasing as the value of alphas keep increasing.</p>
 <p>Higher the alpha lower the distance . Also negative distance</p>
-<div class="cell" data-outputid="2f6b0589-a00d-4aee-8279-df3acc60496c" data-execution_count="6">
+<div id="cell-8" class="cell" data-outputid="2f6b0589-a00d-4aee-8279-df3acc60496c" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(<span class="dv">5</span>)<span class="op">*</span>i, bhattacharya_distance_dirichlet(np.ones(<span class="dv">5</span>)<span class="op">*</span>i, np.ones(<span class="dv">5</span>)<span class="op">*</span>i))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -308,7 +343,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <section id="test-3-more-confident-value-distance-increases" class="level2">
 <h2 class="anchored" data-anchor-id="test-3-more-confident-value-distance-increases">Test 3: More confident value distance increases</h2>
 <p>When 1 valu of alpha is increases to show confidence increase on 1 class the distance with respect to no information keeps increasing</p>
-<div class="cell" data-outputid="7aa3d7e0-d20a-443b-f195-9c3ca94e642f" data-execution_count="7">
+<div id="cell-10" class="cell" data-outputid="7aa3d7e0-d20a-443b-f195-9c3ca94e642f" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  p1 <span class="op">=</span> np.ones(<span class="dv">5</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  p2 <span class="op">=</span> p1.copy()</span>
@@ -331,7 +366,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <section id="test-4-distance-between-single-confident-class" class="level2">
 <h2 class="anchored" data-anchor-id="test-4-distance-between-single-confident-class">Test 4: Distance between single confident class</h2>
 <p>As both the classes converge to same alpha values the distance reduces.</p>
-<div class="cell" data-outputid="ab60ceb7-6e9a-423c-9ba6-5326e1d7e1af" data-execution_count="8">
+<div id="cell-12" class="cell" data-outputid="ab60ceb7-6e9a-423c-9ba6-5326e1d7e1af" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  p1 <span class="op">=</span> np.ones(<span class="dv">5</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  p2 <span class="op">=</span> p1.copy()</span>
@@ -355,11 +390,11 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 </section>
 <section id="bhattacharya-distance-multinomial-distirbution" class="level1">
 <h1>Bhattacharya Distance Multinomial Distirbution</h1>
-<div class="cell" data-execution_count="86">
+<div id="cell-14" class="cell" data-execution_count="86">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> bhattacharya_distiance_multinomial(p1, p2):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">-</span>np.log(<span class="bu">sum</span>(np.sqrt(p1<span class="op">*</span>p2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="c80b509c-4e74-46f4-b343-5bb4da576974" data-execution_count="88">
+<div id="cell-15" class="cell" data-outputid="c80b509c-4e74-46f4-b343-5bb4da576974" data-execution_count="88">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">10</span>):</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(i)<span class="op">/</span>i, bhattacharya_distiance_multinomial(np.ones(i)<span class="op">/</span>i, np.ones(i)<span class="op">/</span>i))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -376,7 +411,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
  0.11111111 0.11111111 0.11111111] -2.2204460492503128e-16</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="aab37e7c-19c1-4919-a070-5d9e28008a2d" data-execution_count="95">
+<div id="cell-16" class="cell" data-outputid="aab37e7c-19c1-4919-a070-5d9e28008a2d" data-execution_count="95">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  p <span class="op">=</span> (np.ones(<span class="dv">5</span>)<span class="op">*</span>i )<span class="op">/</span> <span class="bu">sum</span>(np.ones(<span class="dv">5</span>)<span class="op">*</span>i)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, p, bhattacharya_distiance_multinomial(p, p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -393,7 +428,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 91 [0.2 0.2 0.2 0.2 0.2] -0.0</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="19e2adeb-910d-418f-e14c-b7a60d1e1254" data-execution_count="90">
+<div id="cell-17" class="cell" data-outputid="19e2adeb-910d-418f-e14c-b7a60d1e1254" data-execution_count="90">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  p1 <span class="op">=</span> np.ones(<span class="dv">5</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  p2 <span class="op">=</span> p1.copy()</span>
@@ -421,7 +456,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 </section>
 <section id="trial-codes-not-working" class="level1">
 <h1>Trial codes not working</h1>
-<div class="cell" data-outputid="68711085-0a93-49e0-b019-e625d9b6883c" data-execution_count="116">
+<div id="cell-20" class="cell" data-outputid="68711085-0a93-49e0-b019-e625d9b6883c" data-execution_count="116">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>])</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.array([<span class="dv">100</span>,<span class="dv">1</span>,<span class="dv">1</span>])</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="op">-</span>gammaln(((a <span class="op">+</span> b )<span class="op">/</span><span class="dv">2</span> ).<span class="bu">sum</span>()))</span>
@@ -439,7 +474,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <pre><code>-12.918839126312893</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="2f1ecff7-2358-4a27-c583-d5b34b272d6b" data-execution_count="118">
+<div id="cell-21" class="cell" data-outputid="2f1ecff7-2358-4a27-c583-d5b34b272d6b" data-execution_count="118">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> np.array([<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>])</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> np.array([<span class="dv">100</span>,<span class="dv">1</span>,<span class="dv">1</span>])</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="op">-</span>gammaln(<span class="bu">sum</span>((a <span class="op">+</span> b )<span class="op">/</span><span class="dv">2</span> )))</span>
@@ -457,7 +492,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 [-179.56710268   -0.           -0.        ]</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="125">
+<div id="cell-22" class="cell" data-execution_count="125">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> digamma</span>
@@ -479,7 +514,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>         gammaln((alpha <span class="op">+</span> beta )<span class="op">/</span><span class="dv">2</span>).<span class="bu">sum</span>() <span class="op">-</span> <span class="op">\</span></span>
 <span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>         (gammaln(alpha) <span class="op">+</span> gammaln(beta) )<span class="op">/</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="f482e6e5-1f37-4c75-e365-6710c7f72b53" data-execution_count="124">
+<div id="cell-23" class="cell" data-outputid="f482e6e5-1f37-4c75-e365-6710c7f72b53" data-execution_count="124">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>a1 <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>a2 <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -488,21 +523,21 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <pre><code>TypeError: ignored</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="1e6dc818-07db-49cb-f605-38ef83af900c" data-execution_count="112">
+<div id="cell-24" class="cell" data-outputid="1e6dc818-07db-49cb-f605-38ef83af900c" data-execution_count="112">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>a3 <span class="op">=</span> [<span class="dv">100</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>bhattacharya_distance_dirichlet(a1, a3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="112">
 <pre><code>0.0</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="ae146b49-afab-43e7-9043-bf50e9b42a56" data-execution_count="113">
+<div id="cell-25" class="cell" data-outputid="ae146b49-afab-43e7-9043-bf50e9b42a56" data-execution_count="113">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>a3 <span class="op">=</span> [<span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">100</span>]</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>bhattacharya_distance_dirichlet(a1, a3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="113">
 <pre><code>0.0</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="56bf367c-5cc6-40f3-b3aa-fa200209e2e5" data-execution_count="126">
+<div id="cell-26" class="cell" data-outputid="56bf367c-5cc6-40f3-b3aa-fa200209e2e5" data-execution_count="126">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">10</span>):</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(i), bhattacharya_distance_dirichlet(np.ones(i), np.ones(i)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -517,7 +552,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 9 [1. 1. 1. 1. 1. 1. 1. 1. 1.] [0. 0. 0. 0. 0. 0. 0. 0. 0.]</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="662b706c-e5d1-416d-8845-68ef2f6057ab" data-execution_count="127">
+<div id="cell-27" class="cell" data-outputid="662b706c-e5d1-416d-8845-68ef2f6057ab" data-execution_count="127">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(<span class="dv">5</span>)<span class="op">*</span>i, bhattacharya_distance_dirichlet(np.ones(<span class="dv">5</span>)<span class="op">*</span>i, np.ones(<span class="dv">5</span>)<span class="op">*</span>i))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -533,7 +568,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 91 [91. 91. 91. 91. 91.] [-318.15263962 -318.15263962 -318.15263962 -318.15263962 -318.15263962]</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="18">
+<div id="cell-28" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy </span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> digamma</span>
@@ -545,7 +580,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">sum</span>(gammaln(beta)) <span class="op">+</span>  <span class="op">\</span></span>
 <span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>        (alpha <span class="op">-</span> beta) <span class="op">*</span> (digamma(alpha) <span class="op">-</span> digamma(<span class="bu">sum</span>(alpha)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="5c890438-e4bb-4828-a621-04a1dc197fa7" data-execution_count="19">
+<div id="cell-29" class="cell" data-outputid="5c890438-e4bb-4828-a621-04a1dc197fa7" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">10</span>):</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(i), KL_divergence(np.ones(i), np.ones(i)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -560,7 +595,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 9 [1. 1. 1. 1. 1. 1. 1. 1. 1.] [0. 0. 0. 0. 0. 0. 0. 0. 0.]</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="6f15e86b-e54b-47c2-898a-75a2a16576ed" data-execution_count="20">
+<div id="cell-30" class="cell" data-outputid="6f15e86b-e54b-47c2-898a-75a2a16576ed" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(<span class="dv">5</span>)<span class="op">*</span>i, KL_divergence(np.ones(<span class="dv">5</span>)<span class="op">*</span>i, np.ones(<span class="dv">5</span>)<span class="op">*</span>i))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -576,13 +611,13 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 91 [91. 91. 91. 91. 91.] [0. 0. 0. 0. 0.]</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="80f0fe82-3a5c-4a7f-9152-cd4301a6f049" data-execution_count="11">
+<div id="cell-31" class="cell" data-outputid="80f0fe82-3a5c-4a7f-9152-cd4301a6f049" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>scipy.d</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>AttributeError: ignored</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="f94f4896-7332-4fd6-ee12-639c06e3f508" data-execution_count="87">
+<div id="cell-34" class="cell" data-outputid="f94f4896-7332-4fd6-ee12-639c06e3f508" data-execution_count="87">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> np.ones(<span class="dv">5</span>)<span class="op">/</span><span class="dv">5</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>bhattacharya_distiance_multinomial(p1,p1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -590,12 +625,12 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <pre><code>-0.0</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="91">
+<div id="cell-35" class="cell" data-execution_count="91">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> bhattacharya_distiance_multinomial_log(p1, p2):</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">-</span>(gammaln(p1).<span class="bu">sum</span>() <span class="op">+</span> gammaln(p2).<span class="bu">sum</span>() )<span class="op">/</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="242176b1-bed7-403b-d360-296cc51b787e" data-execution_count="92">
+<div id="cell-36" class="cell" data-outputid="242176b1-bed7-403b-d360-296cc51b787e" data-execution_count="92">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">10</span>):</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(i), bhattacharya_distiance_multinomial_log(np.ones(i), np.ones(i)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -610,7 +645,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 9 [1. 1. 1. 1. 1. 1. 1. 1. 1.] -0.0</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="9e5ffcff-fcc7-4bdb-b1be-e0721f7c1304" data-execution_count="93">
+<div id="cell-37" class="cell" data-outputid="9e5ffcff-fcc7-4bdb-b1be-e0721f7c1304" data-execution_count="93">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">100</span>, <span class="dv">10</span>):</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  p1 <span class="op">=</span> np.ones(<span class="dv">5</span>)</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  p2 <span class="op">=</span> p1.copy()</span>
@@ -631,7 +666,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 91 [0.2 0.2 0.2 0.2 0.2] [0.95789474 0.01052632 0.01052632 0.01052632 0.01052632] -12.918839126312893</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="76">
+<div id="cell-38" class="cell" data-execution_count="76">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -644,7 +679,7 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
 <span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
 <span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-outputid="8231696d-ee2c-4b53-9656-5ec4b80c5f8d" data-execution_count="77">
+<div id="cell-39" class="cell" data-outputid="8231696d-ee2c-4b53-9656-5ec4b80c5f8d" data-execution_count="77">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">10</span>):</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span> (i, np.ones(i)<span class="op">/</span>i, bhattacharyya_distance(np.ones(i)<span class="op">/</span>i, np.ones(i)<span class="op">/</span>i))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -670,14 +705,14 @@ B(\alpha) = \sum\log\Gamma{\alpha} - \log \Gamma{\sum(\alpha)}
  0.11111111 0.11111111 0.11111111] -0.0</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="606717a2-01f1-47ad-917b-ec4fc2631c30" data-execution_count="83">
+<div id="cell-40" class="cell" data-outputid="606717a2-01f1-47ad-917b-ec4fc2631c30" data-execution_count="83">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> np.ones(<span class="dv">5</span>)<span class="op">/</span><span class="dv">5</span></span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>np.sqrt(p1<span class="op">*</span>p1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="83">
 <pre><code>array([0.2, 0.2, 0.2, 0.2, 0.2])</code></pre>
 </div>
 </div>
-<div class="cell" data-outputid="c071e9b9-22d5-42c1-f176-6bd072cafa2b" data-execution_count="82">
+<div id="cell-41" class="cell" data-outputid="c071e9b9-22d5-42c1-f176-6bd072cafa2b" data-execution_count="82">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>np.<span class="bu">sum</span>([np.sqrt(p<span class="op">*</span>q) <span class="cf">for</span> (p, q) <span class="kw">in</span> <span class="bu">zip</span>(p1, p1)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="82">
 <pre><code>1.0</code></pre>
@@ -767,10 +802,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/deebuls\.github\.io\/devblog\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -780,8 +832,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -793,7 +854,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -837,6 +1021,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -862,6 +1047,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -922,6 +1133,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
