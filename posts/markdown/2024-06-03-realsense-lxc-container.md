@@ -3,7 +3,7 @@ categories:
 - robotics
 date: '2024-06-03'
 description: RealSense camera in LXC container 
-image: https://upload.wikimedia.org/wikipedia/commons/3/3d/Intel_Realsense_depth_camera_D435.jpg
+image: images/realsense.png
 layout: post
 title: Connecting Realsense camera in LXC container
 toc: true
