@@ -3,7 +3,6 @@ categories:
 - robotics
 date: '2025-02-03'
 description: Time Issues and Solutions
-image:
 layout: post
 title: Working with ROS Bag Files
 toc: true
@@ -148,6 +147,26 @@ def get_transform_with_retry(target_frame, source_frame, timeout=5.0):
             rospy.sleep(0.1)
     raise Exception(f"Failed to find transform from {source_frame} to {target_frame}")
 ```
+
+OR another alternative
+```python
+#!/usr/bin/env python3
+import rospy
+from tf2_msgs.msg import TFMessage
+        
+def callback(data):
+    rospy.loginfo("Received /tf_static_old and republising latched /tf_static")
+    pub.publish(data)
+
+if __name__ == '__main__':
+    rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber("tf_static_old", TFMessage, callback)
+    pub = rospy.Publisher('tf_static', TFMessage, queue_size=10, latch=True)
+    rospy.spin()
+```
+Fix /tf_static not latched when replaying a rosbag (see https://answers.ros.org/question/207551/how-to-save-static-transforms-in-bag-files/?answer=207647#post-id-207647).
+
+Start this script before running a rosbag, then do: `rosbag play --clock tf_static:=tf_static_old` 
 
 ### Advanced Solution: Custom tf_static Publisher
 
