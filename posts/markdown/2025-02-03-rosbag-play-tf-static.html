@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2024-06-03">
-<meta name="description" content="RealSense camera in LXC container">
+<meta name="dcterms.date" content="2025-02-03">
+<meta name="description" content="Time Issues and Solutions">
 
-<title>Connecting Realsense camera in LXC container – devblog</title>
+<title>Working with ROS Bag Files – devblog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -149,10 +149,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Connecting Realsense camera in LXC container</h1>
+      <h1 class="title">Working with ROS Bag Files</h1>
                   <div>
         <div class="description">
-          RealSense camera in LXC container
+          Time Issues and Solutions
         </div>
       </div>
                           <div class="quarto-categories">
@@ -168,7 +168,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 3, 2024</p>
+        <p class="date">February 3, 2025</p>
       </div>
     </div>
     
@@ -184,19 +184,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#setting-up-realsense-in-lxc" id="toc-setting-up-realsense-in-lxc" class="nav-link active" data-scroll-target="#setting-up-realsense-in-lxc">Setting Up RealSense in LXC</a>
+  <li><a href="#working-with-ros-bag-files-time-issues-and-solutions" id="toc-working-with-ros-bag-files-time-issues-and-solutions" class="nav-link active" data-scroll-target="#working-with-ros-bag-files-time-issues-and-solutions">Working with ROS Bag Files: Time Issues and Solutions</a>
   <ul class="collapse">
   <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#steps" id="toc-steps" class="nav-link" data-scroll-target="#steps">Steps</a>
+  <li><a href="#controlling-bag-playback-parameters" id="toc-controlling-bag-playback-parameters" class="nav-link" data-scroll-target="#controlling-bag-playback-parameters">1. Controlling Bag Playback Parameters</a>
   <ul class="collapse">
-  <li><a href="#prepare-the-container" id="toc-prepare-the-container" class="nav-link" data-scroll-target="#prepare-the-container">1. Prepare the Container</a></li>
-  <li><a href="#device-mapping" id="toc-device-mapping" class="nav-link" data-scroll-target="#device-mapping">2. Device Mapping</a></li>
-  <li><a href="#video-devices-mapping" id="toc-video-devices-mapping" class="nav-link" data-scroll-target="#video-devices-mapping">3. Video Devices Mapping</a></li>
-  <li><a href="#restart-and-test" id="toc-restart-and-test" class="nav-link" data-scroll-target="#restart-and-test">4. Restart and Test</a></li>
+  <li><a href="#clock-rate" id="toc-clock-rate" class="nav-link" data-scroll-target="#clock-rate">Clock Rate</a></li>
+  <li><a href="#start-time" id="toc-start-time" class="nav-link" data-scroll-target="#start-time">Start Time</a></li>
+  <li><a href="#duration" id="toc-duration" class="nav-link" data-scroll-target="#duration">Duration</a></li>
+  <li><a href="#combining-parameters" id="toc-combining-parameters" class="nav-link" data-scroll-target="#combining-parameters">Combining Parameters</a></li>
+  </ul></li>
+  <li><a href="#running-nodes-with-use_sim_time" id="toc-running-nodes-with-use_sim_time" class="nav-link" data-scroll-target="#running-nodes-with-use_sim_time">2. Running Nodes with use_sim_time</a>
+  <ul class="collapse">
+  <li><a href="#setting-the-parameter" id="toc-setting-the-parameter" class="nav-link" data-scroll-target="#setting-the-parameter">Setting the Parameter</a></li>
+  <li><a href="#common-issues" id="toc-common-issues" class="nav-link" data-scroll-target="#common-issues">Common Issues</a></li>
+  </ul></li>
+  <li><a href="#solving-tf_static-problems-when-starting-bags-at-different-positions" id="toc-solving-tf_static-problems-when-starting-bags-at-different-positions" class="nav-link" data-scroll-target="#solving-tf_static-problems-when-starting-bags-at-different-positions">3. Solving tf_static Problems When Starting Bags at Different Positions</a>
+  <ul class="collapse">
+  <li><a href="#understanding-the-problem" id="toc-understanding-the-problem" class="nav-link" data-scroll-target="#understanding-the-problem">Understanding the Problem</a></li>
+  <li><a href="#solutions" id="toc-solutions" class="nav-link" data-scroll-target="#solutions">Solutions</a></li>
+  <li><a href="#advanced-solution-custom-tf_static-publisher" id="toc-advanced-solution-custom-tf_static-publisher" class="nav-link" data-scroll-target="#advanced-solution-custom-tf_static-publisher">Advanced Solution: Custom tf_static Publisher</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul></li>
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
   </ul>
 </nav>
     </div>
@@ -207,66 +217,162 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="setting-up-realsense-in-lxc" class="level1">
-<h1>Setting Up RealSense in LXC</h1>
+<section id="working-with-ros-bag-files-time-issues-and-solutions" class="level1">
+<h1>Working with ROS Bag Files: Time Issues and Solutions</h1>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>This guide explains how to set up an additional RealSense camera in an LXC container running ubuntu 20.04 Focal. The container uses Ubuntu 22.04 for newer software compatibility.</p>
+<p>Working with ROS bag files is a fundamental skill for robotics developers, but several time-related issues can trip up even experienced engineers. In this blog post, I’ll walk through three common challenges and their solutions: controlling bag playback timing parameters, ensuring nodes properly use simulated time, and handling tf_static transforms when starting bag files from different positions.</p>
 </section>
-<section id="steps" class="level2">
-<h2 class="anchored" data-anchor-id="steps">Steps</h2>
-<section id="prepare-the-container" class="level3">
-<h3 class="anchored" data-anchor-id="prepare-the-container">1. Prepare the Container</h3>
+<section id="controlling-bag-playback-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="controlling-bag-playback-parameters">1. Controlling Bag Playback Parameters</h2>
+<p>When replaying bag files, you can control several time-related parameters to suit your needs:</p>
+<section id="clock-rate" class="level3">
+<h3 class="anchored" data-anchor-id="clock-rate">Clock Rate</h3>
+<p>Adjusting the playback speed is straightforward using the <code>--clock</code> and <code>--rate</code> parameters:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rosbag</span> play <span class="at">--clock</span> <span class="at">--rate</span><span class="op">=</span>0.5 my_dataset.bag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This plays the bag at half-speed while publishing the <code>/clock</code> topic, which is essential for simulated time.</p>
+</section>
+<section id="start-time" class="level3">
+<h3 class="anchored" data-anchor-id="start-time">Start Time</h3>
+<p>To start playback from a specific timestamp within the bag:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rosbag</span> play <span class="at">--clock</span> <span class="at">--start</span><span class="op">=</span>10 my_dataset.bag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This skips the first 10 seconds of recorded data.</p>
+</section>
+<section id="duration" class="level3">
+<h3 class="anchored" data-anchor-id="duration">Duration</h3>
+<p>To play only a certain duration from the bag:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rosbag</span> play <span class="at">--clock</span> <span class="at">--duration</span><span class="op">=</span>30 my_dataset.bag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This plays only 30 seconds of the bag file from your starting point.</p>
+</section>
+<section id="combining-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="combining-parameters">Combining Parameters</h3>
+<p>These parameters can be combined for precise control:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rosbag</span> play <span class="at">--clock</span> <span class="at">--rate</span><span class="op">=</span>1.5 <span class="at">--start</span><span class="op">=</span>15 <span class="at">--duration</span><span class="op">=</span>45 my_dataset.bag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This plays 45 seconds of data, starting 15 seconds into the bag, at 1.5x speed.</p>
+</section>
+</section>
+<section id="running-nodes-with-use_sim_time" class="level2">
+<h2 class="anchored" data-anchor-id="running-nodes-with-use_sim_time">2. Running Nodes with use_sim_time</h2>
+<p>When working with bag files, it’s crucial to configure your nodes to use simulated time rather than the system clock.</p>
+<section id="setting-the-parameter" class="level3">
+<h3 class="anchored" data-anchor-id="setting-the-parameter">Setting the Parameter</h3>
+<p>The key parameter is <code>use_sim_time</code>, which must be set to <code>true</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rosparam</span> set use_sim_time true</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also set this in your launch file:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode xml code-with-copy"><code class="sourceCode xml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">param</span><span class="ot"> name=</span><span class="st">"/use_sim_time"</span><span class="ot"> value=</span><span class="st">"true"</span> /&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or within individual node configurations:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode xml code-with-copy"><code class="sourceCode xml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">node</span><span class="ot"> pkg=</span><span class="st">"my_package"</span><span class="ot"> type=</span><span class="st">"my_node"</span><span class="ot"> name=</span><span class="st">"node_name"</span>&gt;</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">param</span><span class="ot"> name=</span><span class="st">"use_sim_time"</span><span class="ot"> value=</span><span class="st">"true"</span> /&gt;</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">node</span>&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="common-issues" class="level3">
+<h3 class="anchored" data-anchor-id="common-issues">Common Issues</h3>
+<p>If your nodes aren’t properly synchronized with the bag playback, check that:</p>
 <ol type="1">
-<li><p><strong>Install LXC</strong>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install lxc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p><strong>Launch the Container</strong>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lxc</span> launch ubuntu:22.04 my-container</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p><strong>Install Required Software in the Container</strong>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install librealsense2 ros-foxy-desktop realsense2-camera</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li>The bag is being played with the <code>--clock</code> flag</li>
+<li>The <code>use_sim_time</code> parameter is set to <code>true</code> before starting your nodes</li>
+<li>Your nodes are checking for this parameter and using the <code>/clock</code> topic</li>
+</ol>
+<p>A common mistake is starting nodes before setting <code>use_sim_time</code>, causing them to initialize with system time and then suddenly jump when they receive simulated time messages.</p>
+</section>
+</section>
+<section id="solving-tf_static-problems-when-starting-bags-at-different-positions" class="level2">
+<h2 class="anchored" data-anchor-id="solving-tf_static-problems-when-starting-bags-at-different-positions">3. Solving tf_static Problems When Starting Bags at Different Positions</h2>
+<p>One of the trickiest issues with bag files involves tf_static transforms when starting playback from different positions.</p>
+<section id="understanding-the-problem" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-problem">Understanding the Problem</h3>
+<p>The tf_static topic contains transforms that don’t change over time (e.g., the position of a camera relative to a robot base). When you start a bag file from the middle:</p>
+<ol type="1">
+<li>Messages on the <code>/tf_static</code> topic might have been published before your start point</li>
+<li>Nodes that need these transforms will be waiting for data that was “missed”</li>
+<li>This leads to transform lookup failures and errors like “Could not find transform”</li>
 </ol>
 </section>
-<section id="device-mapping" class="level3">
-<h3 class="anchored" data-anchor-id="device-mapping">2. Device Mapping</h3>
-<ol type="1">
-<li><p><strong>Identify Device Information</strong>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lsusb</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note the <code>vendorid</code> and <code>productid</code>.</p></li>
-<li><p><strong>Map the USB Device</strong>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lxc</span> config device add my-container realsense usb vendorid=8086 productid=0b07 gid=1000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ol>
+<section id="solutions" class="level3">
+<h3 class="anchored" data-anchor-id="solutions">Solutions</h3>
+<section id="use-the-pause-flag" class="level4">
+<h4 class="anchored" data-anchor-id="use-the-pause-flag">Use the –pause Flag</h4>
+<p>Start the bag with the <code>--pause</code> flag to load everything before starting playback:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rosbag</span> play <span class="at">--clock</span> <span class="at">--pause</span> my_dataset.bag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This loads the entire bag, including static transforms, before you unpause it with the spacebar.</p>
 </section>
-<section id="video-devices-mapping" class="level3">
-<h3 class="anchored" data-anchor-id="video-devices-mapping">3. Video Devices Mapping</h3>
-<ol type="1">
-<li><p><strong>Map <code>/dev/videoX</code> Devices</strong>:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span> /dev/video<span class="pp">*</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lxc</span> config device add my-container video0 unix-char path=/dev/video0 gid=1000</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">lxc</span> config device add my-container video1 unix-char path=/dev/video1 gid=1000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ol>
+<section id="republish-tf_static" class="level4">
+<h4 class="anchored" data-anchor-id="republish-tf_static">Republish tf_static</h4>
+<p>You can also extract and republish static transforms:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">rostopic</span> echo <span class="at">-b</span> my_dataset.bag <span class="at">-p</span> /tf_static <span class="op">&gt;</span> static_transforms.txt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">rostopic</span> pub /tf_static tf2_msgs/TFMessage <span class="st">"</span><span class="va">$(</span><span class="fu">cat</span> static_transforms.txt<span class="va">)</span><span class="st">"</span> <span class="at">--once</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="restart-and-test" class="level3">
-<h3 class="anchored" data-anchor-id="restart-and-test">4. Restart and Test</h3>
-<ol type="1">
-<li><p><strong>Restart the Container</strong>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">lxc</span> restart my-container</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-<li><p><strong>Test the Setup</strong>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> /opt/ros/foxy/setup.bash</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ros2</span> launch realsense2_camera rs_launch.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
-</ol>
+<section id="using-tf2_ros-buffer" class="level4">
+<h4 class="anchored" data-anchor-id="using-tf2_ros-buffer">Using tf2_ros Buffer</h4>
+<p>If you’re writing a node that relies on tf_static, increase your tf buffer timeout and implement retry logic:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tf2_ros</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">buffer</span> <span class="op">=</span> tf2_ros.Buffer(rospy.Duration(<span class="fl">30.0</span>))  <span class="co"># Longer buffer time</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>tf_listener <span class="op">=</span> tf2_ros.TransformListener(<span class="bu">buffer</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_transform_with_retry(target_frame, source_frame, timeout<span class="op">=</span><span class="fl">5.0</span>):</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    start_time <span class="op">=</span> rospy.Time.now()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> (rospy.Time.now() <span class="op">-</span> start_time).to_sec() <span class="op">&lt;</span> timeout:</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="bu">buffer</span>.lookup_transform(target_frame, source_frame, rospy.Time(<span class="dv">0</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> (tf2_ros.LookupException, tf2_ros.ExtrapolationException) <span class="im">as</span> e:</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>            rospy.logwarn(<span class="st">"Transform lookup failed, retrying... </span><span class="sc">%s</span><span class="st">"</span>, <span class="bu">str</span>(e))</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>            rospy.sleep(<span class="fl">0.1</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="ss">f"Failed to find transform from </span><span class="sc">{</span>source_frame<span class="sc">}</span><span class="ss"> to </span><span class="sc">{</span>target_frame<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>OR another alternative</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rospy</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tf2_msgs.msg <span class="im">import</span> TFMessage</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> callback(data):</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    rospy.loginfo(<span class="st">"Received /tf_static_old and republising latched /tf_static"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    pub.publish(data)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    rospy.init_node(<span class="st">'listener'</span>, anonymous<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    rospy.Subscriber(<span class="st">"tf_static_old"</span>, TFMessage, callback)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    pub <span class="op">=</span> rospy.Publisher(<span class="st">'tf_static'</span>, TFMessage, queue_size<span class="op">=</span><span class="dv">10</span>, latch<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    rospy.spin()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Fix /tf_static not latched when replaying a rosbag (see https://answers.ros.org/question/207551/how-to-save-static-transforms-in-bag-files/?answer=207647#post-id-207647).</p>
+<p>Start this script before running a rosbag, then do: <code>rosbag play --clock tf_static:=tf_static_old</code></p>
+</section>
+</section>
+<section id="advanced-solution-custom-tf_static-publisher" class="level3">
+<h3 class="anchored" data-anchor-id="advanced-solution-custom-tf_static-publisher">Advanced Solution: Custom tf_static Publisher</h3>
+<p>For a more robust solution, create a dedicated node that republishes all static transforms from your bag file:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rospy</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rosbag</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tf2_msgs.msg <span class="im">import</span> TFMessage</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>rospy.init_node(<span class="st">'tf_static_republisher'</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>pub <span class="op">=</span> rospy.Publisher(<span class="st">'/tf_static'</span>, TFMessage, queue_size<span class="op">=</span><span class="dv">10</span>, latch<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>bag <span class="op">=</span> rosbag.Bag(<span class="st">'my_dataset.bag'</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>static_transforms <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> topic, msg, t <span class="kw">in</span> bag.read_messages(topics<span class="op">=</span>[<span class="st">'/tf_static'</span>]):</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    static_transforms <span class="op">=</span> msg</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">break</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>bag.close()</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> static_transforms:</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    pub.publish(static_transforms)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    rospy.loginfo(<span class="st">"Published static transforms"</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    rospy.logerr(<span class="st">"No static transforms found in bag file"</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>rospy.spin()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>This setup allows the use of the RealSense D435i camera within an LXC container on a Jetson device, leveraging the host’s kernel and maintaining compatibility with other RealSense cameras.</p>
-<p>For more details, refer to the <a href="https://github.com/IntelRealSense/librealsense/issues/11151">original GitHub issue</a>.</p>
-</section>
-</section>
-<section id="notes" class="level1">
-<h1>Notes</h1>
-<p>Title Image - Marc Auledas, CC BY-SA 4.0 <a href="https://creativecommons.org/licenses/by-sa/4.0" class="uri">https://creativecommons.org/licenses/by-sa/4.0</a>, via Wikimedia Commons</p>
+<p>Understanding these time-related issues when working with ROS bag files can save hours of debugging. By properly configuring playback parameters, ensuring nodes use simulated time, and handling static transforms correctly, you can create more robust systems that reliably replay recorded data.</p>
+<p>Remember that small details like the order of operations and proper parameter configuration can make a big difference when working with ROS time. Take the time to understand these concepts thoroughly, and your robotics development will be much smoother.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
