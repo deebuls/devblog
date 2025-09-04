@@ -3,6 +3,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/notebooks/2025-07-24-Image-Projection.html",
+      "/posts/markdown/2025-10-04-ROS-CPU-Core-Isolation.html",
       "/posts/markdown/2025-02-03-rosbag-play-tf-static.html",
       "/posts/markdown/2024-06-03-realsense-lxc-container.html",
       "/posts/markdown/2023-03-11-CPP-My-Notes.html",
@@ -37,8 +38,8 @@
       "/posts/markdown/2021-04-13-how-to-use-uncertainty-estimate-from-dnn.html",
       "/posts/notebooks/2021-01-01-one-vs-all-classifier-revisiting.html",
       "/posts/markdown/2020-07-22-Learning-DNN.html",
-      "/posts/markdown/2020-05-29-Explanation-DNN-Reliability.html",
       "/posts/markdown/2020-05-29-Explanation-DNN-Uncertainty.html",
+      "/posts/markdown/2020-05-29-Explanation-DNN-Reliability.html",
       "/posts/notebooks/2020-05-27-uncertainty-regression.html",
       "/posts/markdown/2020-05-21-Explanation-Learning-DatasetShift.html",
       "/posts/notebooks/2020-05-19-probability-normalinversegamma.html",

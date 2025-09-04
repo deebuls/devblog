@@ -6,11 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Deebul Nair">
-<meta name="dcterms.date" content="2023-08-21">
-<meta name="description" content="Examples of non-linear systems">
+<meta name="dcterms.date" content="2025-10-04">
+<meta name="description" content="Prioritizing ros node for driver">
 
-<title>Non-Linear System Definitions - Application Kalman Filter – devblog</title>
+<title>CPU core isolation for ROS nodes – devblog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -71,40 +105,11 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -146,15 +151,15 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Non-Linear System Definitions - Application Kalman Filter</h1>
+      <h1 class="title">CPU core isolation for ROS nodes</h1>
                   <div>
         <div class="description">
-          Examples of non-linear systems
+          Prioritizing ros node for driver
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">probability</div>
-                <div class="quarto-category">python</div>
+                <div class="quarto-category">robotics</div>
+                <div class="quarto-category">linux</div>
               </div>
                   </div>
   </div>
@@ -162,17 +167,11 @@ window.Quarto = {
   
   <div class="quarto-title-meta">
 
-      <div>
-      <div class="quarto-title-meta-heading">Author</div>
-      <div class="quarto-title-meta-contents">
-               <p>Deebul Nair </p>
-            </div>
-    </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">August 21, 2023</p>
+        <p class="date">October 4, 2025</p>
       </div>
     </div>
     
@@ -183,7 +182,23 @@ window.Quarto = {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#stop-your-robots-brain-from-getting-distracted" id="toc-stop-your-robots-brain-from-getting-distracted" class="nav-link active" data-scroll-target="#stop-your-robots-brain-from-getting-distracted">Stop Your Robot’s Brain from Getting Distracted!</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-when-lidars-get-greedy" id="toc-the-problem-when-lidars-get-greedy" class="nav-link" data-scroll-target="#the-problem-when-lidars-get-greedy">The Problem: When LiDARs Get Greedy 😤</a></li>
+  <li><a href="#the-solution-give-your-motor-driver-vip-access" id="toc-the-solution-give-your-motor-driver-vip-access" class="nav-link" data-scroll-target="#the-solution-give-your-motor-driver-vip-access">The Solution: Give Your Motor Driver VIP Access! 🚀</a></li>
+  <li><a href="#how-to-do-it-with-roslaunch-simple-steps" id="toc-how-to-do-it-with-roslaunch-simple-steps" class="nav-link" data-scroll-target="#how-to-do-it-with-roslaunch-simple-steps">How to Do It with <code>roslaunch</code> (Simple Steps!)</a></li>
+  <li><a href="#even-more-isolation-for-experts" id="toc-even-more-isolation-for-experts" class="nav-link" data-scroll-target="#even-more-isolation-for-experts">Even More Isolation (For Experts! 🧑‍💻)</a></li>
+  <li><a href="#why-this-matters" id="toc-why-this-matters" class="nav-link" data-scroll-target="#why-this-matters">Why This Matters</a></li>
+  <li><a href="#useful-links-to-learn-more" id="toc-useful-links-to-learn-more" class="nav-link" data-scroll-target="#useful-links-to-learn-more">Useful Links to Learn More:</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -191,51 +206,64 @@ window.Quarto = {
 
 
 
-<section id="non-linear-system-definitions" class="level1">
-<h1>Non Linear system Definitions</h1>
-<p>When building kalman filter we define the system using mathematical equations like system equation, Odinary differential equation, Partial diferential equation, state-space equation, etc.</p>
-<p>I am collecting a set of these equations for easy access.</p>
-<section id="open-research-question" class="level3">
-<h3 class="anchored" data-anchor-id="open-research-question">Open Research Question</h3>
-<p><strong>Is there a meta-model domain specific language for specifing these models and the corresponsing filter</strong></p>
-<p><strong>How to use Json-ld based DSL be used to reperesent systems and the filters</strong></p>
-</section>
-<section id="single-rotatry-joint-robot-arm" class="level2">
-<h2 class="anchored" data-anchor-id="single-rotatry-joint-robot-arm">Single Rotatry Joint Robot Arm</h2>
-<p>Copied from [1]</p>
-<p>Consider the following example: A robot arm is moved by a single rotary joint. Since the robot arm is affected by gravity, the torque acting on the rotary joint depends on the current angle. The robot arm is observed by some sensor that is capable of measuring the absolute orientation. Our goal is to estimate the angle of the rotary joint.</p>
-<p>The <strong>system</strong> can be modeled by</p>
-<p><span class="math display">\[ \theta_{k+1}=a_{k}(\theta_{k})+w_{k} \]</span></p>
-<p>with <strong>system function</strong></p>
-<p><span class="math display">\[ a_{k}(\theta_{k})=\theta_{k}+\underbrace{c_{1}\sin (\theta_{k})}_{\rm gravity}+\underbrace{c_{2}}_{\rm velocity}, \]</span> where <span class="math inline">\(\theta_k\)</span> is the state and <span class="math inline">\(w_k\)</span> is Wrapped Normal-distributed noise. The constants c1,c2 can be derived from a physical model of the system.</p>
-<p>The <strong>measurement equation</strong> is given by</p>
-<p><span class="math display">\[ \hat{z}_{k}=\theta_{k}+v_{k}, \]</span> where <span class="math inline">\(z_k\)</span> is the orientation measurement and <span class="math inline">\(v_k\)</span> is WrappdNormal-distributed noise.</p>
-<section id="another-representation-of-same-system-2" class="level3">
-<h3 class="anchored" data-anchor-id="another-representation-of-same-system-2">Another representation of same system [2]</h3>
-<p><span class="math display">\[ \begin{align*}
-\boldsymbol{\theta }_{k} = &amp;\boldsymbol{\theta }_{k-1}+d_{1} \sin (\boldsymbol{\theta }_{k-1})+d_{2}+\eta _{k-1}, \tag{35}\\
-\mathbf{y}_{k} = \begin{bmatrix}\sin \left(\theta_{k}\right) \\\cos \left(\theta_{k}\right)\end{bmatrix}+\vartheta_{k},\tag{36}
-\end{align*} \]</span></p>
-<p>where d1 and d2 are constants.</p>
-<p>The initial true and estimated states are taken as θ0=0 and θ~0|0=π , respectively, while the initial variance is taken as P0|0=2 . We assign d1=0.1 , d2=0.15 , Q=0.1 , and R=diag(0.2,0.2) . The simulation is performed for 200 time-steps and angular RMSEs are computed by implementing 1000 Monte-Carlo simulations.</p>
+<section id="stop-your-robots-brain-from-getting-distracted" class="level2">
+<h2 class="anchored" data-anchor-id="stop-your-robots-brain-from-getting-distracted">Stop Your Robot’s Brain from Getting Distracted!</h2>
+<p>Imagine your robot driving around 🤖. It has a super important job: controlling its motors. But sometimes, its brain (the CPU) gets really busy looking at the world with its LiDARs 👁️‍🗨️. When the brain is too busy, the motor commands might be late, and your robot won’t move smoothly. This is a common problem in robotics!</p>
+<section id="the-problem-when-lidars-get-greedy" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem-when-lidars-get-greedy">The Problem: When LiDARs Get Greedy 😤</h3>
+<p>Modern robots often use powerful LiDAR sensors to “see” their environment. These sensors create a lot of data, and processing that data can take up a lot of your robot’s computer power. If your motor driver program isn’t getting enough attention from the CPU, it can lead to:</p>
 <ul>
-<li>[1] G. Kurz, I. Gilitschenski and U. D. Hanebeck, “Recursive nonlinear filtering for angular data based on circular distributions,” 2013 American Control Conference, Washington, DC, USA, 2013, pp.&nbsp;5439-5445, doi: 10.1109/ACC.2013.6580688.</li>
-<li>[2]</li>
+<li><strong>Jerky movements:</strong> Your robot might not move as smoothly as it should.</li>
+<li><strong>Delayed reactions:</strong> It could be slow to stop or change direction.</li>
+<li><strong>Unpredictable behavior:</strong> Sometimes it works, sometimes it doesn’t!</li>
+</ul>
+<p>We need a way to tell the robot’s brain, “Hey, this motor driver is super important! Give it special treatment!”</p>
+</section>
+<section id="the-solution-give-your-motor-driver-vip-access" class="level3">
+<h3 class="anchored" data-anchor-id="the-solution-give-your-motor-driver-vip-access">The Solution: Give Your Motor Driver VIP Access! 🚀</h3>
+<p>Linux, the operating system many robots use, has tools to help with this. We can give our motor driver program two special “passes”:</p>
+<ol type="1">
+<li><strong>A Private Office (CPU Affinity with <code>taskset</code>)</strong>: Imagine your motor driver getting its own dedicated office (a CPU core) where it can work without other programs bothering it. The <code>taskset</code> command helps us do this. It tells the Linux system, “This program should <strong>only</strong> run on this specific CPU core.”</li>
+<li><strong>“Front of the Line” Access (Process Priority with <code>nice</code>)</strong>: Even with its own office, other important programs might still need some attention from the same core. <code>nice</code> lets us say, “When there’s a queue for the CPU, let my motor driver go first!” A lower <code>nice</code> number means higher priority.</li>
+</ol>
+</section>
+<section id="how-to-do-it-with-roslaunch-simple-steps" class="level3">
+<h3 class="anchored" data-anchor-id="how-to-do-it-with-roslaunch-simple-steps">How to Do It with <code>roslaunch</code> (Simple Steps!)</h3>
+<p>If you’re using ROS (Robot Operating System) to run your robot, <code>roslaunch</code> is your best friend for starting programs. We can easily add our special passes using <code>roslaunch</code>.</p>
+<p>We use something called <code>launch-prefix</code> in your ROS launch file. It tells <code>roslaunch</code> to add commands before starting your motor driver program.</p>
+<p>Here’s how your launch file might look:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode xml code-with-copy"><code class="sourceCode xml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">launch</span>&gt;</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  &lt;<span class="kw">node</span><span class="ot"> pkg=</span><span class="st">"my_robot_drivers"</span><span class="ot">  type=</span><span class="st">"motor_controller_node"</span><span class="ot">  name=</span><span class="st">"robot_motor_driver"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ot">        launch-prefix=</span><span class="st">"taskset -c 1 nice -n -20"</span>/&gt; &lt;/<span class="kw">launch</span>&gt;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this example:</p>
+<ul>
+<li><code>taskset -c 1</code>: Tells the motor driver to only run on <strong>CPU Core 1</strong>. (Remember, cores often start counting from 0!)</li>
+<li><code>nice -n -20</code>: Gives the motor driver the <strong>highest priority</strong>. This means it gets first dibs on the CPU time for its core.</li>
 </ul>
 </section>
+<section id="even-more-isolation-for-experts" class="level3">
+<h3 class="anchored" data-anchor-id="even-more-isolation-for-experts">Even More Isolation (For Experts! 🧑‍💻)</h3>
+<p>Just using <code>taskset</code> means other programs <em>can still</em> run on Core 1 if they’re allowed to. If your motor control is super critical and needs absolutely no interruptions, you can actually tell the Linux kernel to <strong>completely ignore</strong> a CPU core for general tasks. This is done with a special setting called <code>isolcpus</code> during boot-up. This is more advanced, but it gives the best isolation!</p>
 </section>
-<section id="problem-2" class="level2">
-<h2 class="anchored" data-anchor-id="problem-2">Problem 2</h2>
-<p>Copied from [2]</p>
-<p>The second problem considered is a general multivariate nonlinear angular estimation problem [14]. In this problem, the state dynamics are of oscillatory nature, while the measurement equation is a monotone increasing function of arguments (e.g.&nbsp;a positive quadratic form or its positive square root). Similar, system models often appear in sonar-based bearing measurements and GPS (Global positioning system)-based information on the angle of arrival. This problem has been widely used in literature [11], [14], [44], [45] for validating the filtering performance. The state-space model of this problem can be written as [14],</p>
-<p><span class="math display">\[ \begin{align*} \boldsymbol {\theta }_{k}=&amp;|2 \cos (\boldsymbol {\theta }_{k-1})|+{\eta _{k-1}}, \tag{37}\\ \mathbf {y}_{k}=&amp;\sqrt {(1+ \boldsymbol {\theta }_{k}^{T} \boldsymbol {\theta }_{k})} +\vartheta _{k}.\tag{38}\end{align*} \]</span></p>
-<p>We consider a three-dimensional system (θk∈D3,yk∈D ) and assign the initial true and estimated states as θ0=[0,−π,π]T and θ~0|0=[−π,π,π/2]T , respectively, while initial error covariance is taken as P0|0=2In . The noise covariances are assigned as Q=diag([0.05,0.05,0.05]) and R=0.1 . The states are estimated for 200 time-steps and the results are evaluated by performing 1000 Monte-Carlo runs.</p>
+<section id="why-this-matters" class="level3">
+<h3 class="anchored" data-anchor-id="why-this-matters">Why This Matters</h3>
+<p>By giving your critical motor driver program its own space and highest priority, you ensure it runs more reliably. This leads to:</p>
+<ul>
+<li><strong>Smoother robot movements</strong> 🩰</li>
+<li><strong>More precise control</strong> 🎯</li>
+<li><strong>A safer and more predictable robot!</strong> 🛡️</li>
+</ul>
+<p>So, don’t let those busy LiDARs distract your robot’s brain from its most important tasks! Give your critical nodes the VIP treatment they deserve.</p>
+<hr>
 </section>
-<section id="uncertainty-propagation-in-python" class="level2">
-<h2 class="anchored" data-anchor-id="uncertainty-propagation-in-python">Uncertainty Propagation in Python</h2>
-<p>Example based on [1] for Cartesian to Polar Transformation . Below is the text</p>
-<p>The simple example of transforming the coordinates of a point from the Cartesian to the Polar plane is considered. We assume that the mean and standard uncertainty of the cartesian coordinates <span class="math inline">\((x, y)\)</span> are known a priori and the quanti- ties are declared as uncertain objects as depicted in Fig. 2. The radial and angular coordinates <span class="math inline">\((r, θ)\)</span> are computed by applying the transformation equations <span class="math display">\[r = \sqrt{x^2 + y^2}\]</span> and <span class="math display">\[\theta = arctan(y/x)\]</span>, respectively.</p>
-<p>[1] <a href="https://www.aau.at/wp-content/uploads/2020/03/UT_Uncertainty_Propagation.pdf">Automatic Uncertainty Propagation Based on the Unscented Transform</a></p>
+<section id="useful-links-to-learn-more" class="level3">
+<h3 class="anchored" data-anchor-id="useful-links-to-learn-more">Useful Links to Learn More:</h3>
+<ul>
+<li><a href="http://wiki.ros.org/roslaunch/XML"><strong>ROS Launch Files Overview</strong></a>: Learn more about how to use <code>roslaunch</code>.</li>
+<li><a href="https://www.google.com/search?q=%5Bhttps://man7.org/linux/man-pages/man1/taskset.1.html%5D(https://man7.org/linux/man-pages/man1/taskset.1.html)"><strong>Linux <code>taskset</code> command</strong></a>: Dive into the details of CPU affinity.</li>
+<li><a href="https://www.google.com/search?q=%5Bhttps://man7.org/linux/man-pages/man1/nice.1.html%5D(https://man7.org/linux/man-pages/man1/nice.1.html)"><strong>Linux <code>nice</code> and <code>renice</code> commands</strong></a>: Understand process priority in Linux.</li>
+<li><a href="https://www.google.com/search?q=%5Bhttps://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt%5D(https://www.kernel.org/doc/Documentation/admin-guide/kernel-parameters.txt)"><strong>Linux Kernel <code>isolcpus</code> documentation</strong></a>: For advanced CPU isolation techniques.</li>
+</ul>
 
 
 </section>
