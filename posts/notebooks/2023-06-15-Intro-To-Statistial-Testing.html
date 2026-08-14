@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.34">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,16 @@
 
 <title>Introduction To Statistical Testing – devblog</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -60,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -73,10 +79,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-d68be38d83eca2bb035acf846ffba811.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -104,12 +110,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
 
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -122,7 +128,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -226,11 +232,11 @@ window.Quarto = {
 <h1>Introduction To Statistical Tests</h1>
 <p>Below are the slides I created for introducting statistial testing to master students of Autonomous Systems group in Hochschule Bonn-Rhein-Sieg</p>
 <div id="9390bad5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;skip&quot;}}" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> stats</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="learning-goals" class="level1">
@@ -355,13 +361,13 @@ window.Quarto = {
 Weight After - Weight in pounds (lb) measured after eight weeks of excessive calorie intake.
 Difference - Weight After - Weight Before.</code></pre>
 <div id="60c71a15" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>weight_gain_data <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/jasp-stats/jasp-desktop/4527546659fdbd0849261f22ec84e9db76adc49d/Resources/Data%20Sets/Data</span><span class="sc">%20Li</span><span class="st">brary/2.%20T-Tests/Weight</span><span class="sc">%20G</span><span class="st">ain.csv'</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>weight_gain_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>weight_gain_data <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/jasp-stats/jasp-desktop/4527546659fdbd0849261f22ec84e9db76adc49d/Resources/Data%20Sets/Data</span><span class="sc">%20Li</span><span class="st">brary/2.%20T-Tests/Weight</span><span class="sc">%20G</span><span class="st">ain.csv'</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>weight_gain_data.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -372,31 +378,31 @@ Difference - Weight After - Weight Before.</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
+<th data-quarto-table-cell-role="th">0</th>
 <td>122.54</td>
 <td>135.74</td>
 <td>13.20</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
+<th data-quarto-table-cell-role="th">1</th>
 <td>120.78</td>
 <td>129.36</td>
 <td>8.58</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
+<th data-quarto-table-cell-role="th">2</th>
 <td>131.12</td>
 <td>145.20</td>
 <td>14.08</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
+<th data-quarto-table-cell-role="th">3</th>
 <td>137.06</td>
 <td>145.64</td>
 <td>8.58</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
+<th data-quarto-table-cell-role="th">4</th>
 <td>163.24</td>
 <td>173.80</td>
 <td>10.56</td>
@@ -429,13 +435,13 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <div id="96634602" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>eye_color_data <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/jasp-stats/jasp-desktop/4527546659fdbd0849261f22ec84e9db76adc49d/Resources/Data%20Sets/Data</span><span class="sc">%20Li</span><span class="st">brary/3.%20ANOVA/Response%20to</span><span class="sc">%20E</span><span class="st">ye%20Color.csv'</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>eye_color_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>eye_color_data <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/jasp-stats/jasp-desktop/4527546659fdbd0849261f22ec84e9db76adc49d/Resources/Data%20Sets/Data</span><span class="sc">%20Li</span><span class="st">brary/3.%20ANOVA/Response%20to</span><span class="sc">%20E</span><span class="st">ye%20Color.csv'</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>eye_color_data.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -446,31 +452,31 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
+<th data-quarto-table-cell-role="th">0</th>
 <td>Blue</td>
 <td>1</td>
 <td>1.3</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
+<th data-quarto-table-cell-role="th">1</th>
 <td>Blue</td>
 <td>2</td>
 <td>1.0</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
+<th data-quarto-table-cell-role="th">2</th>
 <td>Blue</td>
 <td>3</td>
 <td>7.0</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
+<th data-quarto-table-cell-role="th">3</th>
 <td>Blue</td>
 <td>4</td>
 <td>4.2</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
+<th data-quarto-table-cell-role="th">4</th>
 <td>Blue</td>
 <td>5</td>
 <td>5.4</td>
@@ -514,13 +520,13 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <li>MRI_Count: total pixel Count from the 18 MRI scans</li>
 </ol>
 <div id="4fe49426" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>brain_data <span class="op">=</span> pd.read_csv(<span class="st">'https://scipy-lectures.org/_downloads/brain_size.csv'</span>, sep<span class="op">=</span><span class="st">';'</span>, na_values<span class="op">=</span><span class="st">"."</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>brain_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>brain_data <span class="op">=</span> pd.read_csv(<span class="st">'https://scipy-lectures.org/_downloads/brain_size.csv'</span>, sep<span class="op">=</span><span class="st">';'</span>, na_values<span class="op">=</span><span class="st">"."</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>brain_data.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -536,7 +542,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
+<th data-quarto-table-cell-role="th">0</th>
 <td>1</td>
 <td>Female</td>
 <td>133</td>
@@ -547,7 +553,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>816932</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
+<th data-quarto-table-cell-role="th">1</th>
 <td>2</td>
 <td>Male</td>
 <td>140</td>
@@ -558,7 +564,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>1001121</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
+<th data-quarto-table-cell-role="th">2</th>
 <td>3</td>
 <td>Male</td>
 <td>139</td>
@@ -569,7 +575,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>1038437</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
+<th data-quarto-table-cell-role="th">3</th>
 <td>4</td>
 <td>Male</td>
 <td>133</td>
@@ -580,7 +586,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>965353</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
+<th data-quarto-table-cell-role="th">4</th>
 <td>5</td>
 <td>Female</td>
 <td>137</td>
@@ -611,12 +617,12 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </ul>
 <p><img src="images/descriptive_statistics_metrics.png" class="img-fluid"></p>
 <div id="a8705416" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>brain_data.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>brain_data.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -631,7 +637,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">count</td>
+<th data-quarto-table-cell-role="th">count</th>
 <td>40.000000</td>
 <td>40.000000</td>
 <td>40.000000</td>
@@ -641,7 +647,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>4.000000e+01</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">mean</td>
+<th data-quarto-table-cell-role="th">mean</th>
 <td>20.500000</td>
 <td>113.450000</td>
 <td>112.350000</td>
@@ -651,7 +657,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>9.087550e+05</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">std</td>
+<th data-quarto-table-cell-role="th">std</th>
 <td>11.690452</td>
 <td>24.082071</td>
 <td>23.616107</td>
@@ -661,7 +667,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>7.228205e+04</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">min</td>
+<th data-quarto-table-cell-role="th">min</th>
 <td>1.000000</td>
 <td>77.000000</td>
 <td>71.000000</td>
@@ -671,7 +677,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>7.906190e+05</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">25%</td>
+<th data-quarto-table-cell-role="th">25%</th>
 <td>10.750000</td>
 <td>89.750000</td>
 <td>90.000000</td>
@@ -681,7 +687,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>8.559185e+05</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">50%</td>
+<th data-quarto-table-cell-role="th">50%</th>
 <td>20.500000</td>
 <td>116.500000</td>
 <td>113.000000</td>
@@ -691,7 +697,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>9.053990e+05</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">75%</td>
+<th data-quarto-table-cell-role="th">75%</th>
 <td>30.250000</td>
 <td>135.500000</td>
 <td>129.750000</td>
@@ -701,7 +707,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <td>9.500780e+05</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">max</td>
+<th data-quarto-table-cell-role="th">max</th>
 <td>40.000000</td>
 <td>144.000000</td>
 <td>150.000000</td>
@@ -763,9 +769,9 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <section id="scatter-plot" class="level1">
 <h1>Scatter Plot</h1>
 <div id="02a6c348" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scater plot </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scater plot </span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#todo</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="bu">range</span>(weight_gain_data.Difference.size), weight_gain_data.Difference)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="bu">range</span>(weight_gain_data.Difference.size), weight_gain_data.Difference)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -775,7 +781,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </div>
 </div>
 <div id="dfbae7cb" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.scatter( weight_gain_data.Difference, np.zeros(weight_gain_data.Difference.size))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.scatter( weight_gain_data.Difference, np.zeros(weight_gain_data.Difference.size))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -788,8 +794,8 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <section id="box-plot" class="level1">
 <h1>Box Plot</h1>
 <div id="51f6e914" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Box plot</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>weight_gain_data[<span class="st">"Difference"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Box plot</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span>weight_gain_data[<span class="st">"Difference"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -806,7 +812,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <li>https://chartio.com/learn/charts/box-plot-complete-guide/</li>
 </ul>
 <div id="36b90c94" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>weight_gain_data[[<span class="st">"Weight Before"</span>, <span class="st">"Weight After"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>weight_gain_data[[<span class="st">"Weight Before"</span>, <span class="st">"Weight After"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -816,7 +822,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </div>
 </div>
 <div id="f941b370" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sns.violinplot(data<span class="op">=</span>weight_gain_data[[<span class="st">"Weight Before"</span>, <span class="st">"Weight After"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>sns.violinplot(data<span class="op">=</span>weight_gain_data[[<span class="st">"Weight Before"</span>, <span class="st">"Weight After"</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -829,7 +835,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <section id="density-plot" class="level1">
 <h1>Density plot</h1>
 <div id="4b4b376c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sns.displot(data<span class="op">=</span>weight_gain_data, x<span class="op">=</span><span class="st">"Weight Before"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sns.displot(data<span class="op">=</span>weight_gain_data, x<span class="op">=</span><span class="st">"Weight Before"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -839,7 +845,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </div>
 </div>
 <div id="6a75e106" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;slide&quot;}}" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sns.displot(data<span class="op">=</span>weight_gain_data, x<span class="op">=</span><span class="st">"Weight Before"</span>, kde<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sns.displot(data<span class="op">=</span>weight_gain_data, x<span class="op">=</span><span class="st">"Weight Before"</span>, kde<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -849,7 +855,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </div>
 </div>
 <div id="753bd229" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;slide&quot;}}" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sns.displot(data<span class="op">=</span>weight_gain_data[[<span class="st">"Weight Before"</span>, <span class="st">"Weight After"</span>]], kind<span class="op">=</span><span class="st">'kde'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sns.displot(data<span class="op">=</span>weight_gain_data[[<span class="st">"Weight Before"</span>, <span class="st">"Weight After"</span>]], kind<span class="op">=</span><span class="st">'kde'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -890,12 +896,12 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <p>estimating the amount of evidence in support of our hypothesis, even in the presence of noise.</p>
 </blockquote>
 <div id="749ab15c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>weight_gain_data.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>weight_gain_data.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -906,49 +912,49 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">count</td>
+<th data-quarto-table-cell-role="th">count</th>
 <td>16.000000</td>
 <td>16.000000</td>
 <td>16.000000</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">mean</td>
+<th data-quarto-table-cell-role="th">mean</th>
 <td>144.636250</td>
 <td>155.045000</td>
 <td>10.408750</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">std</td>
+<th data-quarto-table-cell-role="th">std</th>
 <td>22.704877</td>
 <td>21.438057</td>
 <td>3.840639</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">min</td>
+<th data-quarto-table-cell-role="th">min</th>
 <td>117.260000</td>
 <td>129.360000</td>
 <td>3.080000</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">25%</td>
+<th data-quarto-table-cell-role="th">25%</th>
 <td>126.115000</td>
 <td>137.885000</td>
 <td>7.700000</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">50%</td>
+<th data-quarto-table-cell-role="th">50%</th>
 <td>138.270000</td>
 <td>147.840000</td>
 <td>11.110000</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">75%</td>
+<th data-quarto-table-cell-role="th">75%</th>
 <td>161.480000</td>
 <td>170.335000</td>
 <td>13.420000</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">max</td>
+<th data-quarto-table-cell-role="th">max</th>
 <td>201.740000</td>
 <td>204.820000</td>
 <td>15.620000</td>
@@ -1103,8 +1109,8 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <h2 class="anchored" data-anchor-id="sample-t-test-testing-the-value-of-a-population-mean">1-sample t-test: testing the value of a population mean</h2>
 <p>scipy.stats.ttest_1samp() tests if the population mean of data is likely to be equal to a given value (technically if observations are drawn from a Gaussian distributions of given population mean). It returns the T statistic, and the p-value (see the function’s help):</p>
 <div id="60335d28" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>stats.ttest_1samp(brain_data[<span class="st">'VIQ'</span>], <span class="dv">0</span>)   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>stats.ttest_1samp(brain_data[<span class="st">'VIQ'</span>], <span class="dv">0</span>)   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>TtestResult(statistic=30.08809997084933, pvalue=1.3289196468727879e-28, df=39)</code></pre>
 </div>
@@ -1152,14 +1158,14 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 <li><p>Alternate hypothesis <span class="math inline">\(H_0 \neq 0.86\)</span></p></li>
 </ul>
 <div id="f2649b55" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>laptop_data <span class="op">=</span> pd.read_csv(<span class="st">'Binomial.csv'</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>laptop_data <span class="op">=</span> pd.read_csv(<span class="st">'Binomial.csv'</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>laptop_data</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>laptop_data.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>laptop_data.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1168,19 +1174,19 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">count</td>
+<th data-quarto-table-cell-role="th">count</th>
 <td>90</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">unique</td>
+<th data-quarto-table-cell-role="th">unique</th>
 <td>2</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">top</td>
+<th data-quarto-table-cell-role="th">top</th>
 <td>Windows</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">freq</td>
+<th data-quarto-table-cell-role="th">freq</th>
 <td>54</td>
 </tr>
 </tbody>
@@ -1190,7 +1196,7 @@ Score - An average of 10 survey questions about attitudes towards the brand (7-p
 </div>
 </div>
 <div id="48db496b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>laptop_data.value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>laptop_data.value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>Laptop 
 Windows    54
@@ -1199,10 +1205,10 @@ dtype: int64</code></pre>
 </div>
 </div>
 <div id="5eb32e9a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;slide&quot;}}" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.binomtest(<span class="dv">54</span>, n<span class="op">=</span><span class="dv">90</span>, p<span class="op">=</span><span class="fl">0.86</span>, alternative<span class="op">=</span><span class="st">'two-sided'</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.binomtest(<span class="dv">54</span>, n<span class="op">=</span><span class="dv">90</span>, p<span class="op">=</span><span class="fl">0.86</span>, alternative<span class="op">=</span><span class="st">'two-sided'</span>)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'pvalue : '</span>, result.pvalue)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'95</span><span class="sc">% c</span><span class="st">onfidence level'</span> ,result.proportion_ci(confidence_level<span class="op">=</span><span class="fl">0.95</span>))</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'proportion estimate '</span>, result.proportion_estimate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'proportion estimate '</span>, result.proportion_estimate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>pvalue :  1.1957465473118124e-09
 95% confidence level ConfidenceInterval(low=0.4913413183034394, high=0.7018860844296883)
@@ -1233,11 +1239,11 @@ proportion estimate  0.6</code></pre>
 <h2 class="anchored" data-anchor-id="sample-t-test-testing-for-difference-across-populations">2-sample t-test: testing for difference across populations</h2>
 <p>We have seen above that the mean VIQ in the male and female populations were different. To test if this is significant, we do a 2-sample t-test with scipy.stats.ttest_ind():</p>
 <div id="51576fed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>female_viq <span class="op">=</span> brain_data[brain_data[<span class="st">'Gender'</span>] <span class="op">==</span> <span class="st">'Female'</span>][<span class="st">'VIQ'</span>]</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>female_viq <span class="op">=</span> brain_data[brain_data[<span class="st">'Gender'</span>] <span class="op">==</span> <span class="st">'Female'</span>][<span class="st">'VIQ'</span>]</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>male_viq <span class="op">=</span> brain_data[brain_data[<span class="st">'Gender'</span>] <span class="op">==</span> <span class="st">'Male'</span>][<span class="st">'VIQ'</span>]</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(female_viq, male_viq)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(female_viq, male_viq)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>Ttest_indResult(statistic=-0.7726161723275012, pvalue=0.44452876778583217)</code></pre>
 </div>
@@ -1247,14 +1253,14 @@ proportion estimate  0.6</code></pre>
 <h2 class="anchored" data-anchor-id="paired-tests-repeated-measurements-on-the-same-individuals">Paired tests: repeated measurements on the same individuals</h2>
 <p>PIQ, VIQ, and FSIQ give 3 measures of IQ. Let us test if FISQ and PIQ are significantly different. We can use a 2 sample test:</p>
 <div id="4633921b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(brain_data[<span class="st">'FSIQ'</span>], brain_data[<span class="st">'PIQ'</span>])   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>stats.ttest_ind(brain_data[<span class="st">'FSIQ'</span>], brain_data[<span class="st">'PIQ'</span>])   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>Ttest_indResult(statistic=0.465637596380964, pvalue=0.6427725009414841)</code></pre>
 </div>
 </div>
 <p>The problem with this approach is that it forgets that there are links between observations: FSIQ and PIQ are measured on the same individuals. Thus the variance due to inter-subject variability is confounding, and can be removed, using a “paired test”, or “repeated measures test”:</p>
 <div id="b13ed7ed" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>stats.ttest_rel(brain_data[<span class="st">'FSIQ'</span>], brain_data[<span class="st">'PIQ'</span>])   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>stats.ttest_rel(brain_data[<span class="st">'FSIQ'</span>], brain_data[<span class="st">'PIQ'</span>])   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>TtestResult(statistic=1.7842019405859857, pvalue=0.08217263818364236, df=39)</code></pre>
 </div>
@@ -1278,13 +1284,13 @@ proportion estimate  0.6</code></pre>
 </ul>
 <p>Data : ANOVA diets.csv. * This contains A column containing the 3 diets used (A, B and C) * another column containing the absolute amount of weight loss after 8 weeks on one of 3 differentdiets. * For good practice check the descriptive statistics and the boxplots for any extreme outliers</p>
 <div id="deacb8d6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>diet_loss_data <span class="op">=</span> pd.read_csv(<span class="st">'Independent ANOVA diets.csv'</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>diet_loss_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>diet_loss_data <span class="op">=</span> pd.read_csv(<span class="st">'Independent ANOVA diets.csv'</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>diet_loss_data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="23">
 <div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1294,57 +1300,57 @@ proportion estimate  0.6</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
+<th data-quarto-table-cell-role="th">0</th>
 <td>Diet A</td>
 <td>3.8</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
+<th data-quarto-table-cell-role="th">1</th>
 <td>Diet A</td>
 <td>6.0</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
+<th data-quarto-table-cell-role="th">2</th>
 <td>Diet A</td>
 <td>0.7</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
+<th data-quarto-table-cell-role="th">3</th>
 <td>Diet A</td>
 <td>2.9</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
+<th data-quarto-table-cell-role="th">4</th>
 <td>Diet A</td>
 <td>2.8</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
+<th data-quarto-table-cell-role="th">...</th>
 <td>...</td>
 <td>...</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">67</td>
+<th data-quarto-table-cell-role="th">67</th>
 <td>Diet C</td>
 <td>2.8</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">68</td>
+<th data-quarto-table-cell-role="th">68</th>
 <td>Diet C</td>
 <td>4.1</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">69</td>
+<th data-quarto-table-cell-role="th">69</th>
 <td>Diet C</td>
 <td>5.3</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">70</td>
+<th data-quarto-table-cell-role="th">70</th>
 <td>Diet C</td>
 <td>9.2</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">71</td>
+<th data-quarto-table-cell-role="th">71</th>
 <td>Diet C</td>
 <td>6.1</td>
 </tr>
@@ -1356,7 +1362,7 @@ proportion estimate  0.6</code></pre>
 </div>
 </div>
 <div id="2bebd8f5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>diet_loss_data, x<span class="op">=</span><span class="st">'Diet'</span>, y<span class="op">=</span><span class="st">'Weight loss kg'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>diet_loss_data, x<span class="op">=</span><span class="st">'Diet'</span>, y<span class="op">=</span><span class="st">'Weight loss kg'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1366,9 +1372,9 @@ proportion estimate  0.6</code></pre>
 </div>
 </div>
 <div id="be7f0bd5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>stats.f_oneway(diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet A'</span>][<span class="st">'Weight loss kg'</span>],</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>stats.f_oneway(diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet A'</span>][<span class="st">'Weight loss kg'</span>],</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>               diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet B'</span>][<span class="st">'Weight loss kg'</span>],</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>               diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet C'</span>][<span class="st">'Weight loss kg'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>               diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet C'</span>][<span class="st">'Weight loss kg'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>F_onewayResult(statistic=10.825519115627964, pvalue=8.145779232433143e-05)</code></pre>
 </div>
@@ -1391,10 +1397,10 @@ proportion estimate  0.6</code></pre>
 <li><p>https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.tukey_hsd.html#scipy.stats.tukey_hsd</p></li>
 </ul>
 <div id="570ad751" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;subslide&quot;}}" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> stats.tukey_hsd(diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet A'</span>][<span class="st">'Weight loss kg'</span>],</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> stats.tukey_hsd(diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet A'</span>][<span class="st">'Weight loss kg'</span>],</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>               diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet B'</span>][<span class="st">'Weight loss kg'</span>],</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>               diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet C'</span>][<span class="st">'Weight loss kg'</span>])</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (res)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Tukey's HSD Pairwise Group Comparisons (95.0% Confidence Interval)
 Comparison  Statistic  p-value  Lower CI  Upper CI
@@ -1423,7 +1429,7 @@ Comparison  Statistic  p-value  Lower CI  Upper CI
 <li>There were no significant differences in weight loss between diets A and B (p=.777)</li>
 </ul>
 <div id="aac48a4a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;skip&quot;}}" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip3 install <span class="op">--</span>upgrade scipy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip3 install <span class="op">--</span>upgrade scipy</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Requirement already up-to-date: scipy in /home/deebuls/.local/lib/python3.8/site-packages (1.10.1)
 Requirement already satisfied, skipping upgrade: numpy&lt;1.27.0,&gt;=1.19.5 in /home/deebuls/.local/lib/python3.8/site-packages (from scipy) (1.22.4)</code></pre>
@@ -1439,7 +1445,7 @@ Requirement already satisfied, skipping upgrade: numpy&lt;1.27.0,&gt;=1.19.5 in 
 <li>Regression tests the null hypothesis (Ho) that there will be no significant prediction of the dependent(outcome) variable by the predictor variable(s).</li>
 </ul>
 <div id="99e3e15b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;slide&quot;}}" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.scatterplot(data<span class="op">=</span>weight_gain_data, x<span class="op">=</span><span class="st">"Weight Before"</span>, y<span class="op">=</span><span class="st">"Weight After"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.scatterplot(data<span class="op">=</span>weight_gain_data, x<span class="op">=</span><span class="st">"Weight Before"</span>, y<span class="op">=</span><span class="st">"Weight After"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1449,20 +1455,20 @@ Requirement already satisfied, skipping upgrade: numpy&lt;1.27.0,&gt;=1.19.5 in 
 </div>
 </div>
 <div id="8e8c5086" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.linregress(weight_gain_data[<span class="st">'Weight Before'</span>], weight_gain_data[<span class="st">'Weight After'</span>])</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.intercept, result.intercept_stderr, result.pvalue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> stats.linregress(weight_gain_data[<span class="st">'Weight Before'</span>], weight_gain_data[<span class="st">'Weight After'</span>])</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.intercept, result.intercept_stderr, result.pvalue)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>20.32287010489955 6.04654012186869 2.1185490670472105e-12</code></pre>
 </div>
 </div>
 <div id="bf2bf44c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>plt.plot(weight_gain_data[<span class="st">'Weight Before'</span>], weight_gain_data[<span class="st">'Weight After'</span>], <span class="st">'o'</span>, label<span class="op">=</span><span class="st">'original data'</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>plt.plot(weight_gain_data[<span class="st">'Weight Before'</span>], weight_gain_data[<span class="st">'Weight After'</span>], <span class="st">'o'</span>, label<span class="op">=</span><span class="st">'original data'</span>)</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>plt.plot(weight_gain_data[<span class="st">'Weight Before'</span>], result.intercept <span class="op">+</span> result.slope<span class="op">*</span>weight_gain_data[<span class="st">'Weight Before'</span>], <span class="st">'r'</span>, label<span class="op">=</span><span class="st">'fitted line'</span>)</span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
 <span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1491,8 +1497,8 @@ Requirement already satisfied, skipping upgrade: numpy&lt;1.27.0,&gt;=1.19.5 in 
 <li><p>It is based on D’Agostino and Pearson’s test that combines skew and kurtosis to produce an omnibus test of normality.</p></li>
 </ul>
 <div id="1482255f" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;slideshow&quot;,&quot;value&quot;:{&quot;slide_type&quot;:&quot;fragment&quot;}}" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>k2, p <span class="op">=</span> stats.normaltest(diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet A'</span>][<span class="st">'Weight loss kg'</span>])</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'pvalue '</span>, p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>k2, p <span class="op">=</span> stats.normaltest(diet_loss_data[diet_loss_data[<span class="st">'Diet'</span>] <span class="op">==</span> <span class="st">'Diet A'</span>][<span class="st">'Weight loss kg'</span>])</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'pvalue '</span>, p)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>pvalue  0.992891828851092</code></pre>
 </div>
@@ -1756,13 +1762,14 @@ Requirement already satisfied, skipping upgrade: numpy&lt;1.27.0,&gt;=1.19.5 in 
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

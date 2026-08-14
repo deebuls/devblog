@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.34">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,16 @@
 
 <title>Fibonacci Sequence: Non Recursive Formula – devblog</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -74,10 +80,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-d68be38d83eca2bb035acf846ffba811.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e3adbaa939bcd423dddc8c8a834270b4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,7 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -120,7 +126,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -261,20 +267,20 @@ window.Quarto = {
 <li>I tried to generalize the equation and find the other forms and a equation near to exponential</li>
 </ol>
 <div id="cell-3" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;}}" data-outputid="8360cd10-9418-4de7-cc50-fb2bde710545" data-execution_count="64">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>golden_ratio <span class="op">=</span> (<span class="dv">1</span> <span class="op">+</span> <span class="dv">5</span><span class="op">**</span><span class="fl">0.5</span> )<span class="op">/</span><span class="dv">2</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>golden_ratio <span class="op">=</span> (<span class="dv">1</span> <span class="op">+</span> <span class="dv">5</span><span class="op">**</span><span class="fl">0.5</span> )<span class="op">/</span><span class="dv">2</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>conjugate_golden_ratio <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> <span class="dv">5</span><span class="op">**</span><span class="fl">0.5</span> )<span class="op">/</span><span class="dv">2</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"Golden Ratio :"</span>, golden_ratio)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"Conjugate Golden Ratio :"</span>, conjugate_golden_ratio)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">"Conjugate Golden Ratio :"</span>, conjugate_golden_ratio)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Golden Ratio : 1.618033988749895
 Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 </div>
 </div>
 <div id="cell-5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;,&quot;height&quot;:37}}" data-outputid="7dae1166-86cf-41c3-eb43-370328a7d919" data-execution_count="65">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> sym.symbols(<span class="st">'n'</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> sym.symbols(<span class="st">'n'</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fibonacci <span class="op">=</span> (sym.Pow(golden_ratio, n)  <span class="op">-</span> sym.Pow(<span class="bu">abs</span>(conjugate_golden_ratio),n)) <span class="op">/</span> (golden_ratio <span class="op">-</span> conjugate_golden_ratio)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fibonacci</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fibonacci</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="65">
 <div>
 <figure class="figure">
@@ -284,7 +290,7 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 </div>
 </div>
 <div id="cell-6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;,&quot;height&quot;:740}}" data-outputid="1f957d72-91fd-4210-d00b-f0c7ef651c40" data-execution_count="68">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>symplot.plot(fibonacci, (n,<span class="dv">0</span>,<span class="dv">10</span>), show<span class="op">=</span><span class="va">True</span>, legend<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>symplot.plot(fibonacci, (n,<span class="dv">0</span>,<span class="dv">10</span>), show<span class="op">=</span><span class="va">True</span>, legend<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -297,14 +303,14 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 <h2 class="anchored" data-anchor-id="generalizing-the-fibonacci-equation">Generalizing the Fibonacci equation</h2>
 <p>We generalize the Fibonnacci equation, by parametrizing the golden ratio and the conjugate of the golden ratio.</p>
 <div id="cell-8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;,&quot;height&quot;:70}}" data-outputid="37e24210-88b9-47c5-8db2-93f95a7cc8e7" data-execution_count="86">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generalized Fibonacci Equation</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generalized Fibonacci Equation</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>g, n <span class="op">=</span> sym.symbols(<span class="st">'g, n'</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>golden_ratio <span class="op">=</span> (<span class="dv">1</span> <span class="op">+</span> g<span class="op">**</span><span class="fl">0.5</span> )<span class="op">/</span><span class="dv">2</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>conjugate_golden_ratio <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> g<span class="op">**</span><span class="fl">0.5</span> )<span class="op">/</span><span class="dv">2</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>fibonacci <span class="op">=</span> (sym.Pow(golden_ratio, n)  <span class="op">-</span> sym.Pow(<span class="bu">abs</span>(conjugate_golden_ratio),n)) <span class="op">/</span> (golden_ratio <span class="op">-</span> conjugate_golden_ratio)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>fibonacci</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>fibonacci</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="86">
 <div>
 <figure class="figure">
@@ -317,7 +323,7 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 <h3 class="anchored" data-anchor-id="comparing-with-the-exponential-equation">Comparing with the exponential equation</h3>
 <p>Based on the generalized fibonacci equation, we would like to find if we can can get an approximate of the exponential equation</p>
 <div id="cell-10" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;,&quot;height&quot;:723}}" data-outputid="3d239814-03be-46ae-b6b2-f67a937a2f61" data-execution_count="84">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#symplot.plot(fibonacci.subs(g, 4), (n,0,10), show=True, line_color='darkgreen')</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#symplot.plot(fibonacci.subs(g, 4), (n,0,10), show=True, line_color='darkgreen')</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>graphs<span class="op">=</span> sym.plotting.plot(fibonacci.subs(g, <span class="dv">35</span>), fibonacci.subs(g, <span class="dv">34</span>),fibonacci.subs(g, <span class="dv">33</span>), sym.exp(n),  (n,<span class="dv">0</span>,<span class="dv">8</span>), title<span class="op">=</span><span class="st">"Fibonacci"</span>, legend<span class="op">=</span> <span class="va">True</span>, xlabel<span class="op">=</span><span class="st">'n'</span>, ylabel<span class="op">=</span><span class="st">'f(x)'</span>, show<span class="op">=</span><span class="va">False</span>)</span>
@@ -326,7 +332,7 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, graph <span class="kw">in</span> <span class="bu">enumerate</span>(graphs):</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a> graph.line_color<span class="op">=</span>color[i<span class="op">%</span><span class="bu">len</span>(color)]</span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -339,7 +345,7 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 <section id="comparing-with-the-exponential-equation-region-0---1" class="level3">
 <h3 class="anchored" data-anchor-id="comparing-with-the-exponential-equation-region-0---1">Comparing with the exponential equation (region [0 - 1])</h3>
 <div id="cell-12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;,&quot;height&quot;:723}}" data-outputid="f62b3680-9e4e-43a7-95a0-7fadb324e78b" data-execution_count="85">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#symplot.plot(fibonacci.subs(g, 4), (n,0,10), show=True, line_color='darkgreen')</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#symplot.plot(fibonacci.subs(g, 4), (n,0,10), show=True, line_color='darkgreen')</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>graphs<span class="op">=</span> sym.plotting.plot(fibonacci.subs(g, <span class="dv">35</span>), fibonacci.subs(g, <span class="dv">34</span>),fibonacci.subs(g, <span class="dv">33</span>), sym.exp(n),  (n,<span class="dv">0</span>,<span class="dv">1</span>), title<span class="op">=</span><span class="st">"Fibonacci"</span>, legend<span class="op">=</span> <span class="va">True</span>, xlabel<span class="op">=</span><span class="st">'n'</span>, ylabel<span class="op">=</span><span class="st">'f(x)'</span>, show<span class="op">=</span><span class="va">False</span>)</span>
@@ -348,7 +354,7 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, graph <span class="kw">in</span> <span class="bu">enumerate</span>(graphs):</span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a> graph.line_color<span class="op">=</span>color[i<span class="op">%</span><span class="bu">len</span>(color)]</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -372,13 +378,13 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 <li>Higher the constant higher the slope</li>
 </ol>
 <div id="cell-14" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;,&quot;height&quot;:728}}" data-outputid="66ea7260-dc0e-4cdc-a9d2-1b2761adafaf" data-execution_count="87">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>graphs<span class="op">=</span> sym.plotting.plot(sym.exp(n), <span class="dv">2</span><span class="op">**</span>n, <span class="fl">0.1</span><span class="op">**</span>n,<span class="dv">1</span><span class="op">**</span>n,<span class="fl">2.3</span><span class="op">**</span>n,<span class="fl">2.67</span><span class="op">**</span>n,(n,<span class="fl">0.0</span>,<span class="dv">1</span>), title<span class="op">=</span><span class="st">"Exponential"</span>, legend<span class="op">=</span> <span class="va">True</span>, xlabel<span class="op">=</span><span class="st">'n'</span>, ylabel<span class="op">=</span><span class="st">'f(x)'</span>, show<span class="op">=</span><span class="va">False</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>graphs<span class="op">=</span> sym.plotting.plot(sym.exp(n), <span class="dv">2</span><span class="op">**</span>n, <span class="fl">0.1</span><span class="op">**</span>n,<span class="dv">1</span><span class="op">**</span>n,<span class="fl">2.3</span><span class="op">**</span>n,<span class="fl">2.67</span><span class="op">**</span>n,(n,<span class="fl">0.0</span>,<span class="dv">1</span>), title<span class="op">=</span><span class="st">"Exponential"</span>, legend<span class="op">=</span> <span class="va">True</span>, xlabel<span class="op">=</span><span class="st">'n'</span>, ylabel<span class="op">=</span><span class="st">'f(x)'</span>, show<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, graph <span class="kw">in</span> <span class="bu">enumerate</span>(graphs):</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a> graph.line_color<span class="op">=</span>color[i<span class="op">%</span><span class="bu">len</span>(color)]</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -397,7 +403,7 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 </ul>
 <p><span class="math display">\[ f(n) = constant^{n} + \frac{1}{constant} \]</span></p>
 <div id="cell-16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;colab&quot;,&quot;value&quot;:{&quot;base_uri&quot;:&quot;https://localhost:8080/&quot;,&quot;height&quot;:726}}" data-outputid="6efea292-4be9-43a0-a1e0-350547b2650b" data-execution_count="59">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>n, x <span class="op">=</span> sym.symbols(<span class="st">'n, x'</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>n, x <span class="op">=</span> sym.symbols(<span class="st">'n, x'</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> n<span class="op">**</span>x <span class="op">+</span> <span class="dv">1</span><span class="op">/</span>n </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#n hasto be grater than 1 </span></span>
@@ -413,7 +419,7 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, graph <span class="kw">in</span> <span class="bu">enumerate</span>(graphs):</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a> graph.line_color<span class="op">=</span>color[i<span class="op">%</span><span class="bu">len</span>(color)]</span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>graphs.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -479,13 +485,14 @@ Conjugate Golden Ratio : -0.6180339887498949</code></pre>
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

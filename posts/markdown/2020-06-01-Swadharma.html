@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2022-06-25">
-<meta name="description" content="Compile Latex file using Github Action">
+<meta name="dcterms.date" content="2026-06-01">
+<meta name="description" content="Confussions of a imperfect coder.">
 
-<title>Compile Latex file using Github Action – devblog</title>
+<title>Swadharma and Coding – devblog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,41 +27,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -157,14 +122,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Compile Latex file using Github Action</h1>
+      <h1 class="title">Swadharma and Coding</h1>
                   <div>
         <div class="description">
-          Compile Latex file using Github Action
+          Confussions of a imperfect coder.
         </div>
       </div>
                           <div class="quarto-categories">
-                <div class="quarto-category">Latex</div>
+                <div class="quarto-category">philosophy</div>
               </div>
                   </div>
   </div>
@@ -176,7 +141,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">June 25, 2022</p>
+        <p class="date">June 1, 2026</p>
       </div>
     </div>
     
@@ -192,11 +157,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#compiling-latex-documents-using-github-action" id="toc-compiling-latex-documents-using-github-action" class="nav-link active" data-scroll-target="#compiling-latex-documents-using-github-action">Compiling Latex documents using Github Action</a>
+  <li><a href="#the-swadharma-of-an-imperfect-coder" id="toc-the-swadharma-of-an-imperfect-coder" class="nav-link active" data-scroll-target="#the-swadharma-of-an-imperfect-coder">The Swadharma of an Imperfect Coder</a>
   <ul class="collapse">
-  <li><a href="#using-makefile" id="toc-using-makefile" class="nav-link" data-scroll-target="#using-makefile">Using Makefile</a></li>
-  <li><a href="#installing-latex-commands-in-github-action" id="toc-installing-latex-commands-in-github-action" class="nav-link" data-scroll-target="#installing-latex-commands-in-github-action">Installing latex commands in Github Action</a></li>
-  <li><a href="#using-git-commit-in-github-actions" id="toc-using-git-commit-in-github-actions" class="nav-link" data-scroll-target="#using-git-commit-in-github-actions">Using git commit in GitHub Actions</a></li>
+  <li><a href="#reclaiming-swadharma-from-perfectionism" id="toc-reclaiming-swadharma-from-perfectionism" class="nav-link" data-scroll-target="#reclaiming-swadharma-from-perfectionism">Reclaiming “Swadharma” from Perfectionism</a></li>
+  <li><a href="#are-you-actually-misaligned-or-just-comparing" id="toc-are-you-actually-misaligned-or-just-comparing" class="nav-link" data-scroll-target="#are-you-actually-misaligned-or-just-comparing">Are You Actually Misaligned, or Just Comparing?</a></li>
+  <li><a href="#the-practice-of-nishkama-karma-at-the-keyboard" id="toc-the-practice-of-nishkama-karma-at-the-keyboard" class="nav-link" data-scroll-target="#the-practice-of-nishkama-karma-at-the-keyboard">The Practice of Nishkama Karma at the Keyboard</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -208,80 +173,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="compiling-latex-documents-using-github-action" class="level1">
-<h1>Compiling Latex documents using Github Action</h1>
-<p>GitHub Actions provides full access to the runner at your disposal, and one thing you may want to do is make commits in a workflow run and push it back up to GitHub automatically. I’m going to show a simple example where we run the date unix command, save the contents to a file, and push it back to the master branch. Example workflow</p>
-<section id="using-makefile" class="level2">
-<h2 class="anchored" data-anchor-id="using-makefile">Using Makefile</h2>
+<section id="the-swadharma-of-an-imperfect-coder" class="level1">
+<h1>The Swadharma of an Imperfect Coder</h1>
+<p>We live in a tech culture obsessed with the “10x Engineer.” We are told that to be a real programmer, we must live and breathe code, contribute to open-source at 2:00 AM, and possess an innate, almost mystical genius for algorithms.</p>
+<p>But what if you didn’t choose this path out of a burning, childhood passion? What if you stumbled into software engineering semi-randomly, and frankly, you know you aren’t the best on your team?</p>
+<p>If you look at your career through the lens of ancient wisdom—specifically the <em>Bhagavad Gita</em>—you might find a deeply comforting truth. Your lack of perfection doesn’t mean you are in the wrong place. In fact, being an “imperfect coder” might be your exact <em>Swadharma</em>.</p>
+<hr>
+<section id="reclaiming-swadharma-from-perfectionism" class="level2">
+<h2 class="anchored" data-anchor-id="reclaiming-swadharma-from-perfectionism">Reclaiming “Swadharma” from Perfectionism</h2>
+<p><em>Swadharma</em> is often translated as one’s personal duty or righteous path. In modern career discourse, we tend to mistake this for finding the “perfect dream job.” We think if we aren’t completely crushing it, we must have missed our calling.</p>
+<p>The <em>Gita</em> flatly rejects this anxiety. In Chapter 18, Verse 47, it states:</p>
+<blockquote class="blockquote">
+<p><strong>“It is better to engage in one’s own occupation, even though one may perform it imperfectly, than to accept another’s occupation and perform it perfectly.”</strong></p>
+</blockquote>
+<p>This is a liberating paradigm shift for anyone in tech. The text explicitly honors the person who shows up and does the work, even if they do it imperfectly. Your Swadharma isn’t defined by being the smartest person in the room; it is defined by aligning your unique nature (<em>Swabhava</em>) with your current responsibilities.</p>
+<pre><code>       [ YOUR SWADHARMA ]
+               │
+       ┌───────┴───────┐
+       ▼               ▼
+  Your Nature     Your Current
+  (Swabhava)      Duties &amp; Context
+</code></pre>
+</section>
+<section id="are-you-actually-misaligned-or-just-comparing" class="level2">
+<h2 class="anchored" data-anchor-id="are-you-actually-misaligned-or-just-comparing">Are You Actually Misaligned, or Just Comparing?</h2>
+<p>If you feel like an impostor because you “randomly” became a software engineer, take a step back and look at your <em>Swabhava</em> (your inherent traits).</p>
 <ul>
-<li>Use make file to automate all the actions which needs to be done after checking out the repo.</li>
-<li>Here is a Makefile for compiling latex file</li>
+<li>Do you enjoy the quiet satisfaction of solving a logic puzzle, even if it takes you a while?</li>
+<li>Do you like building things that make other people’s lives slightly easier?</li>
+<li>Do you appreciate the order and structure that code brings to chaos?</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode makefile code-with-copy"><code class="sourceCode makefile"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">filename</span><span class="ch">=</span><span class="st">main</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dv">pdf:</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>mkdir -p build</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    pdflatex --output-directory build <span class="ch">${</span><span class="dt">filename</span><span class="ch">}</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    bibtex build/<span class="ch">${</span><span class="dt">filename</span><span class="ch">}</span>||true</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    pdflatex --output-directory build <span class="ch">${</span><span class="dt">filename</span><span class="ch">}</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    pdflatex --output-directory build <span class="ch">${</span><span class="dt">filename</span><span class="ch">}</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    mv build/<span class="ch">${</span><span class="dt">filename</span><span class="ch">}</span>.pdf .</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="dv">read:</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>evince build/<span class="ch">${</span><span class="dt">filename</span><span class="ch">}</span>.pdf &amp;</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="dv">clean:</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>rm -f build/<span class="ch">${</span><span class="dt">filename</span><span class="ch">}</span>.{ps,pdf,log,aux,out,dvi,bbl,blg}</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you answered yes, then software engineering aligns with your nature. The feeling that you “should change careers” often doesn’t come from a mismatch of nature—it comes from the painful habit of comparing your messy insides to everyone else’s curated outsides. Fulfilling your Swadharma means running your own race, not trying to live out the Swadharma of the senior architect next to you.</p>
 </section>
-<section id="installing-latex-commands-in-github-action" class="level2">
-<h2 class="anchored" data-anchor-id="installing-latex-commands-in-github-action">Installing latex commands in Github Action</h2>
-<p>Inorder to use <strong>pdflatex</strong> in the ubuntu machine generted for compilation first you need to install the necessary packages in the ubuntu machine .</p>
-</section>
-<section id="using-git-commit-in-github-actions" class="level2">
-<h2 class="anchored" data-anchor-id="using-git-commit-in-github-actions">Using git commit in GitHub Actions</h2>
-<p>The following is a workflow which on push will do the following:</p>
-<pre><code>checkout the repo
-install latex dependency
-run make command and compile
-setup git config
-commit the changed file and push it back to master</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> Makefile CI</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">on</span><span class="kw">:</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">push</span><span class="kw">:</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> </span><span class="st">"master"</span><span class="at"> </span><span class="kw">]</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pull_request</span><span class="kw">:</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">branches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at"> </span><span class="st">"master"</span><span class="at"> </span><span class="kw">]</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">jobs</span><span class="kw">:</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">build</span><span class="kw">:</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">runs-on</span><span class="kw">:</span><span class="at"> ubuntu-latest</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">steps</span><span class="kw">:</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">uses</span><span class="kw">:</span><span class="at"> actions/checkout@v3</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install dependencies</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="at">  </span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Compile</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">run</span><span class="kw">:</span><span class="at"> make</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="at">      </span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> setup git config</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">      run</span><span class="kw">: </span><span class="ch">|</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        git config user.name "GitHub Actions Bot"</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        git config user.email "&lt;&gt;"</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> commit</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu">      run</span><span class="kw">: </span><span class="ch">|</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        # Stage the file, commit and push</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        git add main.pdf</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        git commit -m "new main pdf commit"</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        git push origin master</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>[1] https://lannonbr.com/blog/2019-12-09-git-commit-in-actions/ [2] <a href="https://github.com/sthoduka/designing_datasets/tree/master/.github/workflows">Example github page</a></p>
+<section id="the-practice-of-nishkama-karma-at-the-keyboard" class="level2">
+<h2 class="anchored" data-anchor-id="the-practice-of-nishkama-karma-at-the-keyboard">The Practice of Nishkama Karma at the Keyboard</h2>
+<p>The ultimate goal of the Gita is <em>Nishkama Karma</em>—performing action without attachment to the fruits or results. How does an imperfect coder practice this?</p>
+<ol type="1">
+<li><strong>Detach from the “10x” Identity:</strong> Stop coding for the ego stroke of being “the best.” Code because the task is in front of you and it needs to be done well.</li>
+<li><strong>Focus on the Code, Not the Praise:</strong> Write clean, readable code as an act of service to the next developer who has to maintain it. Treat your pull requests as a quiet offering of craftsmanship.</li>
+<li><strong>Accept the Bugs:</strong> When your code breaks (and it will), see it not as a personal failure, but as a natural part of the material world. Fix it calmly, without attaching your self-worth to the error.</li>
+</ol>
+<hr>
+<blockquote class="blockquote">
+<p><strong>The Bottom Line:</strong> You do not need to be a tech visionary to live a deeply spiritual, aligned life as a programmer. If you show up, write your imperfect code with a clean heart, support your team, and provide for your life, you are fully living your Swadharma.</p>
+</blockquote>
+<p><em>The world doesn’t just need tech geniuses; it needs steady, honest builders who show up and do the work.</em></p>
 
 
 </section>
