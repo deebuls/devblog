@@ -4,7 +4,7 @@ categories:
 date: '2026-03-11'
 description: Berkshire Apple investment journey
 layout: post
-title: 
+title:Berkshire Apple investment summary
 toc: true
 
 ---
